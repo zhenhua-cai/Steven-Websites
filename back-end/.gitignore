@@ -1,0 +1,3 @@
+# Project exclude paths
+# application configuration
+/src/main/resources/application-config.properties

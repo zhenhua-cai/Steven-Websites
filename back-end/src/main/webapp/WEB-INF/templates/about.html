@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <title>Resume - Start Bootstrap Theme</title>
+    <link th:href="@{/resources/fontawesome-free/css/all.min.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{/resources/css/aboutme.css}" rel="stylesheet"/>
+    <script th:src="@{/resources/js/jquery.min.js}"></script>
+    <script th:src="@{/resources/js/bootstrap.bundle.min.js}"></script>
+
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Saira+Extra+Condensed:500,700" rel="stylesheet"
+          type="text/css"/>
+    <link href="https://fonts.googleapis.com/css?family=Muli:400,400i,800,800i" rel="stylesheet" type="text/css"/>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@master/devicon.min.css">
+</head>
+<body id="page-top">
+<!-- Navigation-->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top" id="sideNav">
+    <a class="navbar-brand js-scroll-trigger" href="#page-top">
+        <span class="d-block d-lg-none">Steven Cai</span>
+        <span class="d-none d-lg-block"><img class="img-fluid img-profile rounded-circle mx-auto mb-2"
+                                             th:src="@{/resources/img/profile.jpg}" alt=""/></span>
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span
+            class="navbar-toggler-icon"></span></button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav">
+            <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#about" th:text="#{about-me-label}"></a>
+            </li>
+            <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#experience"
+                                    th:text="#{experience-label}"></a></li>
+            <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#education"
+                                    th:text="#{education-label}"></a></li>
+            <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#skills" th:text="#{skills-label}"></a>
+            </li>
+            <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#awards" th:text="#{awards-label}"></a>
+            </li>
+            <li class="nav-item"><a class="nav-link js-scroll-trigger" th:href="@{/home}" th:text="#{home-label}"></a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<!-- Page Content-->
+<div class="container-fluid p-0">
+    <!-- About-->
+    <section class="resume-section" id="about">
+        <div class="resume-section-content">
+            <h1 class="mb-0">
+                Zhenhua
+                <span class="text-primary">(Steven)</span>
+                Cai
+            </h1>
+            <div class="subheading mb-5">
+                <a href="mailto:name@email.com">steven.cai1008@gmail.com</a>
+            </div>
+            <p class="lead mb-5">
+                I'm a enthusiastic backend software developer who excels in projects requiring critical thinking
+                and works effectively in a dynamic environment.
+            </p>
+            <div class="social-icons">
+                <a class="social-icon" href="https://www.linkedin.com/in/zhenhua-cai/"><i
+                        class="fab fa-linkedin-in"></i></a>
+                <a class="social-icon" href="https://github.com/zhenhua-cai/"><i class="fab fa-github"></i></a>
+            </div>
+        </div>
+    </section>
+    <hr class="m-0"/>
+    <!-- Experience-->
+    <section class="resume-section" id="experience">
+        <div class="resume-section-content">
+            <h2 class="mb-5">Experience</h2>
+            <div class="d-flex flex-column flex-md-row justify-content-between mb-5">
+                <div class="flex-grow-1">
+                    <h3 class="mb-0">Software Developer</h3>
+                    <div class="subheading mb-3">Epic Systems</div>
+                    <ul>
+                        <li>Invent better ways to reduce medical errors, streamline record sharing between hospitals,
+                            and provide the quality of care a patient deserves.
+                        </li>
+                        <li>
+                            Develop new features for existing applications in ASP.NET, TypeScript,
+                            JavaScript and Chronicle Database.
+                        </li>
+                        <li>
+                            Migrate existing VB Code to JavaScript and C#.
+                        </li>
+                        <li>
+                            Fix existing issues base on customers’ or QAers’ feedback.
+                        </li>
+                    </ul>
+                </div>
+                <div class="flex-shrink-0"><span class="text-primary">March 2020 - October 2020</span></div>
+            </div>
+            <div class="d-flex flex-column flex-md-row justify-content-between mb-5">
+                <div class="flex-grow-1">
+                    <h3 class="mb-0">Adjunct Lecturer(Lecture)</h3>
+                    <div class="subheading mb-3">Queens College - CUNY</div>
+                    <ul>
+                        <li>Teach undergraduate students in Data Structure in Java.</li>
+                        <li>Abide by and upholding the college’s mission, policies, and core values.</li>
+                        <li>Plan and create course materials such as lectures, discussions, and assignments.</li>
+                        <li>Collaborate and communicate with colleagues on course design, content, and curriculum.</li>
+                        <li>Provide quality, inspiring instruction to students.</li>
+                        <li>Stay current within the field of study.</li>
+                    </ul>
+                </div>
+                <div class="flex-shrink-0"><span class="text-primary">August 2019 - December 2019</span></div>
+            </div>
+            <div class="d-flex flex-column flex-md-row justify-content-between mb-5">
+                <div class="flex-grow-1">
+                    <h3 class="mb-0">Adjunct Lecturer(Lab)</h3>
+                    <div class="subheading mb-3">Queens College - CUNY</div>
+                    <ul>
+                        <li>Teach an average of 30 graduate and undergraduate students in OOP in C++ lab</li>
+                        <li>Keep a safe environment and introduce C++ programming knowledge
+                            and conduct safety lab experiments
+                        </li>
+                        <li>Plan and create in-class discussions, and assignments.
+                            Assess students’ grades based on their participation,
+                            performance in class, assignments and quizzes
+                        </li>
+                    </ul>
+                </div>
+                <div class="flex-shrink-0"><span class="text-primary">January 2018 - December 2019</span></div>
+            </div>
+        </div>
+    </section>
+    <hr class="m-0"/>
+    <!-- Education-->
+    <section class="resume-section" id="education">
+        <div class="resume-section-content">
+            <h2 class="mb-5" th:text="#{education-label}"></h2>
+            <div class="d-flex flex-column flex-md-row justify-content-between mb-5">
+                <div class="flex-grow-1">
+                    <h3 class="mb-0">Queens College - CUNY</h3>
+                    <div class="subheading mb-3">Master of Art</div>
+                    <div>Mathematics</div>
+                </div>
+                <div class="flex-shrink-0"><span class="text-primary">August 2020 - Present</span></div>
+            </div>
+            <div class="d-flex flex-column flex-md-row justify-content-between">
+                <div class="flex-grow-1">
+                    <h3 class="mb-0">Queens College - CUNY</h3>
+                    <div class="subheading mb-3">Bachelor of Science</div>
+                    <div>Computer Science</div>
+                    <p>GPA: 3.98</p>
+                </div>
+                <div class="flex-shrink-0"><span class="text-primary">August 2016 - Jan 2020</span></div>
+            </div>
+            <div class="d-flex flex-column flex-md-row justify-content-between">
+                <div class="flex-grow-1">
+                    <h3 class="mb-0">Queens College - CUNY</h3>
+                    <div class="subheading mb-3">Minor of Mathematics</div>
+                </div>
+                <div class="flex-shrink-0"><span class="text-primary">August 2016 - Jan 2020</span></div>
+            </div>
+        </div>
+    </section>
+    <hr class="m-0"/>
+    <!-- Skills-->
+    <section class="resume-section" id="skills">
+        <div class="resume-section-content">
+            <h2 class="mb-5">Skills</h2>
+            <div class="subheading mb-3">Programming Languages & Tools</div>
+            <ul class="list-inline dev-icons">
+                <i class="devicon-java-plain colored" title="Java"></i>
+                <i class="devicon-cplusplus-plain colored" title="C++"></i>
+                <i class="devicon-csharp-plain colored" title="C#"></i>
+                <i><img class="align-text-top mt-1" th:src="@{/resources/img/springio-icon.svg}"
+                        title="Spring Framework"
+                        alt="" height="48px"></i>
+                <i><img class="align-text-top mt-1" th:src="@{/resources/img/hibernate-icon.jpg}" title="Hibernate"
+                        alt="" height="48px"></i>
+                <i><img class="align-text-top mt-1" th:src="@{/resources/img/thymeleaf.png}" title="Thymeleaf"
+                        alt="" height="48px"></i>
+                <i class="devicon-dot-net-plain-wordmark colored" title=".Net Framework"></i>
+                <i class="devicon-python-plain colored" title="Python"></i>
+                <i class="devicon-typescript-plain colored" title="TypeScript"></i>
+                <i class="devicon-javascript-plain colored" title="JavaScript"></i>
+                <i class="devicon-jquery-plain-wordmark colored" title="JQuery"></i>
+                <i class="devicon-angularjs-plain colored" title="Angular"></i>
+                <i class="devicon-html5-plain-wordmark colored" title="HTML 5"></i>
+                <i class="devicon-css3-plain-wordmark colored" title="CSS 3"></i>
+                <i class="devicon-bootstrap-plain-wordmark  colored" title="BootStrap 4"></i>
+                <i class="devicon-mysql-plain-wordmark colored" title="MySQL"></i>
+                <i class="devicon-tomcat-line-wordmark colored" title="Tomcat"></i>
+                <i class="devicon-visualstudio-plain colored" title="Visual Studio"></i>
+                <i class="devicon-intellij-plain colored" title="IntelliJ"></i>
+                <i class="devicon-webstorm-plain colored" title="WebStorm"></i>
+            </ul>
+
+        </div>
+    </section>
+    <hr class="m-0"/>
+    <!-- Awards-->
+    <section class="resume-section" id="awards">
+        <div class="resume-section-content">
+            <h2 class="mb-5">Awards & Certifications</h2>
+            <ul class="fa-ul mb-0">
+                <li>
+                    <span class="fa-li"><i class="fas fa-trophy text-warning"></i></span>
+                    Oracle Certified Professional, Java SE 8 Programmer
+                </li>
+                <li>
+                    <span class="fa-li"><i class="fas fa-trophy text-warning"></i></span>
+                    Oracle Certified Associate, Java SE 8 Programmer
+                </li>
+                <li>
+                    <span class="fa-li"><i class="fas fa-trophy text-warning"></i></span>
+                    Epic .Net/C# Internal Certification
+                </li>
+                <li>
+                    <span class="fa-li"><i class="fas fa-trophy text-warning"></i></span>
+                    Queens College - Presidential Scholar
+                </li>
+                <li>
+                    <span class="fa-li"><i class="fas fa-trophy text-warning"></i></span>
+                    Queens College - Dean's Honor List Award
+                </li>
+            </ul>
+        </div>
+    </section>
+</div>
+<!-- Third party plugin JS-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+<!-- Core theme JS-->
+<!--<script th:src="@{/resources/js/aboutme.js}"></script>-->
+<script>
+    $(document).ready(function () {
+        // Activate scrollspy to add active class to navbar items on scroll
+
+        // Smooth scrolling using jQuery easing
+        let sidebarLink = $('a.js-scroll-trigger[href*="#"]:not([href="#"])');
+        sidebarLink.on("click",function () {
+            if (
+                location.pathname.replace(/^\//, "") ===
+                this.pathname.replace(/^\//, "") &&
+                location.hostname === this.hostname
+            ) {
+                let target = $(this.hash);
+                target = target.length
+                    ? target
+                    : $("[name=" + this.hash.slice(1) + "]");
+                if (target.length) {
+                    $("html, body").animate(
+                        {
+                            scrollTop: target.offset().top,
+                        },
+                        1000,
+                        "easeInOutExpo"
+                    );
+                }
+            }
+        });
+
+        // Closes responsive menu when a scroll trigger link is clicked
+        $(".js-scroll-trigger").on("click",function () {
+            $(".navbar-collapse").collapse("hide");
+        });
+
+        $("body").scrollspy({
+            target: "#sideNav",
+        });
+    });
+</script>
+</body>
+</html>

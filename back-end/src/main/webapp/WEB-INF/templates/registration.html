@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration</title>
+    <!-- Bootstrap core CSS -->
+    <link th:href="@{/resources/css/bootstrap.min.css}" rel="stylesheet">
+
+    <!-- Custom fonts for this template -->
+    <link th:href="@{/resources/fontawesome-free/css/all.min.css}" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet'
+          type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800'
+          rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" th:href="@{/resources/css/login.css}">
+    <link th:href="@{/resources/css/clean-blog.min.css}" rel="stylesheet">
+
+    <script th:src="@{/resources/js/jquery.min.js}"></script>
+    <script th:src="@{/resources/js/bootstrap.bundle.min.js}"></script>
+    <!-- Custom scripts for this template -->
+    <script th:src="@{/resources/js/clean-blog.min.js}"></script>
+    <script th:src="@{/resources/js/pwstrength-bootstrap.min.js}"></script>
+    <script th:src="@{/resources/js/jquery-ui.min.js}"></script>
+
+</head>
+<body>
+<div th:replace="fragments/navbar::navbar"></div>
+<div class="wrapper fadeInDown">
+    <div id="formContent">
+
+        <!-- Icon -->
+        <div class="fadeIn first">
+            <img th:src="@{/resources/img/logo1.png}" height="120px" alt="">
+        </div>
+        <!-- Login Form -->
+        <form th:action="@{/account/register}" method="POST" th:object="${userResource}" id="registrationForm">
+            <div th:if="${#fields.hasErrors()}" class="alert alert-danger error-notification">
+                <ul>
+                    <li th:each="err : ${#fields.errors('*')}" class="error-align-left"><small th:text="${err}"></small>
+                    </li>
+                </ul>
+            </div>
+            <div th:if="${errorMessage != null}" class="error-notification alert alert-danger" id="serverValidationMsg">
+                <small th:text="${errorMessage}"></small>
+            </div>
+            <div id="client-validation" class="error-notification alert alert-danger">
+                <ul id="validation-errors-list"></ul>
+            </div>
+            <label for="username"></label>
+            <input type="text" id="username" th:field="*{username}"
+                   data-toggle="popover"
+                   data-placement="right"
+                   title="Valid Username"
+                   class="fadeIn second" name="username"
+                   placeholder="username" required>
+            <label for="email"></label>
+            <input type="email" id="email" th:field="*{email}"
+                   class="fadeIn third" name="email" placeholder="example@email.com" required>
+            <div id="password-location" class="ml-auto mr-auto">
+                <input type="password" id="password" th:field="*{password}"
+                       class="fadeIn fourth" name="password"
+                       data-toggle="popover"
+                       data-placement="right"
+                       title="Valid Password"
+                       placeholder="password" required>
+            </div>
+            <label for="confirmPassword"></label>
+            <input type="password" id="confirmPassword" th:field="*{confirmPassword}"
+                   class="fadeIn fifth" name="confirmPassword" placeholder="confirm password" required>
+            <input type="submit" class="fadeIn fifth" value="Register">
+        </form>
+
+        <div id="password-popover" style="display: none">
+            <ul>
+                <li>Password size must between 6 and 30.</li>
+                <li>Password must contain 1 or more digits.</li>
+                <li>Password must contain 1 or more uppercase characters.</li>
+                <li>Password must contain 1 or more lowercase characters.</li>
+                <li>
+                    Password must contain 1 or more special characters:
+                    <div id="special-chars"></div>
+                </li>
+            </ul>
+        </div>
+        <div id="username-popover" style="display: none">
+            <ul>
+                <li>Password size must between 1 and 30.</li>
+                <li>Password must contain digits or letters.</li>
+            </ul>
+        </div>
+
+        <div id="formFooter">
+            <a class="underlineHover" th:href="@{/account/login}">Already Have An Account?</a>
+        </div>
+    </div>
+    <script th:src="@{/resources/js/account.js}"></script>
+    <script>
+        $(document).ready(function () {
+            let errorsList = $('#validation-errors-list');
+            let specialCharsDiv = $("#special-chars");
+            let usernameInput = $("#username");
+            let passwordInput = $("#password");
+            let passwordConfirmInput = $("#confirmPassword");
+            let errorDiv = $("#client-validation");
+            let registerForm = $("#registrationForm");
+            let passwordStrengthBar = passwordStrength();
+            let errorMsg = $("#serverValidationMsg")
+            errorDiv.hide();
+
+            createUsernamePopover("#registrationForm", "#username-popover")
+            createPasswordPopover("#registrationForm", "#password-popover");
+
+            listSpecialChars("special-char", specialCharsDiv);
+
+            let showValidationError = function () {
+                let hasError;
+                hasError = showUsernameErrors(errorsList);
+                hasError = showPasswordErrors(errorsList) || hasError;
+                if (hasError) {
+                    errorDiv.show();
+                } else {
+                    errorDiv.hide();
+                }
+                return hasError;
+            }
+
+            //when delete key up, check if password is still valid. then determine show/hide error
+            //if not delete key, check if the key is valid char. if not, show error.
+            usernameInput.keyup(function (event) {
+                let key = event.keyCode;
+                if (key === 8 || key === 46) {
+                    validateUsername(usernameInput, showValidationError, errorsList);
+                }
+            });
+            usernameInput.on("input", function () {
+                validateUsername(usernameInput, showValidationError, errorsList);
+            });
+
+            passwordInput.keyup(function (event) {
+                let key = event.keyCode;
+                if (key === 8 || key === 46) {
+                    validatePassword(passwordInput,passwordConfirmInput, showValidationError, errorsList, passwordStrengthBar);
+                }
+            });
+            passwordInput.on("input", function () {
+                validatePassword(passwordInput,passwordConfirmInput, showValidationError, errorsList, passwordStrengthBar);
+            });
+            //end password validation
+
+            passwordConfirmInput.keyup(function (event) {
+                let key = event.keyCode;
+                if (key === 8 || key === 46) {
+                    validPasswordConfirm(passwordInput, passwordConfirmInput, showValidationError, errorsList);
+                }
+            });
+            passwordConfirmInput.on("input", function () {
+                validPasswordConfirm(passwordInput, passwordConfirmInput, showValidationError, errorsList);
+            })
+            registerForm.submit(function (event) {
+                event.preventDefault();
+                errorMsg.hide();
+                let hasError = showValidationError();
+                if (hasError) {
+                    $("#formContent").effect("shake");
+                    return false;
+                }
+                $(this).unbind("submit").submit();
+            });
+        })
+    </script>
+</div>
+</body>
+</html>
