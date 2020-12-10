@@ -11,7 +11,7 @@
 <!-- Navigation -->
 <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav" th:fragment="navbar">
     <div class="container">
-        <a class="navbar-brand" th:href="@{/home}" th:text="#{website-title}" ></a>
+        <a class="navbar-brand" th:href="@{/home}" th:text="#{website-title}"></a>
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
                 data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
                 aria-label="Toggle navigation" th:text="#{menu-label}">
@@ -29,14 +29,30 @@
                     <a class="nav-link" th:href="@{/contact}" th:text="#{contact-label}"></a>
                 </li>
                 <li class="nav-item" sec:authorize="!isAuthenticated()">
-                    <a class="nav-link" th:href="@{/account/login}" th:text="#{login-label}"></a>
+                    <a class="nav-link" th:href="@{/account/login}" th:text="#{signin-label}"></a>
                 </li>
-                <li class="nav-item" sec:authorize="isAuthenticated()">
-                        <a th:text="#{logout-label}" class="nav-link" href="javascript: void 0;"
-                           onclick="document.getElementById('logoutForm').submit();"></a>
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
+                    <a class="nav-link" th:href="@{/account/register}" th:text="#{signup-label}"></a>
+                </li>
+                <!--TODO: ADD sec:authorize="isAuthenticated()" back -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" id="navbarDropdown"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Account
+                    </a>
+                    <div class="dropdown-menu nav-dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item list-group-item nav-dropdown-item" href="#"><i class="fas fa-user"></i>
+                            Profile</a>
+                        <a class="dropdown-item list-group-item nav-dropdown-item" href="#"><i class="fas fa-edit"></i> Write
+                            Post</a>
+                        <a class="dropdown-item list-group-item nav-dropdown-item" href="javascript: void 0;"
+                           onclick="document.getElementById('logoutForm').submit();"><i class="fas fa-sign-out-alt">
+                            </i> <span th:text="#{signout-label}"></span>
+                        </a>
+                    </div>
                 </li>
             </ul>
-            <form th:action="@{/logout}" method="POST" id="logoutForm" ></form>
+            <form th:action="@{/logout}" method="POST" id="logoutForm"></form>
         </div>
     </div>
 </nav>

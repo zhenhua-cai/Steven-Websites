@@ -2,6 +2,7 @@ package net.stevencai.stevenweb.frontendResource;
 
 import lombok.Data;
 import net.stevencai.stevenweb.validation.FieldMatch;
+import net.stevencai.stevenweb.validation.ValidEmail;
 import net.stevencai.stevenweb.validation.ValidPassword;
 import net.stevencai.stevenweb.validation.ValidUsername;
 import org.springframework.context.annotation.PropertySource;
@@ -33,7 +34,7 @@ public class UserResource {
     private String confirmPassword;
 
     @NotNull
-    @Email(message="{email.valid}")
+    @ValidEmail(message="{email.valid}")
     @Size(min=1, message = "{email.valid}")
     @Column
     private String email;
