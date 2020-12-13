@@ -45,7 +45,7 @@
         </div>
         <input type="hidden" th:value="${requestEmail}" name="email" id="email" th:if="${requestEmail!=null}">
         <input type="hidden" th:value="${requestUsername}" name="email" id="username" th:if="${requestUsername!=null}">
-        <input type="hidden" th:value="${requestURL}" name="email" id="url" th:if="${requestURL!=null}">
+        <input type="hidden" th:value="${requestURL}"  id="url" th:if="${requestURL!=null}">
         <div id="formFooter" th:if="${resetPassword ==null || !resetPassword}">
             <a class="underlineHover" th:href="@{/account/register}">Use A Different Email?</a>
         </div>

@@ -18,3 +18,22 @@
 .nav-dropdown-menu{
     width:50px;
 }
+.inline-nav-link{
+    display:inline !important;
+}
+#sign-in{
+    padding-right: 0 !important;
+    margin-right: 0 !important;
+}
+#sign-out{
+    padding-left: 0 !important;
+    margin-left: 0 !important;
+}
+.divider{
+    display: inline-block;
+    width:3px;
+    height: 9px;
+    background-color: #bbbbbb;
+    margin: 0  !important;
+    padding: 0;
+}

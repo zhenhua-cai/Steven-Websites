@@ -2,7 +2,10 @@ package net.stevencai.stevenweb.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -11,8 +14,15 @@ import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
+@PropertySource("classpath:security-config.properties")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+    private Environment env;
     private DataSource dataSource;
+
+    @Autowired
+    public void setEnv(Environment env) {
+        this.env = env;
+    }
 
     @Autowired
     public void setDataSource(DataSource dataSource) {
@@ -38,6 +48,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("/admin").hasRole("ADMIN")
+                .antMatchers("/articles/new").hasRole("ADMIN")
+                .antMatchers("/articles/publish").hasRole("ADMIN")
+                .antMatchers("/articles/publish").hasRole("ADMIN")
+                .antMatchers("/api/articles/saveArticle").hasRole("ADMIN")
                 .antMatchers("/").permitAll()
                 .antMatchers("/home").permitAll()
                 .anyRequest().permitAll()
@@ -47,8 +61,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .loginProcessingUrl("/authenticateTheUser")
                     .permitAll()
                 .and()
+                .rememberMe()
+                .tokenValiditySeconds(getIntProperty("app.remember.token.valid.seconds"))
+                .and()
                 .logout()
                 .logoutSuccessUrl("/account/login?logout")
                 .permitAll();
+    }
+
+    private int getIntProperty(String property){
+        String propertyValue = env.getProperty(property);
+        assert propertyValue != null;
+        return Integer.parseInt(propertyValue);
     }
 }

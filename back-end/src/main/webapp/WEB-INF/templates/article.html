@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title></title>
+    <!-- Bootstrap core CSS -->
+    <link th:href="@{/resources/css/bootstrap.min.css}" rel="stylesheet">
+
+    <!-- Custom fonts for this template -->
+    <link th:href="@{/resources/fontawesome-free/css/all.min.css}" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet'
+          type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800'
+          rel='stylesheet' type='text/css'>
+
+    <!-- Custom styles for this template -->
+    <link th:href="@{/resources/css/clean-blog.min.css}" rel="stylesheet">
+    <link th:href="@{/resources/css/style.css}" rel="stylesheet">
+    <link th:href="@{/resources/css/article.css}" rel="stylesheet">
+    <link th:href="@{/resources/css/article-content-style.css}" rel="stylesheet">
+
+    <!-- Bootstrap core JavaScript -->
+    <script th:src="@{/resources/js/jquery.min.js}"></script>
+    <script th:src="@{/resources/js/bootstrap.bundle.min.js}"></script>
+    <!-- Custom scripts for this template -->
+    <script th:src="@{/resources/js/clean-blog.min.js}"></script>
+</head>
+
+<body>
+<div class="page">
+    <header class="page-header">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark pl-5 pr-5 container" id="editor-nav">
+            <a class="navbar-brand" th:href="@{/}">Steven's Blog</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse"
+                    data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/about}" th:text="#{about-me-label}"></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/contact}" th:text="#{contact-label}"></a>
+                    </li>
+                    <li class="nav-item mt-auto mb-auto justify-content-center align-content-center" sec:authorize="!isAuthenticated()">
+                        <a class="nav-link inline-nav-link" id="sign-in" th:href="@{/account/login}" th:text="#{signin-label}"></a>
+                        <span class="divider"></span>
+                        <a class="nav-link inline-nav-link" id="sign-out" th:href="@{/account/register}" th:text="#{signup-label}"></a>
+                    </li>
+                    <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" id="navbarDropdown"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:text="${#authentication.getName()}">
+
+                        </a>
+                        <div class="dropdown-menu nav-dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item list-group-item nav-dropdown-item" href="#"><i class="fas fa-user"></i>
+                                Profile</a>
+                            <a class="dropdown-item list-group-item nav-dropdown-item" th:href="@{/articles/new}"><i class="fas fa-edit"></i> Write</a>
+                            <a class="dropdown-item list-group-item nav-dropdown-item" href="javascript: void 0;"
+                               onclick="document.getElementById('logoutForm').submit();"><i class="fas fa-sign-out-alt">
+                            </i> <span th:text="#{signout-label}"></span>
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <main class="page-main m-3">
+        <div class="ml-auto mr-auto container mt-5">
+            <div id="content" class="w-75 ml-auto mr-auto ck-content">
+                <h1 th:text="${article.title}"></h1>
+                <h2 th:text="${article.content}"></h2>
+            </div>
+        </div>
+
+    </main>
+    <hr>
+    <div th:replace="fragments/footer::footer"></div>
+</div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    $(document).ready(function(){
+        let contentStr = /*[[${article.content}]]*/ '';
+        let contentDiv = $("#content");
+        contentDiv.html(contentStr);
+    })
+
+    /*]]>*/
+</script>
+</body>
+
+</html>

@@ -43,7 +43,7 @@ public class AccountApiController {
     public ResponseMessage resendVerificationEmail(@RequestBody RequestObject obj, HttpServletRequest request){
         User user = accountService.findUserByEmail(obj.email);
         if(user == null){
-            return new AccountApiController.ResponseMessage(false);
+            return new ResponseMessage(false);
         }
         emailService.resendVerification(user, request.getContextPath()+"/account/registrationConfirm");
         return new ResponseMessage();
@@ -60,30 +60,12 @@ public class AccountApiController {
         }
 
         if(user == null){
-            return new AccountApiController.ResponseMessage(false);
+            return new ResponseMessage(false);
         }
         emailService.resendVerification(user, request.getContextPath()+"/account/registrationConfirm");
         return new ResponseMessage();
     }
-    private static class ResponseMessage{
-        private boolean result;
 
-        public ResponseMessage() {
-            result = true;
-        }
-
-        public ResponseMessage(boolean result) {
-            this.result = result;
-        }
-
-        public boolean isResult() {
-            return result;
-        }
-
-        public void setResult(boolean result) {
-            this.result = result;
-        }
-    }
     private static class RequestObject{
         private String email;
         private String username;
@@ -104,4 +86,24 @@ public class AccountApiController {
             this.email = email;
         }
     }
+
+    public static class ResponseMessage{
+            private boolean result;
+
+            public ResponseMessage() {
+                result = true;
+            }
+
+            public ResponseMessage(boolean result) {
+                this.result = result;
+            }
+
+            public boolean isResult() {
+                return result;
+            }
+
+            public void setResult(boolean result) {
+                this.result = result;
+            }
+        }
 }

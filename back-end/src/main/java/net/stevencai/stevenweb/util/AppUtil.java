@@ -3,6 +3,8 @@ package net.stevencai.stevenweb.util;
 import com.fasterxml.uuid.Generators;
 import net.stevencai.stevenweb.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -11,8 +13,15 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
+@PropertySource("classpath:application-config.properties")
 public class AppUtil {
     private PasswordEncoder passwordEncoder;
+    private Environment env;
+
+    @Autowired
+    public void setEnv(Environment env) {
+        this.env = env;
+    }
 
     @Autowired
     public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
@@ -25,6 +34,15 @@ public class AppUtil {
         return byteArrayToHexString(emailStrBytes)+uuid.toString()+generateTimeBasedRandomString();
     }
 
+    public String generateUUIDForArticle(String username){
+        UUID uuid = Generators.timeBasedGenerator().generate();
+        byte[] userBytes = passwordEncoder.encode(username).getBytes();
+        return byteArrayToHexString(userBytes)+uuid.toString()+generateTimeBasedRandomString();
+    }
+
+    public String getArticlesBasePath(){
+        return env.getProperty("app.articles.base.path");
+    }
     public static String generateTimeBasedRandomString(){
         String raw = LocalDateTime.now().toString();
         byte[] rawStringBytes = raw.getBytes();
@@ -53,6 +71,7 @@ public class AppUtil {
         maskedEmail.append(email.substring(atSymbolIndex));
         return maskedEmail.toString();
     }
+
 
     private static byte[] hexStringToByteArray(String s){
         byte[] bytes = new byte[s.length()/2];

@@ -41,4 +41,38 @@ create table verificationToken(
     expireDate datetime not null,
     createData datetime not null,
     constraint `verificationToken_idfk_1` foreign key(`userId`) references users(id)
-)
+)ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+drop table if exists articleCategories;
+create table articleCategories(
+	id int primary key not null auto_increment,
+    category varchar(20) not null
+)ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+drop table if exists articleKeywords;
+create table articleKeywords(
+	id int primary key not null auto_increment,
+    keyword varchar(30) unique not null
+)ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+drop table if exists article;
+create table article(
+	id varchar(256) primary key not null,
+	title varchar(256) not null,
+    `path` varchar(256) not null,
+    createDateTime datetime not null,
+    lastModifiedDateTime datetime not null,
+    userId int not null,
+    constraint `user_post_idfk` foreign key(`userId`) references users(id)
+)ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+drop table if exists articleDraft;
+create table articleDraft(
+	id varchar(256) primary key not null,
+    title varchar(256) not null,
+    `path` varchar(256) not null,
+    createDateTime datetime not null,
+    lastModifiedDateTime datetime not null,
+    userId int not null,
+    constraint `user_postDraft_idfk` foreign key(`userId`) references users(id)
+)ENGINE=InnoDB DEFAULT CHARSET=latin1;
