@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
@@ -21,10 +22,10 @@ public class HomeController {
     }
 
     @GetMapping
-    public String home(Model model){
+    public ModelAndView home(Model model){
         List<ArticleResource> articleResources = articleService.findRecentArticlesTitles();
         model.addAttribute("articles", articleResources);
-        return "index";
+        return new ModelAndView("index");
     }
     @GetMapping("about")
     public String aboutMe(){

@@ -91,16 +91,18 @@
     let articleTitle = $("#articleTitle");
     /*<![CDATA[*/
     let saveUrl = /*[[@{/articles/saveArticle}]]*/ "";
+    let publishUrl = /*[[@{/articles/publish}]]*/ "";
+    let redirectBaseUrl = /*[[@{/articles/}]]*/ "";
     $(document).ready(function () {
-        let postId = $("#articleId");
+        let articleId = $("#articleId");
         let header = $("meta[name='_csrf_header']").attr("content");
         let token = $("meta[name='_csrf']").attr("content");
         let articleForm = $("#articleForm");
         let saveMsg = $("#article-saved-message");
         let saveEl = $("#article-saved-message p");
-        let errorEle =  $("#error-message p");
+        let errorEle = $("#error-message p");
         let msgEl = $("#title-missing-message p");
-        let titleMsg =$("#title-missing-message");
+        let titleMsg = $("#title-missing-message");
         let errMsg = $("#error-message");
 
         let showErrorMessage = function () {
@@ -109,25 +111,30 @@
                 showClose: false
             });
         }
-        let showSaveMessage = function(){
+        let showSaveMessage = function () {
             saveMsg.modal({
                 fadeDuration: 100,
                 showClose: false
             });
         }
-        let validateContentLength = function(content){
+
+        let showTitleMessage = function () {
+            titleMsg.modal({
+                fadeDuration: 100,
+                showClose: false
+            });
+        }
+        let validateContentLength = function (content) {
             return content.length - articleTitle.val().length > 100;
         }
-        save = function () {
+        let postRequest = function (url, success) {
             articleTitle.val(title.text());
             let data = {
-                id: postId.val(),
+                id: articleId.val(),
                 title: articleTitle.val(),
                 content: articleEditor.getData()
             };
-            console.log(data.content.length);
-            console.log(articleTitle.val().length);
-            if(!validateContentLength(data.content)){
+            if (!validateContentLength(data.content)) {
                 saveEl.text("Please writer more content before save.")
                 showSaveMessage();
                 return;
@@ -137,16 +144,15 @@
                 beforeSend: function (request) {
                     request.setRequestHeader(header, token);
                 },
-                url: saveUrl,
+                url: url,
                 data: data,
-                success: function (data, status, jqXHR) {
-                    saveEl.text("Article saved.")
-                    showSaveMessage();
-                },
+                success: success,
                 error: function (jqXHR, textStatus, exception) {
+                    console.log(jqXHR);
+                    console.log(jqXHR.status);
                     switch (jqXHR.status) {
                         case 403:
-                           errorEle.text("Credentials expired. Please sign in your account");
+                            errorEle.text("Credentials expired. Please sign in your account");
                             showErrorMessage();
                             break;
                         default:
@@ -157,33 +163,18 @@
                 }
             })
         }
-
-        let showTitleMessage = function () {
-            titleMsg.modal({
-                fadeDuration: 100,
-                showClose: false
+        save = function () {
+            postRequest(saveUrl, function (data, status, jqXHR) {
+                saveEl.text("Article saved.")
+                showSaveMessage();
             });
         }
-        publish = function () {
-            articleTitle.val(title.text());
-            let titleVal = articleTitle.val();
 
-            if (titleVal.length === 0) {
-                msgEl.text("Please enter a title for this article");
-                showTitleMessage();
-                return false;
-            } else if (titleVal.length < 10) {
-                msgEl.text("title is too short");
-                showTitleMessage();
-                return false;
-            }
-            let content = articleEditor.getData();
-            if(!validateContentLength(content)){
-                saveEl.text("Please writer more content before publish.")
-                showSaveMessage();
-                return false;
-            }
-            articleForm.submit();
+        publish = function () {
+            postRequest(publishUrl, function (data, status, jqXHR) {
+                console.log(jqXHR.status)
+                window.location.replace(redirectBaseUrl+articleId.val());
+            });
         }
     })
 

@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -128,7 +129,7 @@ public class ArticleServiceImpl implements ArticleService {
         return articleResource;
     }
     private void loadArticleFromDisk(String path, ArticleResource articleResource){
-        try(BufferedReader bufferedReader = new BufferedReader(new FileReader(path))){
+        try(BufferedReader bufferedReader = Files.newBufferedReader(Paths.get(path),StandardCharsets.UTF_8)){
             String line = "";
             StringBuilder article = new StringBuilder();
             while((line = bufferedReader.readLine()) != null){
@@ -140,11 +141,9 @@ public class ArticleServiceImpl implements ArticleService {
         }
     }
     private void saveArticleToDisk(String path, ArticleResource articleResource) throws ArticleNotAbleToWriteToDiskException {
-        try (
-                BufferedWriter bUfferedWriter =
-                        new BufferedWriter(
-                                new FileWriter(path))) {
+        try (BufferedWriter bUfferedWriter = Files.newBufferedWriter(Paths.get(path),StandardCharsets.UTF_8);) {
             bUfferedWriter.write(articleResource.getContent());
+
         } catch (IOException e) {
             throw new ArticleNotAbleToWriteToDiskException(e);
         }

@@ -8,13 +8,13 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
-import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.*;
 import org.thymeleaf.dialect.IDialect;
 import org.thymeleaf.extras.java8time.dialect.Java8TimeDialect;
 import org.thymeleaf.extras.springsecurity5.dialect.SpringSecurityDialect;
@@ -24,7 +24,9 @@ import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Configuration
@@ -43,6 +45,7 @@ public class AppWebConfig implements WebMvcConfigurer {
     public ThymeleafViewResolver viewResolver(){
         ThymeleafViewResolver viewResolver = new ThymeleafViewResolver();
         viewResolver.setTemplateEngine(templateEngine());
+        viewResolver.setCharacterEncoding("UTF-8");
         return viewResolver;
     }
 
@@ -59,6 +62,7 @@ public class AppWebConfig implements WebMvcConfigurer {
     public SpringResourceTemplateResolver templateResolver(){
         SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
         templateResolver.setApplicationContext(this.applicationContext);
+        templateResolver.setCharacterEncoding("UTF-8");
         templateResolver.setPrefix("/WEB-INF/templates/");
         templateResolver.setSuffix(".html");
         templateResolver.setTemplateMode(TemplateMode.HTML);
@@ -102,4 +106,5 @@ public class AppWebConfig implements WebMvcConfigurer {
     public MultipartResolver multipartResolver() throws IOException{
         return new StandardServletMultipartResolver();
     }
+
 }
