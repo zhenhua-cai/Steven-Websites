@@ -133,7 +133,7 @@
                 showTitleMessage();
                 return;
             }
-            if(articleTitle.val().length < 20){
+            if(articleTitle.val().length < 10){
                 errorEle.text("Title is too short");
                 showErrorMessage();
                 return;
@@ -267,6 +267,9 @@
                     ]
                 },
                 language: 'en',
+                mediaEmbed:{
+                    previewsInData: true
+                },
                 image: {
                     toolbar: [
                         'imageTextAlternative',
