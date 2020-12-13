@@ -72,14 +72,14 @@
 <div id="title-missing-message" class="modal justify-content-center align-content-center">
     <p class="text-center">Please enter a <span class="font-weight-bold">title</span> for this article</p>
 </div>
-<div id="authentication-fail-message" class="modal justify-content-center align-content-center">
+<div id="error-message" class="modal justify-content-center align-content-center">
     <p class="text-center">Credentials expired. Please sign in your account</p>
 </div>
 
 <div id="article-saved-message" class="modal justify-content-center align-content-center">
     <p class="text-center">Article is saved!</p>
 </div>
-<div id="unknow-error-message" class="modal justify-content-center align-content-center">
+<div id="unknown-error-message" class="modal justify-content-center align-content-center">
     <p class="text-center" style="color:red">Unknown Error. Please Contact the administrator</p>
 </div>
 <script th:src="@{/resources/js/jquery.modal.js}"></script>
@@ -96,8 +96,28 @@
         let header = $("meta[name='_csrf_header']").attr("content");
         let token = $("meta[name='_csrf']").attr("content");
         let articleForm = $("#articleForm");
+        let saveMsg = $("#article-saved-message");
+        let saveEl = $("#article-saved-message p");
+        let errorEle =  $("#error-message p");
+        let msgEl = $("#title-missing-message p");
+        let titleMsg =$("#title-missing-message");
+        let errMsg = $("#error-message");
 
-
+        let showErrorMessage = function () {
+            errMsg.modal({
+                fadeDuration: 100,
+                showClose: false
+            });
+        }
+        let showSaveMessage = function(){
+            saveMsg.modal({
+                fadeDuration: 100,
+                showClose: false
+            });
+        }
+        let validateContentLength = function(content){
+            return content.length - articleTitle.val().length > 100;
+        }
         save = function () {
             articleTitle.val(title.text());
             let data = {
@@ -105,6 +125,13 @@
                 title: articleTitle.val(),
                 content: articleEditor.getData()
             };
+            console.log(data.content.length);
+            console.log(articleTitle.val().length);
+            if(!validateContentLength(data.content)){
+                saveEl.text("Please writer more content before save.")
+                showSaveMessage();
+                return;
+            }
             $.ajax({
                 type: "POST",
                 beforeSend: function (request) {
@@ -113,36 +140,47 @@
                 url: saveUrl,
                 data: data,
                 success: function (data, status, jqXHR) {
-                    $("#article-saved-message").modal({
-                        fadeDuration: 100,
-                        showClose: false
-                    });
+                    saveEl.text("Article saved.")
+                    showSaveMessage();
                 },
-                error: function(jqXHR, textStatus, exception){
-                    switch(jqXHR.status){
+                error: function (jqXHR, textStatus, exception) {
+                    switch (jqXHR.status) {
                         case 403:
-                            $("#authentication-fail-message").modal({
-                                fadeDuration: 100,
-                                showClose: false
-                            });
+                           errorEle.text("Credentials expired. Please sign in your account");
+                            showErrorMessage();
                             break;
-                            default:
-                                $("#unknow-error-message").modal({
-                                    fadeDuration: 100,
-                                    showClose: false
-                                });
-                                break;
+                        default:
+                            errorEle.text("Unknown Error. Please Contact the administrator");
+                            showErrorMessage();
+                            break;
                     }
                 }
             })
         }
+
+        let showTitleMessage = function () {
+            titleMsg.modal({
+                fadeDuration: 100,
+                showClose: false
+            });
+        }
         publish = function () {
             articleTitle.val(title.text());
-            if (articleTitle.val().length === 0) {
-                $("#title-missing-message").modal({
-                    fadeDuration: 100,
-                    showClose: false
-                });
+            let titleVal = articleTitle.val();
+
+            if (titleVal.length === 0) {
+                msgEl.text("Please enter a title for this article");
+                showTitleMessage();
+                return false;
+            } else if (titleVal.length < 10) {
+                msgEl.text("title is too short");
+                showTitleMessage();
+                return false;
+            }
+            let content = articleEditor.getData();
+            if(!validateContentLength(content)){
+                saveEl.text("Please writer more content before publish.")
+                showSaveMessage();
                 return false;
             }
             articleForm.submit();
