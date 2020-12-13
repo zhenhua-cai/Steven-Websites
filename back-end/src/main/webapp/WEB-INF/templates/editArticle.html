@@ -59,7 +59,8 @@
     <main class="page-main m-3">
         <div class="h-100 ml-auto mr-auto container" id="editor-container">
             <div class="h-100 w-75 ml-auto mr-auto" id="edit-area">
-                <form th:action="@{/articles/publish}" class="h-100" th:object="${article}" id="articleForm" method="POST">
+                <form th:action="@{/articles/publish}" class="h-100" th:object="${article}" id="articleForm"
+                      method="POST">
                     <input type="hidden" name="id" th:field="*{id}" id="articleId">
                     <input type="hidden" th:field="*{title}" id="articleTitle">
                     <textarea name="content" th:field="*{content}" id="editor"></textarea>
@@ -71,19 +72,25 @@
 <div id="title-missing-message" class="modal justify-content-center align-content-center">
     <p class="text-center">Please enter a <span class="font-weight-bold">title</span> for this article</p>
 </div>
+<div id="authentication-fail-message" class="modal justify-content-center align-content-center">
+    <p class="text-center">Credentials expired. Please sign in your account</p>
+</div>
 
 <div id="article-saved-message" class="modal justify-content-center align-content-center">
     <p class="text-center">Article is saved!</p>
 </div>
+<div id="unknow-error-message" class="modal justify-content-center align-content-center">
+    <p class="text-center" style="color:red">Unknown Error. Please Contact the administrator</p>
+</div>
 <script th:src="@{/resources/js/jquery.modal.js}"></script>
 <script th:inline="javascript">
     let articleEditor;
-    let title ;
+    let title;
     let save;
     let publish;
     let articleTitle = $("#articleTitle");
     /*<![CDATA[*/
-    let saveUrl = /*[[@{/api/articles/saveArticle}]]*/ "";
+    let saveUrl = /*[[@{/articles/saveArticle}]]*/ "";
     $(document).ready(function () {
         let postId = $("#articleId");
         let header = $("meta[name='_csrf_header']").attr("content");
@@ -92,34 +99,46 @@
 
 
         save = function () {
+            articleTitle.val(title.text());
             let data = {
-                id:postId.val(),
+                id: postId.val(),
                 title: articleTitle.val(),
-                content:articleEditor.getData()
+                content: articleEditor.getData()
             };
             $.ajax({
-                type:"POST",
-                contentType:"application/json",
-                beforeSend: function(request){
+                type: "POST",
+                beforeSend: function (request) {
                     request.setRequestHeader(header, token);
                 },
                 url: saveUrl,
-                data: JSON.stringify(data),
-                dataType:"json",
-                success: function (data) {
-                    if(data.id) {
-                        postId.val(data.id);
-                        $("#article-saved-message").modal({
-                            fadeDuration: 100,
-                            showClose: false
-                        });
+                data: data,
+                success: function (data, status, jqXHR) {
+                    $("#article-saved-message").modal({
+                        fadeDuration: 100,
+                        showClose: false
+                    });
+                },
+                error: function(jqXHR, textStatus, exception){
+                    switch(jqXHR.status){
+                        case 403:
+                            $("#authentication-fail-message").modal({
+                                fadeDuration: 100,
+                                showClose: false
+                            });
+                            break;
+                            default:
+                                $("#unknow-error-message").modal({
+                                    fadeDuration: 100,
+                                    showClose: false
+                                });
+                                break;
                     }
                 }
             })
         }
-        publish = function (){
+        publish = function () {
             articleTitle.val(title.text());
-            if(articleTitle.val().length === 0){
+            if (articleTitle.val().length === 0) {
                 $("#title-missing-message").modal({
                     fadeDuration: 100,
                     showClose: false
@@ -150,9 +169,6 @@
                 .then(editor => {
                     articleEditor = editor;
                     title = $(".ck.ck-content h1");
-                    title.change(function(){
-                        articleTitle.val(title.text());
-                    });
                     return editor;
                 })
         });
@@ -235,6 +251,7 @@
             })
             .catch(handleError);
     }
+
     createEditor();
     /*]]>*/
 </script>

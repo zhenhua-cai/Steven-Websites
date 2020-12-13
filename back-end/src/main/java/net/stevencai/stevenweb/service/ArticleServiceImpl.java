@@ -59,6 +59,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public ArticleResource saveArticle(ArticleResource articleResource) {
         Article article = getArticle(articleResource);
+        article.setLastModifiedDateTime(LocalDateTime.now());
         saveArticleToDisk(article.getPath(), articleResource);
         saveArticle(article);
         return articleResource;
@@ -91,8 +92,9 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public ArticleResource saveDraft(ArticleResource articleResource) {
         Article article = getArticle(articleResource);
+        article.setLastModifiedDateTime(LocalDateTime.now());
         saveArticleToDisk(article.getPath(), articleResource);
-        articleDraftRepository.save(new ArticleDraft(article));
+        articleDraftRepository.saveArticleDraft(new ArticleDraft(article));
         return articleResource;
     }
 
@@ -100,6 +102,11 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public void deleteArticleDraftById(String id) {
         articleDraftRepository.deleteById(id);
+    }
+
+    @Override
+    public void deleteArticleDraftByIdIfExists(String id) {
+        articleDraftRepository.deleteByIdIfExists(id);
     }
 
     private Article getArticle(ArticleResource articleResource) throws UsernameNotFoundException {
@@ -111,6 +118,7 @@ public class ArticleServiceImpl implements ArticleService {
         Article article = new Article(articleResource.getId(),
                 createFileName(articleResource,parentPath), user);
         article.setTitle(articleResource.getTitle());
+        article.setLastModifiedDateTime(articleResource.getLastModified());
         return article;
     }
 

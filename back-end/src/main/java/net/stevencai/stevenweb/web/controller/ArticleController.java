@@ -1,20 +1,23 @@
 package net.stevencai.stevenweb.web.controller;
 
-import net.stevencai.stevenweb.entity.Article;
 import net.stevencai.stevenweb.frontendResource.ArticleResource;
 import net.stevencai.stevenweb.service.ArticleService;
 import net.stevencai.stevenweb.util.AppUtil;
+import net.stevencai.stevenweb.web.api.ArticleApiController;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 
 
 @Controller
@@ -39,9 +42,9 @@ public class ArticleController {
     }
 
     @GetMapping(value = "/new")
-    public String createNewArticle(Model model){
+    public String createNewArticle(Model model, Principal principal){
         ArticleResource articleResource = new ArticleResource();
-
+        articleResource.setId(appUtil.generateUUIDForArticle(principal.getName()));
         model.addAttribute("article",articleResource);
         return "editArticle";
     }
@@ -55,19 +58,13 @@ public class ArticleController {
         }
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         articleResource.setUsername(authentication.getName());
-
         if(articleResource.getId() != null && !articleResource.getId().isEmpty()){
-            articleService.deleteArticleDraftById(articleResource.getId());
+            articleService.deleteArticleDraftByIdIfExists(articleResource.getId());
         }
-        else{
-            articleResource.setId(appUtil.generateUUIDForArticle(authentication.getName()));
-        }
-
         articleResource = articleService.saveArticle(articleResource);
         attributes.addFlashAttribute("article", articleResource);
         return "redirect:"+ articleResource.getId();
     }
-
 
     @GetMapping("/{id}")
     public String showArticle(@PathVariable String id, Model model){
@@ -82,5 +79,10 @@ public class ArticleController {
         return "article";
     }
 
-
+    @PostMapping("/saveArticle")
+    @ResponseStatus(value= HttpStatus.OK)
+    public void savePost(ArticleResource articleResource, Principal principal){
+        articleResource.setUsername(principal.getName());
+        articleService.saveDraft(articleResource);
+    }
 }

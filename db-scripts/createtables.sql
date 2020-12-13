@@ -58,21 +58,21 @@ create table articleKeywords(
 drop table if exists article;
 create table article(
 	id varchar(256) primary key not null,
-	title varchar(256) not null,
+	title varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci not null,
     `path` varchar(256) not null,
     createDateTime datetime not null,
     lastModifiedDateTime datetime not null,
     userId int not null,
     constraint `user_post_idfk` foreign key(`userId`) references users(id)
-)ENGINE=InnoDB DEFAULT CHARSET=latin1;
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 drop table if exists articleDraft;
 create table articleDraft(
 	id varchar(256) primary key not null,
-    title varchar(256) not null,
+    title varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci not null,
     `path` varchar(256) not null,
     createDateTime datetime not null,
     lastModifiedDateTime datetime not null,
     userId int not null,
     constraint `user_postDraft_idfk` foreign key(`userId`) references users(id)
-)ENGINE=InnoDB DEFAULT CHARSET=latin1;
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

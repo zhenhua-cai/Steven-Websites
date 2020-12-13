@@ -18,4 +18,6 @@ public interface ArticleService {
     ArticleResource saveDraft(ArticleResource articleResource);
 
     void deleteArticleDraftById(String id);
+
+    void deleteArticleDraftByIdIfExists(String id);
 }
