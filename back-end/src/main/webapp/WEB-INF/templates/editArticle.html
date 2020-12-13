@@ -129,6 +129,15 @@
         }
         let postRequest = function (url, success) {
             articleTitle.val(title.text());
+            if(articleTitle.val().length === 0){
+                showTitleMessage();
+                return;
+            }
+            if(articleTitle.val().length < 20){
+                errorEle.text("Title is too short");
+                showErrorMessage();
+                return;
+            }
             let data = {
                 id: articleId.val(),
                 title: articleTitle.val(),

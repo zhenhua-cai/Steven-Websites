@@ -43,7 +43,7 @@
         <div class="col-lg-8 col-md-10 mx-auto" th:if="${articles.size() > 0}">
             <div class="article-preview mb-3" th:each="article : ${articles}">
                 <a th:href="@{/articles/{id}(id=${article.id})}" class="text-wrap">
-                    <h2 class="article-title" th:text="${article.title}"></h2>
+                    <h2 class="article-title text-break" th:text="${article.title}"></h2>
                 </a>
                 <span class="article-meta" style="display: block"><small>Posted by</small>
                     <small th:text="${article.username}"></small>

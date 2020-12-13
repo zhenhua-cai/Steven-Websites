@@ -14,6 +14,9 @@ create table users(
     `locked` tinyint(1) not null
 )engine=InnoDB auto_increment=1 default charset=latin1;
 
+insert into users(username, email, password, enabled, locked) 
+values("stevencai","steven.cai1990@hotmail.com","$2a$10$1Y9D9WGMSIOInmW2eCpEgenk89VJNClvQBARyzF3ZBX6z/6bh7Hy6",1,0);
+
 drop table if exists roles;
 create table roles(
 	id int primary key not null auto_increment,
@@ -23,6 +26,7 @@ create table roles(
 insert into roles(title) values("ROLE_ADMIN");
 insert into roles(title) values("ROLE_USER");
 
+
 DROP TABLE IF EXISTS `authorities`;
 CREATE TABLE `authorities` (
   `userId` int NOT NULL,
@@ -31,6 +35,8 @@ CREATE TABLE `authorities` (
   CONSTRAINT `authorities_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`),
   constraint `authorities_dbfk_2` foreign key (`roleId`) references `roles` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+insert into authorities values(1,1);
 
 drop table if exists verificationToken;
 create table verificationToken(

@@ -29,3 +29,7 @@
 #editor-container{
     width: 75%;
 }
+#content{
+    max-width: 100%;
+    word-wrap: break-word;
+}
