@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <!-- default header name is X-CSRF-TOKEN -->
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>Profile</title>
+    <link th:href="@{/resources/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/resources/css/profile.css}" rel="stylesheet">
+    <link th:href="@{/resources/fontawesome-free/css/all.min.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{/resources/css/clean-blog.min.css}" rel="stylesheet">
+    <link th:href="@{/resources/css/jquery.modal.min.css}" rel="stylesheet">
+
+    <script th:src="@{/resources/js/jquery.min.js}"></script>
+    <script th:src="@{/resources/js/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{/resources/js/jquery.modal.js}"></script>
+
+</head>
+<body>
+<div class="page">
+    <header class="page-header">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark pl-5 pr-5 container" id="editor-nav">
+            <a class="navbar-brand" th:href="@{/}">Steven's Blog</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse"
+                    data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="javascript: void 0;" onclick="showAllArticles()">My Articles</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/contact}" th:text="#{contact-label}"></a>
+                    </li>
+                    <li class="nav-item mt-auto mb-auto justify-content-center align-content-center"
+                        sec:authorize="!isAuthenticated()">
+                        <a class="nav-link inline-nav-link" id="sign-in" th:href="@{/account/login}"
+                           th:text="#{signin-label}"></a>
+                        <span class="divider"></span>
+                        <a class="nav-link inline-nav-link" id="sign-out" th:href="@{/account/register}"
+                           th:text="#{signup-label}"></a>
+                    </li>
+                    <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" id="navbarDropdown"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                           th:text="${#authentication.getName()}">
+                        </a>
+                        <div class="dropdown-menu nav-dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item list-group-item nav-dropdown-item" th:href="@{/profile}"><i
+                                    class="fas fa-user"></i>
+                                Profile</a>
+                            <a class="dropdown-item list-group-item nav-dropdown-item" th:href="@{/articles/new}"><i
+                                    class="fas fa-edit"></i> Write</a>
+                            <a class="dropdown-item list-group-item nav-dropdown-item" href="javascript: void 0;"
+                               onclick="document.getElementById('logoutForm').submit();"><i class="fas fa-sign-out-alt">
+                            </i> <span th:text="#{signout-label}"></span>
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+                <form th:action="@{/logout}" method="POST" id="logoutForm"></form>
+            </div>
+        </nav>
+    </header>
+    <main class="page-main">
+        <div class="container">
+            <div id="main-content" class="text-center">
+                <div id="articles-div">
+                    <div class="flex-div mt-3">
+                        <div class="d-inline-block flex-child text-left">
+                            <span>Show </span>
+                            <select id="pageSize" class="form-control">
+                                <option value="5">5</option>
+                                <option value="10" selected>10</option>
+                                <option value="15">15</option>
+                                <option value="20">20</option>
+                                <option value="25">25</option>
+                            </select>
+                            <span> Per Page</span>
+                        </div>
+                        <div class="flex-child-extend d-inline-block text-right">
+                            <button class="btn btn-success btn-small" onclick="showAllArticles()" id="showAll">Clear</button>
+                            <button class="btn btn-success btn-small" onclick="searchArticlesByTitle()">Search</button>
+                            <input type="text" id="searchTitle" class="search form-control">
+                        </div>
+                    </div>
+                    <div class="tableDiv table-responsive mt-3" id="tableDiv">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <hr>
+    <div th:replace="fragments/footer::footer"></div>
+    <div id="delete-confirm" class="modal justify-content-center align-content-center">
+        <p class="text-center" style="color:red">Do you want to delete this article?</p>
+        <div class="container">
+            <button class="btn btn-warning btn-small" onclick="$.modal.close();">Cancel</button>
+            <button class="btn btn-danger btn-small float-right" onclick="continueDeleteArticle()">Delete</button>
+        </div>
+    </div>
+    <div id="error-message" class="modal justify-content-center align-content-center">
+        <p class="text-center" style="color:red">Unknown Error.</p>
+    </div>
+</div>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    let articlesBaseUrl =/*[[@{/articles/}]]*/ '/';
+    let fetchArticlesUrl = /*[[@{/profile/articles}]]*/ '/';
+    let fetchMyArticles;
+    let searchTitle="";
+    let showAllArticles;
+    let searchArticlesByTitle;
+    let deleteArticle;
+    let continueDeleteArticle;
+    $(document).ready(function () {
+        let header = $("meta[name='_csrf_header']").attr("content");
+        let token = $("meta[name='_csrf']").attr("content");
+        let mainContent = $("#main-content");
+        let articlesDiv= $("#articles-div");
+        let tableDiv = $("#tableDiv");
+        let searchTitleInput = $("#searchTitle");
+        let showAll = false;
+        let pageSizeInput = $("#pageSize");
+        let deleteConfirm =$("#delete-confirm");
+        let errorMsg = $("#error-message");
+        let deleteArticleId;
+
+        articlesDiv.hide();
+        let currentPage = 0;
+        let pageSize = 10;
+
+
+        pageSizeInput.change(function(){
+            pageSize = parseInt(pageSizeInput.val());
+            fetchMyArticles();
+        })
+        searchTitleInput.on("keyup",function(event){
+            let key = event.keyCode;
+            if(key === 13){
+                searchArticlesByTitle();
+            }
+        })
+        showAllArticles = function(){
+            if(showAll && currentPage === 0){
+                return;
+            }
+            searchTitleInput.val("");
+            searchTitle ="";
+            fetchMyArticles();
+            showAll = true;
+        }
+        searchArticlesByTitle= function(){
+            let val = searchTitleInput.val();
+            if(val.length === 0){
+                return;
+            }
+            currentPage = 0;
+            searchTitle = val;
+            fetchMyArticles();
+            showAll = false;
+        }
+        let formatDateTime = function (dateTimeArray) {
+            return dateTimeArray[1] + '/' + dateTimeArray[2] + "/" + dateTimeArray[0]
+                + " " + dateTimeArray[3] + ":" + dateTimeArray[4] + ":" + dateTimeArray[5];
+        }
+        let createTableHeaderCol = function (text, parent) {
+            let th = $("<th />");
+            th.attr("scope", "col");
+            th.text(text);
+            th.appendTo(parent);
+        }
+        let createTableHead = function (table) {
+            let tableHeader = $("<thead/>")
+            tableHeader.appendTo(table);
+            tableHeader.addClass("thead-dark");
+            let row = $("<tr/>");
+            row.appendTo(tableHeader);
+            createTableHeaderCol("Title", row);
+            createTableHeaderCol("Created", row);
+            createTableHeaderCol("Last Modified", row);
+            createTableHeaderCol("Edit", row);
+            createTableHeaderCol("Delete", row);
+        }
+        let createArticleDataRow = function (article, tbody) {
+
+            let row = $("<tr/>");
+            row.appendTo(tbody);
+            let td = $("<td />");
+            td.appendTo(row);
+            td.addClass("text-left");
+
+            //title
+            let titleAnchor = $("<a/>");
+            titleAnchor.appendTo(td);
+            titleAnchor.attr("href", articlesBaseUrl + article.id);
+            titleAnchor.text(article.title);
+
+            //create date time
+            td = $("<td />");
+            td.appendTo(row);
+            let span = $("<span />")
+            span.text(formatDateTime(article.createDateTime));
+            span.appendTo(td);
+
+            //last modified date time
+            td = $("<td />");
+            td.appendTo(row);
+            span = $("<span />")
+            span.text(formatDateTime(article.lastModifiedDateTime));
+            span.appendTo(td);
+
+            //edit
+            let anchor;
+            td = $("<td />");
+            td.appendTo(row);
+            anchor = $("<a />")
+            anchor.attr("href", articlesBaseUrl + "edit/" + article.id);
+            let icon = $("<i />")
+            icon.addClass("fas fa-edit");
+            icon.appendTo(anchor);
+            anchor.appendTo(td);
+
+            //delete
+            td = $("<td />");
+            td.appendTo(row);
+            anchor = $("<a />")
+            anchor.on("click", function(){
+                deleteArticleId = article.id;
+                console.log(deleteArticleId+" CLikced");
+                deleteArticle();
+            })
+            anchor.addClass("delete");
+            icon = $("<i />")
+            icon.addClass("fas fa-trash-alt");
+            icon.appendTo(anchor);
+            anchor.appendTo(td);
+
+        }
+
+        let createArticleTableBody = function (data, table) {
+            let tbody = $("<tbody/>");
+            tbody.appendTo(table);
+            for (let article of data) {
+                createArticleDataRow(article, tbody);
+            }
+        }
+        let createNavForTable = function (tableDiv, totalPages) {
+            let navDiv = $("<div/>");
+            navDiv.appendTo(tableDiv);
+            if (currentPage !== 0) {
+                let prev = $("<a />");
+                prev.addClass("btn btn-primary nav-button")
+                let icon = $("<i />");
+                icon.addClass("fas fa-long-arrow-alt-left");
+                icon.appendTo(prev);
+                prev.append(" PREV");
+                prev.on("click", function () {
+                    currentPage = currentPage - 1;
+                    fetchMyArticles();
+                });
+                prev.appendTo(navDiv);
+            }
+            if (currentPage !== totalPages - 1) {
+                let next = $("<a />");
+                next.text("Next ");
+                let icon = $("<i />");
+                icon.addClass("fas fa-long-arrow-alt-right");
+                icon.appendTo(next);
+                next.addClass("btn btn-primary nav-button ")
+                if(currentPage > 0){
+                    next.addClass("ml-5");
+                }
+                next.on("click", function () {
+                    currentPage = currentPage + 1;
+                    fetchMyArticles();
+                });
+                next.appendTo(navDiv);
+            }
+
+        }
+        let createArticleTable = function (data, parentElement, totalElements, totalPages) {
+            articlesDiv.show();
+            let articlesTable = $("<table/>");
+            articlesTable.addClass("table table-hover table-bordered table-striped");
+            articlesTable.appendTo(parentElement);
+            let caption = $("<caption />");
+            caption.appendTo(articlesTable);
+            let span = $("<span />");
+            span.text("There are  "+ totalElements + " articles. Page ");
+            span.appendTo(caption);
+            let select = $("<select />");
+            select.appendTo(caption);
+            select.addClass("form-control");
+            select.change(function () {
+                currentPage = parseInt(select.val());
+                fetchMyArticles();
+            })
+            for(let i = 0 ;i < totalPages; i++){
+                let option = $("<option />");
+                option.appendTo(select);
+                option.val(i);
+                option.text(i+1);
+                if(i ===  currentPage){
+                    option.prop("selected", true);
+                }
+            }
+            span = $("<span />");
+            span.text(" out of " + totalPages);
+            span.appendTo(caption);
+
+            createTableHead(articlesTable);
+            createArticleTableBody(data, articlesTable);
+            createNavForTable(tableDiv, totalPages);
+
+        }
+        fetchMyArticles = function () {
+            $.ajax({
+                type: "GET",
+                beforeSend: function (request) {
+                    request.setRequestHeader(header, token);
+                },
+                url:  fetchArticlesUrl + "?page=" + currentPage + "&size=" + pageSize + '&title='+searchTitle,
+                success: function (data) {
+                    tableDiv.empty();
+                    createArticleTable(data.content, tableDiv, data.totalElements, data.totalPages);
+                },
+                error: function (jqXHR, textStatus, exception) {
+                    errorMsg.modal({
+                        fadeDuration: 100,
+                        showClose: false
+                    });
+                }
+            })
+        }
+
+        deleteArticle = function(){
+            deleteConfirm.modal({
+                showClose: false,
+                fadeDuration: 100
+            })
+        }
+         continueDeleteArticle = function(){
+             $.modal.close();
+            if(!deleteArticleId){
+                return;
+            }
+            $.ajax({
+                type:"DELETE",
+                beforeSend: function (request) {
+                    request.setRequestHeader(header, token);
+                },
+                url:articlesBaseUrl + "delete/" + deleteArticleId,
+                success: fetchMyArticles,
+                error: function (jqXHR, textStatus, exception) {
+                    errorMsg.modal({
+                        fadeDuration: 100,
+                        showClose: false
+                    });
+                }
+            })
+        }
+
+    });
+    /*]]>*/
+</script>
+</body>
+</html>

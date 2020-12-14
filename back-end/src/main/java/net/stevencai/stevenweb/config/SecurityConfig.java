@@ -47,11 +47,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/admin").hasRole("ADMIN")
+                .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/articles/new").hasRole("ADMIN")
+                .antMatchers("/articles/edit").hasRole("ADMIN")
                 .antMatchers("/articles/publish").hasRole("ADMIN")
-                .antMatchers("/articles/publish").hasRole("ADMIN")
-                .antMatchers("/api/articles/saveArticle").hasRole("ADMIN")
+                .antMatchers("/profile/**").authenticated()
                 .antMatchers("/").permitAll()
                 .antMatchers("/home").permitAll()
                 .anyRequest().permitAll()

@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "article")
 @Data
-public class Article {
+public class Article implements Post{
     @Id
     private String id;
 

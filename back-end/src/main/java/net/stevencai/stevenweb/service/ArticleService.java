@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ArticleService {
 
-    Article saveArticle(Article article);
+    void saveArticle(Article article);
     ArticleResource saveArticle(ArticleResource articleResource);
     void deleteArticleDraft(ArticleResource articleResource);
 
@@ -23,4 +23,10 @@ public interface ArticleService {
     void deleteArticleDraftByIdIfExists(String id);
 
     Page<Article> findArticles(int page, int size);
+
+    Page<Article> findArticlesByUsername(String name, int page, int size);
+
+    Page<Article> findArticlesByUsernameAndTitle(String username, String title, int page, int size);
+
+    void deleteArticleById(String id);
 }

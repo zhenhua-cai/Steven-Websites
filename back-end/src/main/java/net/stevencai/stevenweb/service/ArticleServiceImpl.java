@@ -55,8 +55,8 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Secured("ROLE_ADMIN")
     @Override
-    public Article saveArticle(Article article) {
-        return articleRepository.save(article);
+    public void saveArticle(Article article) {
+        articleRepository.saveArticle(article);
     }
 
     @Secured("ROLE_ADMIN")
@@ -89,7 +89,7 @@ public class ArticleServiceImpl implements ArticleService {
         //find last 30 days articles
         LocalDateTime date = LocalDateTime.now().minusDays(30);
         List<Article> recentArticles = articleRepository
-                .findTop6ByOrderByCreateDateTimeDesc();
+                .findTop6ByOrderByLastModifiedDateTimeDesc();
         return recentArticles.stream().map(ArticleResource::new)
                 .collect(Collectors.toList());
     }
@@ -118,8 +118,23 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public Page<Article> findArticles(int page, int size) {
         return  articleRepository.findAll(
-                PageRequest.of(page,size, Sort.by(Sort.Direction.DESC,"createDateTime"))
+                PageRequest.of(page,size, Sort.by(Sort.Direction.DESC,"lastModifiedDateTime"))
         );
+    }
+
+    @Override
+    public Page<Article> findArticlesByUsername(String username, int page, int size) {
+        return articleRepository.findAllByUserUsernameOrderByLastModifiedDateTimeDesc(username,PageRequest.of(page,size));
+    }
+
+    @Override
+    public Page<Article> findArticlesByUsernameAndTitle(String username, String title, int page, int size) {
+        return articleRepository.findAllByUserUsernameAndTitleContainingOrderByLastModifiedDateTimeDesc(username,title,PageRequest.of(page,size));
+    }
+
+    @Override
+    public void deleteArticleById(String id) {
+        articleRepository.deleteById(id);
     }
 
     private Article getArticle(ArticleResource articleResource) throws UsernameNotFoundException {

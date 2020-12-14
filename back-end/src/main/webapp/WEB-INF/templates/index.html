@@ -47,8 +47,8 @@
                 </a>
                 <span class="article-meta" style="display: block"><small>Posted by</small>
                     <small th:text="${article.username}"></small>
-                    <small>on</small>
-                    <small th:text="${#temporals.format(article.createDate, 'MM/dd/yyyy HH:mm:ss')}"></small>
+                    <small>, Last Modified On</small>
+                    <small th:text="${#temporals.format(article.lastModified, 'MM/dd/yyyy HH:mm:ss')}"></small>
                 </span>
                 <hr>
             </div>

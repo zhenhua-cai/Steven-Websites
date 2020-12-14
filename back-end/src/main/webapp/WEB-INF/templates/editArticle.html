@@ -59,8 +59,7 @@
     <main class="page-main m-3">
         <div class="h-100 ml-auto mr-auto container" id="editor-container">
             <div class="h-100 w-75 ml-auto mr-auto" id="edit-area">
-                <form th:action="@{/articles/publish}" class="h-100" th:object="${article}" id="articleForm"
-                      method="POST">
+                <form class="h-100" th:object="${article}" id="articleForm">
                     <input type="hidden" name="id" th:field="*{id}" id="articleId">
                     <input type="hidden" th:field="*{title}" id="articleTitle">
                     <textarea name="content" th:field="*{content}" id="editor"></textarea>
@@ -198,8 +197,8 @@
             })
             .catch(handleError);
     }
+    createEditor();
     $(document).ready(function () {
-        createEditor();
         let articleId = $("#articleId");
         let header = $("meta[name='_csrf_header']").attr("content");
         let token = $("meta[name='_csrf']").attr("content");
