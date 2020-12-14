@@ -12,7 +12,6 @@ import net.stevencai.stevenweb.util.AppUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,9 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.Iterator;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -92,7 +89,7 @@ public class ArticleServiceImpl implements ArticleService {
         //find last 30 days articles
         LocalDateTime date = LocalDateTime.now().minusDays(30);
         List<Article> recentArticles = articleRepository
-                .findTop10ByOrderByCreateDateTimeDesc();
+                .findTop6ByOrderByCreateDateTimeDesc();
         return recentArticles.stream().map(ArticleResource::new)
                 .collect(Collectors.toList());
     }

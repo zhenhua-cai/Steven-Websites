@@ -9,5 +9,5 @@ import java.util.List;
 public interface ArticleRepository extends JpaRepository<Article,String> {
     Article findArticleById(String id);
     List<Article> findArticleByCreateDateTimeAfterOrderByCreateDateTimeDesc(LocalDateTime date);
-    List<Article> findTop10ByOrderByCreateDateTimeDesc();
+    List<Article> findTop6ByOrderByCreateDateTimeDesc();
 }

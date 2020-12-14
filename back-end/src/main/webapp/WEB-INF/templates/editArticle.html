@@ -93,100 +93,6 @@
     let saveUrl = /*[[@{/articles/saveArticle}]]*/ "";
     let publishUrl = /*[[@{/articles/publish}]]*/ "";
     let redirectBaseUrl = /*[[@{/articles/}]]*/ "";
-    $(document).ready(function () {
-        let articleId = $("#articleId");
-        let header = $("meta[name='_csrf_header']").attr("content");
-        let token = $("meta[name='_csrf']").attr("content");
-        let articleForm = $("#articleForm");
-        let saveMsg = $("#article-saved-message");
-        let saveEl = $("#article-saved-message p");
-        let errorEle = $("#error-message p");
-        let msgEl = $("#title-missing-message p");
-        let titleMsg = $("#title-missing-message");
-        let errMsg = $("#error-message");
-
-        let showErrorMessage = function () {
-            errMsg.modal({
-                fadeDuration: 100,
-                showClose: false
-            });
-        }
-        let showSaveMessage = function () {
-            saveMsg.modal({
-                fadeDuration: 100,
-                showClose: false
-            });
-        }
-
-        let showTitleMessage = function () {
-            titleMsg.modal({
-                fadeDuration: 100,
-                showClose: false
-            });
-        }
-        let validateContentLength = function (content) {
-            return content.length - articleTitle.val().length > 100;
-        }
-        let postRequest = function (url, success) {
-            articleTitle.val(title.text());
-            if(articleTitle.val().length === 0){
-                showTitleMessage();
-                return;
-            }
-            if(articleTitle.val().length < 10){
-                errorEle.text("Title is too short");
-                showErrorMessage();
-                return;
-            }
-            let data = {
-                id: articleId.val(),
-                title: articleTitle.val(),
-                content: articleEditor.getData()
-            };
-            if (!validateContentLength(data.content)) {
-                saveEl.text("Please writer more content before save.")
-                showSaveMessage();
-                return;
-            }
-            $.ajax({
-                type: "POST",
-                beforeSend: function (request) {
-                    request.setRequestHeader(header, token);
-                },
-                url: url,
-                data: data,
-                success: success,
-                error: function (jqXHR, textStatus, exception) {
-                    console.log(jqXHR);
-                    console.log(jqXHR.status);
-                    switch (jqXHR.status) {
-                        case 403:
-                            errorEle.text("Credentials expired. Please sign in your account");
-                            showErrorMessage();
-                            break;
-                        default:
-                            errorEle.text("Unknown Error. Please Contact the administrator");
-                            showErrorMessage();
-                            break;
-                    }
-                }
-            })
-        }
-        save = function () {
-            postRequest(saveUrl, function (data, status, jqXHR) {
-                saveEl.text("Article saved.")
-                showSaveMessage();
-            });
-        }
-
-        publish = function () {
-            postRequest(publishUrl, function (data, status, jqXHR) {
-                console.log(jqXHR.status)
-                window.location.replace(redirectBaseUrl+articleId.val());
-            });
-        }
-    })
-
     //below codes are used to create editor
 
     function handleError(error) {
@@ -292,8 +198,102 @@
             })
             .catch(handleError);
     }
+    $(document).ready(function () {
+        createEditor();
+        let articleId = $("#articleId");
+        let header = $("meta[name='_csrf_header']").attr("content");
+        let token = $("meta[name='_csrf']").attr("content");
+        let articleForm = $("#articleForm");
+        let saveMsg = $("#article-saved-message");
+        let saveEl = $("#article-saved-message p");
+        let errorEle = $("#error-message p");
+        let msgEl = $("#title-missing-message p");
+        let titleMsg = $("#title-missing-message");
+        let errMsg = $("#error-message");
 
-    createEditor();
+        let showErrorMessage = function () {
+            errMsg.modal({
+                fadeDuration: 100,
+                showClose: false
+            });
+        }
+        let showSaveMessage = function () {
+            saveMsg.modal({
+                fadeDuration: 100,
+                showClose: false
+            });
+        }
+
+        let showTitleMessage = function () {
+            titleMsg.modal({
+                fadeDuration: 100,
+                showClose: false
+            });
+        }
+        let validateContentLength = function (content) {
+            return content.length - articleTitle.val().length > 100;
+        }
+        let postRequest = function (url, success) {
+            articleTitle.val(title.text());
+            if(articleTitle.val().length === 0){
+                showTitleMessage();
+                return;
+            }
+            if(articleTitle.val().length < 10){
+                errorEle.text("Title is too short");
+                showErrorMessage();
+                return;
+            }
+            let data = {
+                id: articleId.val(),
+                title: articleTitle.val(),
+                content: articleEditor.getData()
+            };
+            if (!validateContentLength(data.content)) {
+                saveEl.text("Please writer more content before save.")
+                showSaveMessage();
+                return;
+            }
+            $.ajax({
+                type: "POST",
+                beforeSend: function (request) {
+                    request.setRequestHeader(header, token);
+                },
+                url: url,
+                data: data,
+                success: success,
+                error: function (jqXHR, textStatus, exception) {
+                    console.log(jqXHR);
+                    console.log(jqXHR.status);
+                    switch (jqXHR.status) {
+                        case 403:
+                            errorEle.text("Credentials expired. Please sign in your account");
+                            showErrorMessage();
+                            break;
+                        default:
+                            errorEle.text("Unknown Error. Please Contact the administrator");
+                            showErrorMessage();
+                            break;
+                    }
+                }
+            })
+        }
+        save = function () {
+            postRequest(saveUrl, function (data, status, jqXHR) {
+                saveEl.text("Article saved.")
+                showSaveMessage();
+            });
+        }
+
+        publish = function () {
+            postRequest(publishUrl, function (data, status, jqXHR) {
+                console.log(jqXHR.status)
+                window.location.replace(redirectBaseUrl+articleId.val());
+            });
+        }
+    })
+
+
     /*]]>*/
 </script>
 </body>
