@@ -33,3 +33,8 @@
     max-width: 100%;
     word-wrap: break-word;
 }
+a.nav-button{
+    text-transform: uppercase;
+    color:white !important;
+    font-weight: bolder;
+}

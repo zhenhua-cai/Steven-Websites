@@ -10,6 +10,10 @@ import net.stevencai.stevenweb.repository.ArticleDraftRepository;
 import net.stevencai.stevenweb.repository.ArticleRepository;
 import net.stevencai.stevenweb.util.AppUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -20,7 +24,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.Iterator;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -83,8 +89,10 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public List<ArticleResource> findRecentArticlesTitles() {
+        //find last 30 days articles
         LocalDateTime date = LocalDateTime.now().minusDays(30);
-        List<Article> recentArticles = articleRepository.findArticleByCreateDateTimeAfterOrderByCreateDateTimeDesc(date);
+        List<Article> recentArticles = articleRepository
+                .findTop10ByOrderByCreateDateTimeDesc();
         return recentArticles.stream().map(ArticleResource::new)
                 .collect(Collectors.toList());
     }
@@ -108,6 +116,13 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public void deleteArticleDraftByIdIfExists(String id) {
         articleDraftRepository.deleteByIdIfExists(id);
+    }
+
+    @Override
+    public Page<Article> findArticles(int page, int size) {
+        return  articleRepository.findAll(
+                PageRequest.of(page,size, Sort.by(Sort.Direction.DESC,"createDateTime"))
+        );
     }
 
     private Article getArticle(ArticleResource articleResource) throws UsernameNotFoundException {

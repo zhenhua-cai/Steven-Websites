@@ -2,6 +2,7 @@ package net.stevencai.stevenweb.service;
 
 import net.stevencai.stevenweb.entity.Article;
 import net.stevencai.stevenweb.frontendResource.ArticleResource;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -20,4 +21,6 @@ public interface ArticleService {
     void deleteArticleDraftById(String id);
 
     void deleteArticleDraftByIdIfExists(String id);
+
+    Page<Article> findArticles(int page, int size);
 }
