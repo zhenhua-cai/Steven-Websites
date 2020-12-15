@@ -59,9 +59,12 @@
             <label for="email"></label>
             <input type="email" id="email" th:field="*{email}"
                    class="fadeIn third" name="email" placeholder="example@email.com" required>
+            <label for="confirmEmail"></label>
+            <input type="email" id="confirmEmail" th:field="*{confirmEmail}"
+                   class="fadeIn fourth" name="email" placeholder="repeat email" required>
             <div id="password-location" class="ml-auto mr-auto">
                 <input type="password" id="password" th:field="*{password}"
-                       class="fadeIn fourth" name="password"
+                       class="fadeIn fifth" name="password"
                        data-toggle="popover"
                        data-placement="right"
                        title="Valid Password"
@@ -69,8 +72,8 @@
             </div>
             <label for="confirmPassword"></label>
             <input type="password" id="confirmPassword" th:field="*{confirmPassword}"
-                   class="fadeIn fifth" name="confirmPassword" placeholder="confirm password" required>
-            <input type="submit" class="fadeIn fifth" value="Register">
+                   class="fadeIn sixth" name="confirmPassword" placeholder="repeat password" required>
+            <input type="submit" class="fadeIn seventh" value="Register">
         </form>
 
         <div id="password-popover" style="display: none">
@@ -104,6 +107,8 @@
             let usernameInput = $("#username");
             let passwordInput = $("#password");
             let passwordConfirmInput = $("#confirmPassword");
+            let emailInput = $("#email");
+            let emailConfirmInput = $("#confirmEmail");
             let errorDiv = $("#client-validation");
             let registerForm = $("#registrationForm");
             let passwordStrengthBar = passwordStrength();
@@ -119,6 +124,7 @@
                 let hasError;
                 hasError = showUsernameErrors(errorsList);
                 hasError = showPasswordErrors(errorsList) || hasError;
+                hasError = showEmailConfirmErrors(errorsList) || hasError;
                 if (hasError) {
                     errorDiv.show();
                 } else {
@@ -158,6 +164,15 @@
             });
             passwordConfirmInput.on("input", function () {
                 validPasswordConfirm(passwordInput, passwordConfirmInput, showValidationError, errorsList);
+            })
+            emailConfirmInput.keyup(function (event) {
+                let key = event.keyCode;
+                if (key === 8 || key === 46) {
+                    validateEmailConfirm(emailInput, emailConfirmInput, showValidationError, errorsList);
+                }
+            });
+            emailConfirmInput.on("input", function(){
+                validateEmailConfirm(emailInput, emailConfirmInput, showValidationError, errorsList);
             })
             registerForm.submit(function (event) {
                 event.preventDefault();

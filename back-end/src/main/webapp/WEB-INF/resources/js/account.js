@@ -10,7 +10,8 @@ const maxUsernameLength = 30;
 let validationErrors = {
     username: {},
     password: {},
-    passwordConfirm: {}
+    passwordConfirm: {},
+    emailConfirm:{}
 };
 
 for(let char of allowedSpecialChars){
@@ -79,6 +80,11 @@ function initializePasswordErrorList(errorsList) {
 }
 function initializePasswordConfirmErrorList(errorsList) {
     errorsList.children(".passwordConfirm-error").each((k, li) => {
+        li.remove();
+    });
+}
+function initializeEmailConfirmErrorList(errorsList) {
+    errorsList.children(".emailConfirm-error").each((k, li) => {
         li.remove();
     });
 }
@@ -227,6 +233,15 @@ function validPasswordConfirm(passwordInput,passwordConfirmInput,showErrors,erro
     return showErrors(errorsList);
 }
 
+function validateEmailConfirm(emailInput, emailConfirmInput, showErrors, errorsList){
+    let confirmValue = emailConfirmInput.val();
+    validationErrors.emailConfirm = {};
+    let valid = confirmValue === emailInput.val();
+    if(!valid){
+        validationErrors.emailConfirm.notMatch = "Email fields not match.";
+    }
+    return showErrors(errorsList);
+}
 function showUsernameErrors(errorsList){
     let hasError = false;
     initializeUsernameErrorList(errorsList);
@@ -254,6 +269,17 @@ function showPasswordErrors(errorsList){
         let li = $('<li/>').appendTo(errorsList).addClass('passwordConfirm-error');
         let small = $('<small/>').appendTo(li);
         small.text(validationErrors.passwordConfirm[error]);
+        hasError = true;
+    }
+    return hasError;
+}
+function showEmailConfirmErrors(errorsList){
+    let hasError = false;
+    initializeEmailConfirmErrorList(errorsList);
+    for(let error in validationErrors.emailConfirm){
+        let li = $('<li/>').appendTo(errorsList).addClass('emailConfirm-error');
+        let small = $('<small/>').appendTo(li);
+        small.text(validationErrors.emailConfirm[error]);
         hasError = true;
     }
     return hasError;

@@ -5,6 +5,7 @@ import net.stevencai.stevenweb.entity.VerificationToken;
 import net.stevencai.stevenweb.entity.VerificationTokenType;
 import net.stevencai.stevenweb.exception.EmailAlreadyExistException;
 import net.stevencai.stevenweb.exception.UsernameAlreadyExistException;
+import net.stevencai.stevenweb.frontendResource.ChangeEmailForm;
 import net.stevencai.stevenweb.frontendResource.ResetPasswordForm;
 import net.stevencai.stevenweb.frontendResource.UserResource;
 import net.stevencai.stevenweb.service.AccountService;
@@ -65,7 +66,6 @@ public class AccountController {
             model.addAttribute("userResource", userResource);
             return "registration";
         }
-        model.addAttribute("verifyUser", true);
         model.addAttribute("email", userResource.getEmail());
         model.addAttribute("requestEmail", userResource.getEmail());
         model.addAttribute("requestURL", request.getContextPath()+"/api/account/resendVerificationEmail");
@@ -103,7 +103,6 @@ public class AccountController {
         }
         return "errorPage";
     }
-
 
     @GetMapping("/requestToResetPassword")
     public String showResetPasswordRequestForm(Model model) {

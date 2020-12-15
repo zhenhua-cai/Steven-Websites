@@ -14,30 +14,31 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Data
-@FieldMatch.List(
-        @FieldMatch(first = "password", second = "confirmPassword", message="The password fields must match.")
-)
+@FieldMatch.List({
+        @FieldMatch(first = "password", second = "confirmPassword", message = "The password fields must match."),
+        @FieldMatch(first = "email", second = "confirmEmail", message = "The email fields must match.")
+})
 public class UserResource {
     @NotNull
     @Size(min=1,max=30, message ="{username.size}")
     @ValidUsername
-    @Column
+
     private String username;
 
     @NotNull
     @ValidPassword(min=6,max= 30)
-    @Column
     private String password;
 
     @NotNull
-    @Column
     private String confirmPassword;
 
     @NotNull
     @ValidEmail(message="{email.valid}")
     @Size(min=1, message = "{email.valid}")
-    @Column
     private String email;
+
+    @NotNull
+    private String confirmEmail;
 
     public UserResource() {
     }
