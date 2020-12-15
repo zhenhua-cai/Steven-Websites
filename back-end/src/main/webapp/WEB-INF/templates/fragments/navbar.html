@@ -9,9 +9,14 @@
 </head>
 <body>
 <!-- Navigation -->
-<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav" th:fragment="landingpage-navbar">
+<nav class="navbar navbar-expand-lg navbar-light fixed-top animsition"
+     data-animsition-in-class="fade-in-down"
+     data-animsition-in-duration="1500"
+     data-animsition-out-class="fade-out-up"
+     data-animsition-out-duration="800"
+     id="mainNav" th:fragment="landingpage-navbar">
     <div class="container">
-        <a class="navbar-brand" th:href="@{/home}" th:text="#{website-title}"></a>
+        <a class="navbar-brand animsition-link" th:href="@{/home}" th:text="#{website-title}"></a>
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
                 data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
                 aria-label="Toggle navigation" th:text="#{menu-label}">
@@ -20,29 +25,32 @@
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/home}" th:text="#{home-label}"></a>
+                    <a class="nav-link animsition-link" th:href="@{/home}" th:text="#{home-label}"></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/about}" th:text="#{about-me-label}"></a>
+                    <a class="nav-link animsition-link" th:href="@{/articles/all(page=0,size=10)}">Articles</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/contact}" th:text="#{contact-label}"></a>
+                    <a class="nav-link animsition-link" th:href="@{/about}" th:text="#{about-me-label}"></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link animsition-link" th:href="@{/contact}" th:text="#{contact-label}"></a>
                 </li>
                 <li class="nav-item" sec:authorize="!isAuthenticated()">
-                    <a class="nav-link inline-nav-link" id="sign-in" th:href="@{/account/login}" th:text="#{signin-label}"></a>
-                    <span class="divider"></span>
-                    <a class="nav-link inline-nav-link" id="sign-out" th:href="@{/account/register}" th:text="#{signup-label}"></a>
+                    <a class="nav-link inline-nav-link animsition-link" id="sign-in" th:href="@{/account/login}" th:text="#{signin-label}"></a>
+<!--                    <span class="divider"></span>-->
+<!--                    <a class="nav-link inline-nav-link animsition-link" id="sign-up" th:href="@{/account/register}" th:text="#{signup-label}"></a>-->
                 </li>
                 <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" id="navbarDropdown"
+                    <a class="nav-link dropdown-toggle " href="#" role="button" id="navbarDropdown"
                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:text="${#authentication.getName()}">
 
                     </a>
                     <div class="dropdown-menu nav-dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item list-group-item nav-dropdown-item" th:href="@{/profile}"><i class="fas fa-user"></i>
+                        <a class="dropdown-item list-group-item nav-dropdown-item animsition-link" th:href="@{/profile}"><i class="fas fa-user"></i>
                             Profile</a>
-                        <a class="dropdown-item list-group-item nav-dropdown-item" th:href="@{/articles/new}"><i class="fas fa-edit"></i> Write</a>
-                        <a class="dropdown-item list-group-item nav-dropdown-item" href="javascript: void 0;"
+                        <a class="dropdown-item list-group-item nav-dropdown-item animsition-link" th:href="@{/articles/new}"><i class="fas fa-edit"></i> Write</a>
+                        <a class="dropdown-item list-group-item nav-dropdown-item animsition-link" href="javascript: void 0;"
                            onclick="document.getElementById('logoutForm').submit();"><i class="fas fa-sign-out-alt">
                             </i> <span th:text="#{signout-label}"></span>
                         </a>
@@ -54,9 +62,14 @@
     </div>
 </nav>
 
-<header class="page-header" th:fragment="article-navbar">
+<header class="page-header animsition"
+        data-animsition-in-class="fade-in-down"
+        data-animsition-in-duration="1500"
+        data-animsition-out-class="fade-out-up"
+        data-animsition-out-duration="800"
+        th:fragment="article-navbar">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark pl-5 pr-5 container" id="editor-nav">
-        <a class="navbar-brand" th:href="@{/}">Steven's Blog</a>
+        <a class="navbar-brand animsition-link" th:href="@{/}">Steven's Blog</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse"
                 data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                 aria-expanded="false" aria-label="Toggle navigation">
@@ -66,18 +79,21 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/}">Home</a>
+                    <a class="nav-link animsition-link" th:href="@{/}">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/about}" th:text="#{about-me-label}"></a>
+                    <a class="nav-link animsition-link" th:href="@{/articles/all(page=0,size=10)}">Articles</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/contact}" th:text="#{contact-label}"></a>
+                    <a class="nav-link animsition-link" th:href="@{/about}" th:text="#{about-me-label}"></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link animsition-link" th:href="@{/contact}" th:text="#{contact-label}"></a>
                 </li>
                 <li class="nav-item mt-auto mb-auto justify-content-center align-content-center" sec:authorize="!isAuthenticated()">
-                    <a class="nav-link inline-nav-link" id="sign-in" th:href="@{/account/login}" th:text="#{signin-label}"></a>
-                    <span class="divider"></span>
-                    <a class="nav-link inline-nav-link" id="sign-out" th:href="@{/account/register}" th:text="#{signup-label}"></a>
+                    <a class="nav-link inline-nav-link animsition-link" id="sign-in" th:href="@{/account/login}" th:text="#{signin-label}"></a>
+<!--                    <span class="divider"></span>-->
+<!--                    <a class="nav-link inline-nav-link animsition-link" id="sign-up" th:href="@{/account/register}" th:text="#{signup-label}"></a>-->
                 </li>
                 <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
                     <a class="nav-link dropdown-toggle" href="#" role="button" id="navbarDropdown"
@@ -85,10 +101,10 @@
 
                     </a>
                     <div class="dropdown-menu nav-dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item list-group-item nav-dropdown-item" th:href="@{/profile}"><i class="fas fa-user"></i>
+                        <a class="dropdown-item list-group-item nav-dropdown-item animsition-link" th:href="@{/profile}"><i class="fas fa-user"></i>
                             Profile</a>
-                        <a class="dropdown-item list-group-item nav-dropdown-item" th:href="@{/articles/new}"><i class="fas fa-edit"></i> Write</a>
-                        <a class="dropdown-item list-group-item nav-dropdown-item" href="javascript: void 0;"
+                        <a class="dropdown-item list-group-item nav-dropdown-item animsition-link" th:href="@{/articles/new}"><i class="fas fa-edit"></i> Write</a>
+                        <a class="dropdown-item list-group-item nav-dropdown-item animsition-link" href="javascript: void 0;"
                            onclick="document.getElementById('logoutForm').submit();"><i class="fas fa-sign-out-alt">
                         </i> <span th:text="#{signout-label}"></span>
                         </a>

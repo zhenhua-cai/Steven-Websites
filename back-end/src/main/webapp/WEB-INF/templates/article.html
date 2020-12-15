@@ -26,12 +26,14 @@
     <link th:href="@{/resources/css/style.css}" rel="stylesheet">
     <link th:href="@{/resources/css/article.css}" rel="stylesheet">
     <link th:href="@{/resources/css/article-content-style.css}" rel="stylesheet">
+    <link th:href="@{/resources/css/animation.min.css}" rel="stylesheet">
 
     <!-- Bootstrap core JavaScript -->
     <script th:src="@{/resources/js/jquery.min.js}"></script>
     <script th:src="@{/resources/js/bootstrap.bundle.min.js}"></script>
     <!-- Custom scripts for this template -->
     <script th:src="@{/resources/js/clean-blog.min.js}"></script>
+    <script th:src="@{/resources/js/animation.min.js}"></script>
 </head>
 
 <body>
@@ -39,7 +41,7 @@
     <div th:replace="fragments/navbar::article-navbar"></div>
     <main class="page-main m-3">
         <div class="ml-auto mr-auto container mt-5">
-            <div id="content" class="w-75 ml-auto mr-auto ck-content">
+            <div id="content" class="w-75 ml-auto mr-auto ck-content animsition">
             </div>
         </div>
 
@@ -54,6 +56,28 @@
         let contentStr = /*[[${article.content}]]*/ '';
         let contentDiv = $("#content");
         contentDiv.html(contentStr);
+        $(".animsition").animsition({
+            inClass: 'flip-in-y',
+            outClass: 'flip-out-y',
+            inDuration: 1500,
+            outDuration: 800,
+            linkElement: '.animsition-link',
+            // e.g. linkElement: 'a:not([target="_blank"]):not([href^="#"])'
+            loading: true,
+            loadingParentElement: 'body', //animsition wrapper element
+            loadingClass: 'animsition-loading',
+            loadingInner: '', // e.g '<img src="loading.svg" />'
+            timeout: false,
+            timeoutCountdown: 5000,
+            onLoadEvent: true,
+            browser: [ 'animation-duration', '-webkit-animation-duration'],
+            // "browser" option allows you to disable the "animsition" in case the css property in the array is not supported by your browser.
+            // The default setting is to disable the "animsition" in a browser that does not support "animation-duration".
+            overlay : false,
+            overlayClass : 'animsition-overlay-slide',
+            overlayParentElement : 'body',
+            transition: function(url){ window.location.href = url; }
+        })
     })
 
     /*]]>*/

@@ -2,7 +2,6 @@
 <html lang="en"
       xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
-
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
@@ -19,7 +18,8 @@
     <script th:src="@{/resources/js/jquery.min.js}"></script>
     <script th:src="@{/resources/js/bootstrap.bundle.min.js}"></script>
     <script th:src="@{/resources/js/jquery.modal.js}"></script>
-
+    <link th:href="@{/resources/css/animation.min.css}" rel="stylesheet">
+    <script th:src="@{/resources/js/animation.min.js}"></script>
 </head>
 <body>
 <div class="page">
@@ -61,7 +61,10 @@
                            th:text="${#authentication.getName()}">
                         </a>
                         <div class="dropdown-menu nav-dropdown-menu" aria-labelledby="navbarDropdown">
-
+                            <a class="dropdown-item list-group-item nav-dropdown-item"
+                               sec:authorize="hasRole('ADMIN')"
+                               th:href="@{/admin}">
+                                <i class="fas fa-edit"></i> Admin</a>
                             <a class="dropdown-item list-group-item nav-dropdown-item" href="javascript: void 0;"
                                onclick="document.getElementById('logoutForm').submit();"><i class="fas fa-sign-out-alt">
                             </i> <span th:text="#{signout-label}"></span>

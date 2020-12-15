@@ -25,6 +25,7 @@ create table roles(
 
 insert into roles(title) values("ROLE_ADMIN");
 insert into roles(title) values("ROLE_USER");
+insert into roles(title) values("ROLE_WRITER");
 
 
 DROP TABLE IF EXISTS `authorities`;
@@ -37,6 +38,7 @@ CREATE TABLE `authorities` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 insert into authorities values(1,1);
+insert into authorities values(1,3);
 
 drop table if exists verificationToken;
 create table verificationToken(

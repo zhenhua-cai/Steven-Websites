@@ -116,6 +116,7 @@ public class ArticleController {
     public void deleteArticle(@PathVariable String id){
         articleService.deleteArticleById(id);
     }
+
     @DeleteMapping("draft/delete/{id}")
     @ResponseStatus(value = HttpStatus.OK)
     public void deleteArticleDraft(@PathVariable String id){

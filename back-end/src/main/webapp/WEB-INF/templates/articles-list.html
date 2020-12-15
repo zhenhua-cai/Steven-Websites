@@ -24,16 +24,17 @@
     <link th:href="@{/resources/css/style.css}" rel="stylesheet">
     <link th:href="@{/resources/css/article.css}" rel="stylesheet">
     <link th:href="@{/resources/css/article-content-style.css}" rel="stylesheet">
-
+    <link th:href="@{/resources/css/animation.min.css}" rel="stylesheet">
     <!-- Bootstrap core JavaScript -->
     <script th:src="@{/resources/js/jquery.min.js}"></script>
     <script th:src="@{/resources/js/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{/resources/js/animation.min.js}"></script>
 </head>
 <body>
 
-<div class="page">
+<div class="page ">
     <div th:replace="fragments/navbar::article-navbar"></div>
-    <main class="page-main m-3">
+    <main class="page-main m-3 animsition">
         <div class="ml-auto mr-auto container mt-5">
             <div id="content" class="w-75 ml-auto mr-auto">
 
@@ -81,6 +82,31 @@
     <hr>
     <div th:replace="fragments/footer::footer"></div>
 </div>
-
+<script>
+    $(document).ready(function() {
+        $(".animsition").animsition({
+            inClass: 'fade-in-up',
+            outClass: 'fade-out-down',
+            inDuration: 1500,
+            outDuration: 800,
+            linkElement: '.animsition-link',
+            // e.g. linkElement: 'a:not([target="_blank"]):not([href^="#"])'
+            loading: true,
+            loadingParentElement: 'body', //animsition wrapper element
+            loadingClass: 'animsition-loading',
+            loadingInner: '', // e.g '<img src="loading.svg" />'
+            timeout: false,
+            timeoutCountdown: 5000,
+            onLoadEvent: true,
+            browser: [ 'animation-duration', '-webkit-animation-duration'],
+            // "browser" option allows you to disable the "animsition" in case the css property in the array is not supported by your browser.
+            // The default setting is to disable the "animsition" in a browser that does not support "animation-duration".
+            overlay : false,
+            overlayClass : 'animsition-overlay-slide',
+            overlayParentElement : 'body',
+            transition: function(url){ window.location.href = url; }
+        });
+    });
+</script>
 </body>
 </html>

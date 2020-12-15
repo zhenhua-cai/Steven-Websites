@@ -14,16 +14,14 @@
 
     <!-- Bootstrap core CSS -->
     <link th:href="@{/resources/css/bootstrap.min.css}" rel="stylesheet">
-
+    <link th:href="@{/resources/css/animation.min.css}" rel="stylesheet">
+    <link th:href="@{/resources/css/clean-blog.min.css}" rel="stylesheet">
     <!-- Custom fonts for this template -->
     <link th:href="@{/resources/fontawesome-free/css/all.min.css}" rel="stylesheet" type="text/css">
     <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet'
           type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800'
           rel='stylesheet' type='text/css'>
-
-    <!-- Custom styles for this template -->
-    <link th:href="@{/resources/css/clean-blog.min.css}" rel="stylesheet">
     <link th:href="@{/resources/css/style.css}" rel="stylesheet">
 
 </head>
@@ -34,14 +32,14 @@
 <div th:replace="fragments/navbar::landingpage-navbar"></div>
 
 <!-- Page Header -->
-<header class="masthead" id="contact-header">
+<header class="masthead animsition" id="contact-header">
     <div class="overlay"></div>
     <div class="container">
         <div class="row">
             <div class="col-lg-8 col-md-10 mx-auto">
                 <div class="page-heading">
                     <h1>Contact Me</h1>
-                    <span class="subheading">Have questions? I have answers.</span>
+                    <span class="subheading" id="subheading"></span>
                 </div>
             </div>
         </div>
@@ -49,7 +47,7 @@
 </header>
 
 <!-- Main Content -->
-<div class="container">
+<div class="container animsition">
     <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">
             <p>Want to get in touch? Fill out the form below to send me a message and I will get back to you as soon as
@@ -111,7 +109,45 @@
 
 <!-- Custom scripts for this template -->
 <script th:src="@{/resources/js/clean-blog.min.js}"></script>
+<script th:src="@{/resources/js/animation.min.js}"></script>
+<script th:src="@{/resources/js/typed.min.js}"></script>
+<script>
+    $(document).ready(function () {
+        $(".animsition").animsition({
+            inClass: 'fade-in',
+            outClass: 'fade-out',
+            inDuration: 1500,
+            outDuration: 800,
+            linkElement: '.animsition-link',
+            // e.g. linkElement: 'a:not([target="_blank"]):not([href^="#"])'
+            loading: true,
+            loadingParentElement: 'body', //animsition wrapper element
+            loadingClass: 'animsition-loading',
+            loadingInner: '', // e.g '<img src="loading.svg" />'
+            timeout: false,
+            timeoutCountdown: 5000,
+            onLoadEvent: true,
+            browser: ['animation-duration', '-webkit-animation-duration'],
+            // "browser" option allows you to disable the "animsition" in case the css property in the array is not supported by your browser.
+            // The default setting is to disable the "animsition" in a browser that does not support "animation-duration".
+            overlay: false,
+            overlayClass: 'animsition-overlay-slide',
+            overlayParentElement: 'body',
+            transition: function (url) {
+                window.location.href = url;
+            }
+        });
 
+        let options = {
+            strings: ["Have questions?", "I have answers."],
+            typeSpeed: 85,
+            backSpeed: 50,
+            loop: true
+        };
+
+        let typed = new Typed('#subheading', options);
+    })
+</script>
 </body>
 
 </html>

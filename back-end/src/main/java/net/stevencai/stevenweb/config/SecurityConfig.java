@@ -48,9 +48,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/articles/new").hasRole("ADMIN")
-                .antMatchers("/articles/edit").hasRole("ADMIN")
-                .antMatchers("/articles/publish").hasRole("ADMIN")
+                .antMatchers("/articles").permitAll()
+                .antMatchers("/articles/all").permitAll()
+                .antMatchers("/articles/{id}").permitAll()
+                .antMatchers("/articles/**").hasRole("WRITER")
                 .antMatchers("/profile/**").authenticated()
                 .antMatchers("/").permitAll()
                 .antMatchers("/home").permitAll()

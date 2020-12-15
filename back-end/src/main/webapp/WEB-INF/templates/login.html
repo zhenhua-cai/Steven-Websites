@@ -18,17 +18,18 @@
     <link rel="stylesheet" th:href="@{/resources/css/login.css}">
     <link rel="stylesheet" th:href="@{/resources/css/style.css}">
     <link th:href="@{/resources/css/clean-blog.min.css}" rel="stylesheet">
-
+    <link th:href="@{/resources/css/animation.min.css}" rel="stylesheet">
     <script th:src="@{/resources/js/jquery.min.js}"></script>
     <script th:src="@{/resources/js/bootstrap.bundle.min.js}"></script>
     <!-- Custom scripts for this template -->
     <script th:src="@{/resources/js/clean-blog.min.js}"></script>
     <script th:src="@{/resources/js/jquery-ui.min.js}"></script>
     <script th:src="@{/resources/js/account.js}"></script>
+    <script th:src="@{/resources/js/animation.min.js}"></script>
 </head>
 <body>
 <div th:replace="fragments/navbar::landingpage-navbar"></div>
-<div class="wrapper fadeInDown">
+<div class="wrapper fadeInDown animsition">
     <div id="formContent">
         <div class="fadeIn first mt-1">
             <img th:src="@{/resources/img/logo1.png}" height="150px" alt="">
@@ -58,12 +59,36 @@
 
         <div id="formFooter">
             <a class="underlineHover" th:href="@{/account/requestToResetPassword}">Forgot Password?</a> <br>
-            <a class="underlineHover" th:href="@{/account/register}">Don't Have An Account?</a>
+<!--            <a class="underlineHover" th:href="@{/account/register}">Don't Have An Account?</a>-->
         </div>
     </div>
 </div>
 <script>
     $(document).ready(function () {
+        $(".animsition").animsition({
+            inClass: 'fade-in-left',
+            outClass: 'fade-out-right',
+            inDuration: 1500,
+            outDuration: 800,
+            linkElement: '.animsition-link',
+            // e.g. linkElement: 'a:not([target="_blank"]):not([href^="#"])'
+            loading: true,
+            loadingParentElement: 'body', //animsition wrapper element
+            loadingClass: 'animsition-loading',
+            loadingInner: '', // e.g '<img src="loading.svg" />'
+            timeout: false,
+            timeoutCountdown: 5000,
+            onLoadEvent: true,
+            browser: ['animation-duration', '-webkit-animation-duration'],
+            // "browser" option allows you to disable the "animsition" in case the css property in the array is not supported by your browser.
+            // The default setting is to disable the "animsition" in a browser that does not support "animation-duration".
+            overlay: false,
+            overlayClass: 'animsition-overlay-slide',
+            overlayParentElement: 'body',
+            transition: function (url) {
+                window.location.href = url;
+            }
+        });
         let errorDiv = $("#client-validation");
         let usernameInput = $("#username");
         let passwordInput = $("#password");
