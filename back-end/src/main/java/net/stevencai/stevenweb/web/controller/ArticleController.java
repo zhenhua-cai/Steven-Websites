@@ -69,6 +69,13 @@ public class ArticleController {
         return "editArticle";
     }
 
+    @GetMapping("draft/edit/{id}")
+    public String editDraft(@PathVariable String id, Model model){
+        ArticleResource articleResource = articleService.findDraftById(id);
+        model.addAttribute("article",articleResource);
+        return "editArticle";
+    }
+
     @GetMapping("edit/{id}")
     public String editArticle(@PathVariable String id, Model model){
         ArticleResource articleResource = articleService.findArticleById(id);
@@ -93,7 +100,7 @@ public class ArticleController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         articleResource.setUsername(authentication.getName());
 
-        articleService.deleteArticleDraftByIdIfExists(articleResource.getId());
+        articleService.deleteArticleDraftFromDBByIdIfExists(articleResource.getId());
         articleService.saveArticle(articleResource);
     }
 
@@ -108,5 +115,10 @@ public class ArticleController {
     @ResponseStatus(value = HttpStatus.OK)
     public void deleteArticle(@PathVariable String id){
         articleService.deleteArticleById(id);
+    }
+    @DeleteMapping("draft/delete/{id}")
+    @ResponseStatus(value = HttpStatus.OK)
+    public void deleteArticleDraft(@PathVariable String id){
+        articleService.deleteArticleDraftById(id);
     }
 }

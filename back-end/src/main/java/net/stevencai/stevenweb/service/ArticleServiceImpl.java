@@ -2,6 +2,7 @@ package net.stevencai.stevenweb.service;
 
 import net.stevencai.stevenweb.entity.Article;
 import net.stevencai.stevenweb.entity.ArticleDraft;
+import net.stevencai.stevenweb.entity.Post;
 import net.stevencai.stevenweb.entity.User;
 import net.stevencai.stevenweb.exception.ArticleNotAbleToWriteToDiskException;
 import net.stevencai.stevenweb.exception.ArticleNotFoundException;
@@ -17,6 +18,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -24,6 +26,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -107,11 +110,15 @@ public class ArticleServiceImpl implements ArticleService {
     @Secured("ROLE_ADMIN")
     @Override
     public void deleteArticleDraftById(String id) {
-        articleDraftRepository.deleteById(id);
+        Optional<ArticleDraft> articleDraftOptional = articleDraftRepository.findById(id);
+        if(articleDraftOptional.isPresent()){
+            removeArticleFromDisk(articleDraftOptional.get());
+            articleDraftRepository.deleteById(id);
+        }
     }
 
     @Override
-    public void deleteArticleDraftByIdIfExists(String id) {
+    public void deleteArticleDraftFromDBByIdIfExists(String id) {
         articleDraftRepository.deleteByIdIfExists(id);
     }
 
@@ -133,8 +140,34 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
+    @Transactional
     public void deleteArticleById(String id) {
-        articleRepository.deleteById(id);
+        Article article = articleRepository.findArticleById(id);
+        if(article == null){
+            return;
+        }
+        removeArticleFromDisk(article);
+        articleRepository.delete(article);
+    }
+
+    @Override
+    public Page<ArticleDraft> findDraftsByUsername(String username, int page, int size) {
+        return articleDraftRepository.findAllByUserUsernameOrderByLastModifiedDateTimeDesc(username, PageRequest.of(page,size));
+    }
+
+    @Override
+    public Page<ArticleDraft> findDraftsByUsernameAndTitle(String username, String title, int page, int size) {
+        return articleDraftRepository.findAllByUserUsernameAndTitleContainingOrderByLastModifiedDateTimeDesc(username,title,PageRequest.of(page,size));
+
+    }
+
+    @Override
+    public ArticleResource findDraftById(String id) {
+        Optional<ArticleDraft> article = articleDraftRepository.findById(id);;
+        if(!article.isPresent()){
+            throw new ArticleNotFoundException("Article is missing");
+        }
+        return getArticleResource(article.get());
     }
 
     private Article getArticle(ArticleResource articleResource) throws UsernameNotFoundException {
@@ -151,6 +184,11 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     private ArticleResource getArticleResource(Article article){
+        ArticleResource articleResource = new ArticleResource(article);
+        loadArticleFromDisk(article.getPath(), articleResource);
+        return articleResource;
+    }
+    private ArticleResource getArticleResource(ArticleDraft article){
         ArticleResource articleResource = new ArticleResource(article);
         loadArticleFromDisk(article.getPath(), articleResource);
         return articleResource;
@@ -190,6 +228,14 @@ public class ArticleServiceImpl implements ArticleService {
         return pathStr;
     }
     private String createFileName(ArticleResource articleResource, String path){
-        return path+"/"+articleResource.getId();
+        return path+"/"+articleResource.getId()+".article";
+    }
+    private void removeArticleFromDisk(Post article)  {
+        Path path = Paths.get(article.getPath());
+        try {
+            Files.deleteIfExists(path);
+        } catch (IOException e) {
+            throw new ArticleNotFoundException("Article doesn't exist");
+        }
     }
 }

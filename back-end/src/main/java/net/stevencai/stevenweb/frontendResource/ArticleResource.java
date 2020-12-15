@@ -2,6 +2,7 @@ package net.stevencai.stevenweb.frontendResource;
 
 import lombok.Data;
 import net.stevencai.stevenweb.entity.Article;
+import net.stevencai.stevenweb.entity.ArticleDraft;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -39,5 +40,11 @@ public class ArticleResource {
         this.lastModified = article.getLastModifiedDateTime();
         this.title = article.getTitle();
     }
-
+    public ArticleResource(ArticleDraft article){
+        this.id= article.getId();
+        this.username = article.getUser().getUsername();
+        this.createDate = article.getCreateDateTime();
+        this.lastModified = article.getLastModifiedDateTime();
+        this.title = article.getTitle();
+    }
 }

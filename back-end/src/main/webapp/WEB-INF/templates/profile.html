@@ -37,31 +37,31 @@
                     <li class="nav-item">
                         <a class="nav-link" th:href="@{/}">Home</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="javascript: void 0;" onclick="showAllArticles()">My Articles</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Articles
+                        </a>
+                        <div class="dropdown-menu nav-dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item list-group-item nav-dropdown-item" th:href="@{/articles/new}"><i
+                                    class="fas fa-edit"></i> Write</a>
+                            <a class="dropdown-item list-group-item nav-dropdown-item"
+                               href="javascript: void 0;" onclick="showAllPublished()">
+                                Published
+                            </a>
+                            <a class="dropdown-item list-group-item nav-dropdown-item" onclick="showAllDrafts()"
+                               href="javascript: void 0;">
+                                Drafts
+                            </a>
+                        </div>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/contact}" th:text="#{contact-label}"></a>
-                    </li>
-                    <li class="nav-item mt-auto mb-auto justify-content-center align-content-center"
-                        sec:authorize="!isAuthenticated()">
-                        <a class="nav-link inline-nav-link" id="sign-in" th:href="@{/account/login}"
-                           th:text="#{signin-label}"></a>
-                        <span class="divider"></span>
-                        <a class="nav-link inline-nav-link" id="sign-out" th:href="@{/account/register}"
-                           th:text="#{signup-label}"></a>
-                    </li>
-                    <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                    <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" id="navbarDropdown"
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                            th:text="${#authentication.getName()}">
                         </a>
                         <div class="dropdown-menu nav-dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item list-group-item nav-dropdown-item" th:href="@{/profile}"><i
-                                    class="fas fa-user"></i>
-                                Profile</a>
-                            <a class="dropdown-item list-group-item nav-dropdown-item" th:href="@{/articles/new}"><i
-                                    class="fas fa-edit"></i> Write</a>
+
                             <a class="dropdown-item list-group-item nav-dropdown-item" href="javascript: void 0;"
                                onclick="document.getElementById('logoutForm').submit();"><i class="fas fa-sign-out-alt">
                             </i> <span th:text="#{signout-label}"></span>
@@ -77,6 +77,9 @@
         <div class="container">
             <div id="main-content" class="text-center">
                 <div id="articles-div">
+                    <div>
+                        <h3 id="table-title" class="mt-3"></h3>
+                    </div>
                     <div class="flex-div mt-3">
                         <div class="d-inline-block flex-child text-left">
                             <span>Show </span>
@@ -90,7 +93,8 @@
                             <span> Per Page</span>
                         </div>
                         <div class="flex-child-extend d-inline-block text-right">
-                            <button class="btn btn-success btn-small" onclick="showAllArticles()" id="showAll">Clear</button>
+                            <button class="btn btn-success btn-small" onclick="showAll()" id="showAll">Clear
+                            </button>
                             <button class="btn btn-success btn-small" onclick="searchArticlesByTitle()">Search</button>
                             <input type="text" id="searchTitle" class="search form-control">
                         </div>
@@ -118,58 +122,102 @@
     /*<![CDATA[*/
     let articlesBaseUrl =/*[[@{/articles/}]]*/ '/';
     let fetchArticlesUrl = /*[[@{/profile/articles}]]*/ '/';
-    let fetchMyArticles;
-    let searchTitle="";
-    let showAllArticles;
+    let fetchDraftsUrl = /*[[@{/profile/drafts}]]*/ '/';
+    let fetchPublishedArticles;
+    let searchTitle = "";
+    let showAllPublished;
     let searchArticlesByTitle;
     let deleteArticle;
     let continueDeleteArticle;
+    let showAllDrafts;
+    let fetchDraftArticles;
+    let showAll;
+    let totalPages;
     $(document).ready(function () {
         let header = $("meta[name='_csrf_header']").attr("content");
         let token = $("meta[name='_csrf']").attr("content");
         let mainContent = $("#main-content");
-        let articlesDiv= $("#articles-div");
+        let articlesDiv = $("#articles-div");
         let tableDiv = $("#tableDiv");
         let searchTitleInput = $("#searchTitle");
-        let showAll = false;
+        let showAllArticles = false;
         let pageSizeInput = $("#pageSize");
-        let deleteConfirm =$("#delete-confirm");
+        let deleteConfirm = $("#delete-confirm");
         let errorMsg = $("#error-message");
         let deleteArticleId;
+        let tableTitle = $("#table-title");
+        let isShowingPublished = true;
 
         articlesDiv.hide();
         let currentPage = 0;
         let pageSize = 10;
 
 
-        pageSizeInput.change(function(){
+        pageSizeInput.change(function () {
             pageSize = parseInt(pageSizeInput.val());
-            fetchMyArticles();
+            if(totalPages === 0){
+                return;
+            }
+            if(isShowingPublished){
+                fetchPublishedArticles();
+            }
+            else{
+                fetchDraftArticles();
+            }
         })
-        searchTitleInput.on("keyup",function(event){
+        searchTitleInput.on("keyup", function (event) {
             let key = event.keyCode;
-            if(key === 13){
+            if (key === 13) {
                 searchArticlesByTitle();
             }
         })
-        showAllArticles = function(){
-            if(showAll && currentPage === 0){
+        showAll = function (){
+            if(totalPages === 0){
                 return;
             }
-            searchTitleInput.val("");
-            searchTitle ="";
-            fetchMyArticles();
-            showAll = true;
+            if(isShowingPublished){
+                showAllPublished();
+            }
+            else{
+                showAllDrafts();
+            }
         }
-        searchArticlesByTitle= function(){
+        showAllDrafts = function () {
+            isShowingPublished = false
+            currentPage = 0;
+            tableTitle.text("My Drafts")
+            searchTitleInput.val("");
+            searchTitle = "";
+            fetchDraftArticles();
+        }
+        showAllPublished = function () {
+            if (showAllArticles && currentPage === 0) {
+                return;
+            }
+            isShowingPublished = true;
+            tableTitle.text("My Published Articles")
+            currentPage = 0;
+            searchTitleInput.val("");
+            searchTitle = "";
+            fetchPublishedArticles();
+            showAllArticles = true;
+        }
+        searchArticlesByTitle = function () {
+            if(totalPages === 0){
+                return;
+            }
             let val = searchTitleInput.val();
-            if(val.length === 0){
+            if (val.length === 0) {
                 return;
             }
             currentPage = 0;
             searchTitle = val;
-            fetchMyArticles();
-            showAll = false;
+            if (isShowingPublished) {
+                fetchPublishedArticles();
+            } else {
+                fetchDraftArticles();
+            }
+            showAllArticles = false;
         }
         let formatDateTime = function (dateTimeArray) {
             return dateTimeArray[1] + '/' + dateTimeArray[2] + "/" + dateTimeArray[0]
@@ -226,7 +274,11 @@
             td = $("<td />");
             td.appendTo(row);
             anchor = $("<a />")
-            anchor.attr("href", articlesBaseUrl + "edit/" + article.id);
+            if (isShowingPublished) {
+                anchor.attr("href", articlesBaseUrl + "edit/" + article.id);
+            } else {
+                anchor.attr("href", articlesBaseUrl + "draft/edit/" + article.id);
+            }
             let icon = $("<i />")
             icon.addClass("fas fa-edit");
             icon.appendTo(anchor);
@@ -236,9 +288,8 @@
             td = $("<td />");
             td.appendTo(row);
             anchor = $("<a />")
-            anchor.on("click", function(){
+            anchor.on("click", function () {
                 deleteArticleId = article.id;
-                console.log(deleteArticleId+" CLikced");
                 deleteArticle();
             })
             anchor.addClass("delete");
@@ -248,10 +299,14 @@
             anchor.appendTo(td);
 
         }
-
         let createArticleTableBody = function (data, table) {
             let tbody = $("<tbody/>");
             tbody.appendTo(table);
+            if (data.length === 0) {
+                tbody.text("There are no records available");
+                tbody.addClass("text-center font-weight-bold");
+                return;
+            }
             for (let article of data) {
                 createArticleDataRow(article, tbody);
             }
@@ -268,23 +323,33 @@
                 prev.append(" PREV");
                 prev.on("click", function () {
                     currentPage = currentPage - 1;
-                    fetchMyArticles();
+                    if(isShowingPublished) {
+                        fetchPublishedArticles();
+                    }
+                    else{
+                        fetchDraftArticles();
+                    }
                 });
                 prev.appendTo(navDiv);
             }
-            if (currentPage !== totalPages - 1) {
+            if (currentPage !== totalPages - 1 && totalPages !== 0) {
                 let next = $("<a />");
                 next.text("Next ");
                 let icon = $("<i />");
                 icon.addClass("fas fa-long-arrow-alt-right");
                 icon.appendTo(next);
                 next.addClass("btn btn-primary nav-button ")
-                if(currentPage > 0){
+                if (currentPage > 0) {
                     next.addClass("ml-5");
                 }
                 next.on("click", function () {
                     currentPage = currentPage + 1;
-                    fetchMyArticles();
+                    if(isShowingPublished) {
+                        fetchPublishedArticles();
+                    }
+                    else{
+                        fetchDraftArticles();
+                    }
                 });
                 next.appendTo(navDiv);
             }
@@ -298,21 +363,32 @@
             let caption = $("<caption />");
             caption.appendTo(articlesTable);
             let span = $("<span />");
-            span.text("There are  "+ totalElements + " articles. Page ");
+            span.text("There are  " + totalElements + " articles. Page ");
             span.appendTo(caption);
             let select = $("<select />");
             select.appendTo(caption);
             select.addClass("form-control");
             select.change(function () {
                 currentPage = parseInt(select.val());
-                fetchMyArticles();
+                if (isShowingPublished) {
+                    fetchPublishedArticles();
+                }
+                else{
+                    fetchDraftArticles();
+                }
             })
-            for(let i = 0 ;i < totalPages; i++){
+            if(totalPages === 0){
+                let option = $("<option />");
+                option.appendTo(select);
+                option.text(0);
+                option.prop("selected", true);
+            }
+            for (let i = 0; i < totalPages; i++) {
                 let option = $("<option />");
                 option.appendTo(select);
                 option.val(i);
-                option.text(i+1);
-                if(i ===  currentPage){
+                option.text(i + 1);
+                if (i === currentPage) {
                     option.prop("selected", true);
                 }
             }
@@ -325,15 +401,17 @@
             createNavForTable(tableDiv, totalPages);
 
         }
-        fetchMyArticles = function () {
+
+        function fetchArticles(url) {
             $.ajax({
                 type: "GET",
                 beforeSend: function (request) {
                     request.setRequestHeader(header, token);
                 },
-                url:  fetchArticlesUrl + "?page=" + currentPage + "&size=" + pageSize + '&title='+searchTitle,
+                url: url,
                 success: function (data) {
                     tableDiv.empty();
+                    totalPages = data.totalPages;
                     createArticleTable(data.content, tableDiv, data.totalElements, data.totalPages);
                 },
                 error: function (jqXHR, textStatus, exception) {
@@ -345,24 +423,43 @@
             })
         }
 
-        deleteArticle = function(){
+        fetchPublishedArticles = function () {
+            fetchArticles(fetchArticlesUrl + "?page=" + currentPage + "&size=" + pageSize + '&title=' + searchTitle);
+        }
+        fetchDraftArticles = function () {
+            fetchArticles(fetchDraftsUrl + "?page=" + currentPage + "&size=" + pageSize + '&title=' + searchTitle);
+        }
+
+        deleteArticle = function () {
             deleteConfirm.modal({
                 showClose: false,
                 fadeDuration: 100
             })
         }
-         continueDeleteArticle = function(){
-             $.modal.close();
-            if(!deleteArticleId){
+        continueDeleteArticle = function () {
+            $.modal.close();
+            if (!deleteArticleId) {
                 return;
             }
+            let url;
+            if (isShowingPublished) {
+                url = articlesBaseUrl + "delete/" + deleteArticleId;
+            } else {
+                url = articlesBaseUrl + "draft/delete/" + deleteArticleId;
+            }
             $.ajax({
-                type:"DELETE",
+                type: "DELETE",
                 beforeSend: function (request) {
                     request.setRequestHeader(header, token);
                 },
-                url:articlesBaseUrl + "delete/" + deleteArticleId,
-                success: fetchMyArticles,
+                url: url,
+                success: function () {
+                    if (isShowingPublished) {
+                        fetchPublishedArticles();
+                    } else {
+                        fetchDraftArticles();
+                    }
+                },
                 error: function (jqXHR, textStatus, exception) {
                     errorMsg.modal({
                         fadeDuration: 100,

@@ -1,15 +1,17 @@
 package net.stevencai.stevenweb.entity;
 
+import java.time.LocalDateTime;
+
 public interface Post {
     String getId();
 
-    Object getTitle();
+    String getTitle();
 
-    Object getPath();
+    String getPath();
 
-    Object getCreateDateTime();
+    LocalDateTime getCreateDateTime();
 
-    Object getLastModifiedDateTime();
+    LocalDateTime getLastModifiedDateTime();
 
     User getUser();
 }

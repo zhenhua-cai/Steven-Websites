@@ -1,6 +1,7 @@
 package net.stevencai.stevenweb.service;
 
 import net.stevencai.stevenweb.entity.Article;
+import net.stevencai.stevenweb.entity.ArticleDraft;
 import net.stevencai.stevenweb.frontendResource.ArticleResource;
 import org.springframework.data.domain.Page;
 
@@ -20,7 +21,7 @@ public interface ArticleService {
 
     void deleteArticleDraftById(String id);
 
-    void deleteArticleDraftByIdIfExists(String id);
+    void deleteArticleDraftFromDBByIdIfExists(String id);
 
     Page<Article> findArticles(int page, int size);
 
@@ -29,4 +30,10 @@ public interface ArticleService {
     Page<Article> findArticlesByUsernameAndTitle(String username, String title, int page, int size);
 
     void deleteArticleById(String id);
+
+    Page<ArticleDraft> findDraftsByUsername(String name, int page, int size);
+
+    Page<ArticleDraft> findDraftsByUsernameAndTitle(String name, String title, int page, int size);
+
+    ArticleResource findDraftById(String id);
 }
