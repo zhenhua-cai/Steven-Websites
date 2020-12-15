@@ -194,9 +194,6 @@
             fetchDraftArticles();
         }
         showAllPublished = function () {
-            if (showAllArticles && currentPage === 0) {
-                return;
-            }
             isShowingPublished = true;
             tableTitle.text("My Published Articles")
             currentPage = 0;
