@@ -55,6 +55,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/articles").permitAll()
                 .antMatchers("/articles/all").permitAll()
                 .antMatchers("/articles/{id}").permitAll()
+                .antMatchers("/articles/new").hasRole("WRITER")
                 .antMatchers("/articles/**").hasRole("WRITER")
                 .antMatchers("/profile/**").authenticated()
                 .antMatchers("/").permitAll()

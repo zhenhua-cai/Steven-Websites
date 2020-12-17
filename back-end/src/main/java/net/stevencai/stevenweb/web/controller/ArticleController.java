@@ -61,7 +61,7 @@ public class ArticleController {
         return "articles-list";
     }
 
-    @GetMapping(value = "/new")
+    @GetMapping("new")
     public String createNewArticle(Model model, Principal principal) {
         ArticleResource articleResource = new ArticleResource();
         articleResource.setId(appUtil.generateUUIDForArticle(principal.getName()));
@@ -82,6 +82,18 @@ public class ArticleController {
         model.addAttribute("article",articleResource);
         return "editArticle";
     }
+    @GetMapping("/draft/{id}")
+    public String showDraft(@PathVariable String id, Model model) {
+        ArticleResource articleResource = null;
+        if (!model.containsAttribute("article")) {
+            articleResource = articleService.findDraftById(id);
+        } else {
+            articleResource = (ArticleResource) model.getAttribute("article");
+        }
+        model.addAttribute("article", articleResource);
+        return "article";
+    }
+
     @GetMapping("/{id}")
     public String showArticle(@PathVariable String id, Model model) {
         ArticleResource articleResource = null;

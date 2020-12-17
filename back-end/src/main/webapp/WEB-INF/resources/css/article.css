@@ -38,3 +38,7 @@ a.nav-button{
     color:white !important;
     font-weight: bolder;
 }
+#content pre{
+    background-color: #282c34 !important;
+    border-radius: 10px;
+}

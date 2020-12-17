@@ -198,7 +198,7 @@ public class ArticleServiceImpl implements ArticleService {
             String line = "";
             StringBuilder article = new StringBuilder();
             while((line = bufferedReader.readLine()) != null){
-                article.append(line);
+                article.append(line).append("\n");
             }
             articleResource.setContent(article.toString());
         } catch (IOException e) {

@@ -252,9 +252,14 @@
             //title
             let titleAnchor = $("<a/>");
             titleAnchor.appendTo(td);
-            titleAnchor.attr("href", articlesBaseUrl + article.id);
-            titleAnchor.text(article.title);
-
+            if(isShowingPublished) {
+                titleAnchor.attr("href", articlesBaseUrl + article.id);
+                titleAnchor.text(article.title);
+            }
+            else{
+                titleAnchor.attr("href", articlesBaseUrl+"draft/" + article.id);
+                titleAnchor.text("[Draft]"+article.title);
+            }
             //create date time
             td = $("<td />");
             td.appendTo(row);

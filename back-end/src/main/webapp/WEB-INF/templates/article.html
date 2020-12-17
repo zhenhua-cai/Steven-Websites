@@ -27,6 +27,7 @@
     <link th:href="@{/resources/css/article.css}" rel="stylesheet">
     <link th:href="@{/resources/css/article-content-style.css}" rel="stylesheet">
     <link th:href="@{/resources/css/animation.min.css}" rel="stylesheet">
+<!--    <link th:href="@{/resources/css/atom-one-dark.min.css}" rel="stylesheet">-->
 
     <!-- Bootstrap core JavaScript -->
     <script th:src="@{/resources/js/jquery.min.js}"></script>
@@ -34,6 +35,9 @@
     <!-- Custom scripts for this template -->
     <script th:src="@{/resources/js/clean-blog.min.js}"></script>
     <script th:src="@{/resources/js/animation.min.js}"></script>
+    <script th:src="@{/resources/js/highlight.pack.js}"></script>
+    <link rel="stylesheet"
+          href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/styles/atom-one-dark.min.css">
 </head>
 
 <body>
@@ -56,6 +60,9 @@
         let contentStr = /*[[${article.content}]]*/ '';
         let contentDiv = $("#content");
         contentDiv.html(contentStr);
+        $('pre code').each((index, block)=>{
+            hljs.highlightBlock(block);
+        })
         $(".animsition").animsition({
             inClass: 'flip-in-y',
             outClass: 'flip-out-y',
