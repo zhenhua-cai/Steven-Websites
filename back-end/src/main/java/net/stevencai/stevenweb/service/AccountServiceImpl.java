@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
-public class AccountServiceImpl implements AccountService{
+public class AccountServiceImpl implements AccountService {
     private AccountRepository accountRepository;
     private PasswordEncoder passwordEncoder;
     private RoleRepository roleRepository;
@@ -56,7 +56,7 @@ public class AccountServiceImpl implements AccountService{
 
     @Override
     public User saveUser(User user) {
-        Role role =roleRepository.findRoleById(1);
+        Role role = roleRepository.findRoleById(1);
         user.setAuthorities(Collections.singletonList(role));
         return accountRepository.save(user);
     }
@@ -68,11 +68,11 @@ public class AccountServiceImpl implements AccountService{
     }
 
     @Override
-    public User createUser(UserResource userResource)throws EmailAlreadyExistException, UsernameAlreadyExistException {
-        if(isEmailExist(userResource.getEmail())){
-            throw new EmailAlreadyExistException("There is an account associated with this email: "+userResource.getEmail());
+    public User createUser(UserResource userResource) throws EmailAlreadyExistException, UsernameAlreadyExistException {
+        if (isEmailExist(userResource.getEmail())) {
+            throw new EmailAlreadyExistException("There is an account associated with this email: " + userResource.getEmail());
         }
-        if(isUsernameExist(userResource.getUsername())){
+        if (isUsernameExist(userResource.getUsername())) {
             throw new UsernameAlreadyExistException("This username is already token.");
         }
         User user = buildUser(userResource);
@@ -86,22 +86,14 @@ public class AccountServiceImpl implements AccountService{
     }
 
     @Override
-    public User findUserByUsername(String username){
+    public User findUserByUsername(String username) {
         return accountRepository.findUserByUsername(username);
     }
 
-    @Override
-    public User loadUserByUsername(String username) {
-        User user =accountRepository.findUserByUsername(username);
-        if(user == null){
-            throw new UsernameNotFoundException("Cannot find this user");
-        }
-        return user;
-    }
 
     @Override
     public VerificationToken createVerificationTokenForUser(User user, String token, VerificationTokenType type) {
-        VerificationToken verificationToken = new VerificationToken(token,user);
+        VerificationToken verificationToken = new VerificationToken(token, user);
         verificationToken.setType(type);
         verificationTokenRepository.save(verificationToken);
         return verificationToken;
@@ -134,36 +126,34 @@ public class AccountServiceImpl implements AccountService{
         return verificationTokenRepository.findByUserAndCreateDateTimeAfter(user, dateTime);
     }
 
-    private boolean isEmailExist(String email){
+    private boolean isEmailExist(String email) {
         return findUserByEmail(email) != null;
     }
-    private boolean isUsernameExist(String username){
-        try {
-            loadUserByUsername(username);
-        }
-        catch(UsernameNotFoundException ex){
-            return false;
-        }
-        return true;
+
+    private boolean isUsernameExist(String username) {
+        return findUserByUsername(username) != null;
     }
 
-    private boolean isUserResourceExist(UserResource userResource){
+    private boolean isUserResourceExist(UserResource userResource) {
         return isEmailExist(userResource.getEmail())
                 || isUsernameExist(userResource.getUsername());
     }
+
     /**
      * build user object from userResource object. password is encoded in ByCrypt.
+     *
      * @param userResource original user resource obj.
      * @return final user object.
      */
-    private User buildUser(UserResource userResource){
+    private User buildUser(UserResource userResource) {
         User user = new User();
         user.setUsername(userResource.getUsername());
         user.setPassword(encryptPassword(userResource.getConfirmPassword()));
         user.setEmail(userResource.getEmail());
         return user;
     }
-    private String encryptPassword(String rawPw){
+
+    private String encryptPassword(String rawPw) {
         return passwordEncoder.encode(rawPw);
     }
 }

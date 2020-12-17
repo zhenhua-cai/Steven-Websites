@@ -28,43 +28,64 @@
     <script th:src="@{/resources/js/animation.min.js}"></script>
 </head>
 <body>
-<div th:replace="fragments/navbar::landingpage-navbar"></div>
-<div class="wrapper fadeInDown animsition">
-    <div id="formContent">
-        <div class="fadeIn first mt-1">
-            <img th:src="@{/resources/img/logo1.png}" height="150px" alt="">
-        </div>
-        <div th:if="${param.error != null}" id="login-error">
-            <span class="alert alert-danger error-notification mb-2">Invalid Username/Password</span>
-        </div>
-        <div id="client-validation">
-            <span class="alert alert-danger error-notification mb-2">Invalid Username/Password</span>
-        </div>
-        <!-- Login Form -->
-        <form th:action="@{/authenticateTheUser}" method="POST" id="signInForm">
-            <label for="username"></label>
-            <input type="text" id="username" class="fadeIn second" name="username" placeholder="username" required>
-            <label for="password"></label>
-            <input type="password" id="password" class="fadeIn third" name="password" placeholder="password" required>
-            <br>
-            <div class="remember-me fadeIn fourth">
-                <label class="" for="rememberMe">
-                    <input type="checkbox" class="" id="rememberMe" name="remember-me">
-                    Remember me
-                </label>
+<div class="page">
+    <div th:replace="fragments/navbar::article-navbar"></div>
+    <div class="wrapper fadeInDown animsition">
+        <div id="formContent">
+            <div class="fadeIn first mt-1">
+                <img th:src="@{/resources/img/logo1.png}" height="150px" alt="">
             </div>
-            <br>
-            <input type="submit" class="fadeIn fifth" value="Log In">
-        </form>
+            <div th:if="${param.error != null}" id="login-error">
+            <span th:text="${session.clientBlocked == null?'Invalid Username/Password':'You have too many attempts. Please come back later'}"
+                  th:classappend="${session.clientBlocked != null?'small-font':''}"
+                  class="alert alert-danger error-notification mb-2">
+            </span>
+            </div>
+            <div id="client-validation">
+            <span class="alert alert-danger error-notification mb-2"
+                  th:classappend="${session.clientBlocked != null?'small-font':''}"
+                  th:text="${session.clientBlocked == null?'Invalid Username/Password':'You have too many attempts. Please come back later'}"
+            ></span>
+            </div>
+            <!-- Login Form -->
+            <form th:action="@{/authenticateTheUser}" method="POST" id="signInForm">
+                <label for="username"></label>
+                <input type="text" id="username" class="fadeIn second" name="username" placeholder="username" required>
+                <label for="password"></label>
+                <input type="password" id="password" class="fadeIn third" name="password" placeholder="password" required>
+                <br>
+                <div class="remember-me fadeIn fourth">
+                    <label class="" for="rememberMe">
+                        <input type="checkbox" class="" id="rememberMe" name="remember-me">
+                        Remember me
+                    </label>
+                </div>
+                <br>
+                <input type="submit" class="fadeIn fifth" value="Log In">
+            </form>
 
-        <div id="formFooter">
-            <a class="underlineHover" th:href="@{/account/requestToResetPassword}">Forgot Password?</a> <br>
-<!--            <a class="underlineHover" th:href="@{/account/register}">Don't Have An Account?</a>-->
+            <div id="formFooter">
+                <a class="underlineHover" th:href="@{/account/requestToResetPassword}">Forgot Password?</a> <br>
+                <!--            <a class="underlineHover" th:href="@{/account/register}">Don't Have An Account?</a>-->
+            </div>
         </div>
     </div>
 </div>
-<script>
+
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    let invalidClientIp =/*[[${session.clientBlocked}]]*/ false;
+    let hasError = /*[[${param.error != null}]]*/ false;
+    /*]]>*/
     $(document).ready(function () {
+        if(hasError){
+            setTimeout(
+                function(){
+                    $("#formContent").effect("shake");
+                }, 1600
+            )
+        }
         $(".animsition").animsition({
             inClass: 'fade-in-left',
             outClass: 'fade-out-right',
@@ -99,6 +120,10 @@
 
         signInForm.submit(function(event){
             event.preventDefault();
+            if(invalidClientIp){
+                $("#formContent").effect("shake");
+                return false;
+            }
             let valid = validateLoginForm(usernameInput, passwordInput);
             if(!valid){
                 if(!loginError.length) {
@@ -111,6 +136,7 @@
             $(this).unbind("submit").submit();
         });
     });
+
 </script>
 </body>
 </html>

@@ -27,19 +27,22 @@
     <script th:src="@{/resources/js/animation.min.js}"></script>
 </head>
 <body>
-<div th:replace="fragments/navbar::landingpage-navbar"></div>
-<div class="wrapper fadeInDown animsition">
-    <div id="formContent">
-        <div class="fadeIn first mt-1">
-            <img th:src="@{/resources/img/logo1.png}" height="150px" alt="">
-        </div>
-        <div id="client-validation">
-            <span class="alert alert-danger error-notification mb-2" th:text="${message}"></span>
-            <small>Redirect To Home Page In <span id="timeCounter" class="font-weight-bold">10</span> Seconds</small>
-        </div>
+<div class="page">
+    <div th:replace="fragments/navbar::article-navbar"></div>
+    <div class="wrapper fadeInDown animsition">
+        <div id="formContent">
+            <div class="fadeIn first mt-1">
+                <img th:src="@{/resources/img/logo1.png}" height="150px" alt="">
+            </div>
+            <div id="client-validation">
+                <span class="alert alert-danger error-notification mb-2" th:text="${message}"></span>
+                <small>Redirect To Home Page In <span id="timeCounter" class="font-weight-bold">10</span>
+                    Seconds</small>
+            </div>
 
-        <div id="formFooter">
-            <small>Can't Wait? Click <a th:href="@{/}" style="color:#5fbae9">Here</a></small>
+            <div id="formFooter">
+                <small>Can't Wait? Click <a th:href="@{/}" style="color:#5fbae9">Here</a></small>
+            </div>
         </div>
     </div>
 </div>
@@ -47,7 +50,7 @@
     /*<![CDATA[*/
     let startTimeCounter;
     let url = /*[[@{/}]]*/ '/';
-    $(document).ready(function(){
+    $(document).ready(function () {
         $(".animsition").animsition({
             inClass: 'fade-in',
             outClass: 'fade-out',
@@ -72,17 +75,17 @@
                 window.location.href = url;
             }
         });
-        let timeCounterSpan =$("#timeCounter");
+        let timeCounterSpan = $("#timeCounter");
         let time = 9;
-        let timeCounterFunc= function(){
+        let timeCounterFunc = function () {
             timeCounterSpan.text(time);
             time--;
         }
         startTimeCounter = setInterval(timeCounterFunc, 1000);
-        setTimeout(function(){
+        setTimeout(function () {
             clearInterval(startTimeCounter);
             window.location.replace(url);
-        },time  * 1000 + 1000);
+        }, time * 1000 + 1000);
     });
     /*]]>*/
 </script>

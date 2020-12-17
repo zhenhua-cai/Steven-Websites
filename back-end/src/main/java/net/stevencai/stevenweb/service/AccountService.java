@@ -10,12 +10,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import java.time.LocalDateTime;
 import java.util.Locale;
 
-public interface AccountService extends UserDetailsService {
+public interface AccountService{
     User saveUser(User user);
     User saveVerifiedUser(User user, VerificationToken token);
     User createUser(UserResource userResource);
     User findUserByEmail(String email);
-    User loadUserByUsername(String username);
     User findUserByUsername(String username);
     VerificationToken createVerificationTokenForUser(User user, String token, VerificationTokenType type);
     VerificationToken findVerificationTokenByToken(String token);

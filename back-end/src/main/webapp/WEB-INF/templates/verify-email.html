@@ -29,25 +29,28 @@
     <script th:src="@{/resources/js/animation.min.js}"></script>
 </head>
 <body>
-<div th:replace="fragments/navbar::landingpage-navbar"></div>
-<div class="wrapper fadeInDown animsition">
-    <div id="formContent">
+<div class="page">
+    <div th:replace="fragments/navbar::article-navbar"></div>
+    <div class="wrapper fadeInDown animsition">
+        <div id="formContent">
 
-        <!-- Icon -->
-        <div class="fadeIn first mt-3 mb-1">
-            <img th:src="@{/resources/img/logo1.png}" height="150px" alt="">
-        </div>
+            <!-- Icon -->
+            <div class="fadeIn first mt-3 mb-1">
+                <img th:src="@{/resources/img/logo1.png}" height="150px" alt="">
+            </div>
 
-        <!-- Login Form -->
-        <div>
-            <span class="fadeIn second">A verify email has been sent to </span>
-            <span class="font-weight-bold" th:text="${email}"></span>
-            <br>
-            <input type="submit" class="fadeIn third" id="resend" onclick="resendEmail()" value="RESEND">
+            <!-- Login Form -->
+            <div>
+                <span class="fadeIn second">A verify email has been sent to </span>
+                <span class="font-weight-bold" th:text="${email}"></span>
+                <br>
+                <input type="submit" class="fadeIn third" id="resend" onclick="resendEmail()" value="RESEND">
+            </div>
+            <input type="hidden" th:value="${requestEmail}" name="email" id="email" th:if="${requestEmail!=null}">
+            <input type="hidden" th:value="${requestUsername}" name="email" id="username"
+                   th:if="${requestUsername!=null}">
+            <input type="hidden" th:value="${requestURL}" id="url" th:if="${requestURL!=null}">
         </div>
-        <input type="hidden" th:value="${requestEmail}" name="email" id="email" th:if="${requestEmail!=null}">
-        <input type="hidden" th:value="${requestUsername}" name="email" id="username" th:if="${requestUsername!=null}">
-        <input type="hidden" th:value="${requestURL}"  id="url" th:if="${requestURL!=null}">
     </div>
 </div>
 <script th:inline="javascript">
@@ -112,19 +115,19 @@
         let token = $("meta[name='_csrf']").attr("content");
         resendButton.click(function () {
             $.ajax({
-                type:"POST",
-                contentType:"application/json",
-                beforeSend: function(request){
-                  request.setRequestHeader(header, token);
+                type: "POST",
+                contentType: "application/json",
+                beforeSend: function (request) {
+                    request.setRequestHeader(header, token);
                 },
                 url: url.val(),
                 data: JSON.stringify(data),
-                dataType:"json",
-                headers:{
-                    [header]:token
+                dataType: "json",
+                headers: {
+                    [header]: token
                 },
                 success: function (data) {
-                    if(data.result) {
+                    if (data.result) {
                         timeCounter = 60;
                         resendButton.prop("disabled", true);
                         if (startTimeCounter) {
