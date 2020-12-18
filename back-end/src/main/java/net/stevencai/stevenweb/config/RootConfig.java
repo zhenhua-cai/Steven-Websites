@@ -4,6 +4,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.hibernate.Hibernate;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.MailSender;
@@ -18,17 +19,29 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.thymeleaf.dialect.IDialect;
+import org.thymeleaf.extras.java8time.dialect.Java8TimeDialect;
+import org.thymeleaf.extras.springsecurity5.dialect.SpringSecurityDialect;
+import org.thymeleaf.spring5.SpringTemplateEngine;
+import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
+import org.thymeleaf.spring5.view.ThymeleafViewResolver;
+import org.thymeleaf.templatemode.TemplateMode;
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
+import org.thymeleaf.templateresolver.ITemplateResolver;
 
 import javax.sql.DataSource;
 import java.beans.PropertyVetoException;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 
 @Configuration
 @EnableTransactionManagement
 @ComponentScan(
         basePackages = {"net.stevencai.stevenweb"},
         excludeFilters = {
-                @ComponentScan.Filter(type= FilterType.ANNOTATION, value = {EnableWebMvc.class, Controller.class})
+                @ComponentScan.Filter(type= FilterType.ANNOTATION,
+                        value = {EnableWebMvc.class, Controller.class})
         }
 )
 @PropertySource("classpath:application-config.properties")
@@ -122,4 +135,5 @@ public class RootConfig {
 
         return props;
     }
+
 }

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -134,4 +135,10 @@ public class ArticleController {
     public void deleteArticleDraft(@PathVariable String id){
         articleService.deleteArticleDraftById(id);
     }
+
+    @ExceptionHandler(Exception.class)
+    public String handleException(HttpServletRequest request, Exception ex){
+        return "pageIsMissing";
+    }
+
 }

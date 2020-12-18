@@ -10,10 +10,18 @@ import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.context.WebContext;
+import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @PropertySource("classpath:application-config.properties")
@@ -21,8 +29,13 @@ public class EmailServiceImpl implements EmailService {
     private JavaMailSender mailSender;
     private Environment env;
     private AppUtil appUtil;
-
+    private SpringTemplateEngine thymeleaf;
     private AccountService accountService;
+
+    @Autowired
+    public void setThymeleaf(SpringTemplateEngine thymeleaf) {
+        this.thymeleaf = thymeleaf;
+    }
 
     @Autowired
     public void setAppUtil(AppUtil appUtil) {
@@ -50,7 +63,10 @@ public class EmailServiceImpl implements EmailService {
         String token = appUtil.createVerificationToken(user);
         accountService.createVerificationTokenForUser(user,token,VerificationTokenType.ACCOUNT_VERIFY);
         String link =createVerificationLink(path,token);
-        sendEmail(user.getEmail(), link, "Account Activation");
+        Map<String, Object> attributes= new HashMap<>();
+        attributes.put("link",link);
+        attributes.put("token",token);
+        sendEmail("mail/verificationEmail",attributes, user.getEmail(),"Account Activation");
     }
 
     @Override
@@ -65,24 +81,33 @@ public class EmailServiceImpl implements EmailService {
         String token = appUtil.createVerificationToken(user);
         accountService.createVerificationTokenForUser(user,token,VerificationTokenType.RESET_PASSWORD);
         String link =createVerificationLink(path,token);
-        sendEmail(user.getEmail(), link, "Reset Password");
+        Map<String, Object> attributes= new HashMap<>();
+        attributes.put("link",link);
+        attributes.put("token",token);
+        attributes.put("username",user.getUsername());
+        sendEmail("mail/resetPassword",attributes, user.getEmail(),"Reset Password");
+
     }
+    private void sendEmail(String templateName, Map<String, Object> attribute,
+                           String sendTo, String subject){
+        Context context = new Context();
+        for(Map.Entry<String, Object> entry: attribute.entrySet()){
+            context.setVariable(entry.getKey(),entry.getValue());
+        }
+        String emailText = thymeleaf.process(templateName,context);
 
-    private void sendEmail(String email , String text, String subject){
+        MimeMessage message = mailSender.createMimeMessage();
         try {
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true);
-
-            helper.setTo(email);
+            MimeMessageHelper helper = new MimeMessageHelper(message, "UTF-8");
+            helper.setText(emailText,true);
+            helper.setTo(sendTo);
             helper.setSubject(subject);
-            helper.setText(text);
-
             mailSender.send(message);
-
         } catch (MessagingException e) {
             e.printStackTrace();
-            throw new SendingEmailFailException("Fail to send email to "+email);
+            throw new SendingEmailFailException("Fail to send email to "+sendTo);
         }
+
     }
 
     private String createVerificationLink(String path, String token){

@@ -19,8 +19,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.thymeleaf.context.WebContext;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -54,7 +57,9 @@ public class AccountController {
 
     @PostMapping("/register")
     public String processRegistration(@Valid UserResource userResource, BindingResult bindingResult,
-                                      HttpServletRequest request, Model model) {
+                                      HttpServletRequest request,
+                                      HttpServletResponse response,
+                                      Model model) {
         if (bindingResult.hasErrors()) {
             return "registration";
         }
@@ -113,6 +118,7 @@ public class AccountController {
     public String processResetRequest(@RequestParam("username") String username,
                                       @RequestParam("email") String email,
                                       HttpServletRequest request,
+                                      HttpServletResponse response,
                                       Model model) {
         User user = null;
         if(username != null && !username.isEmpty()) {

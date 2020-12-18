@@ -1,6 +1,5 @@
 package net.stevencai.stevenweb.config;
 
-import net.stevencai.stevenweb.service.BlogAuthenticationFailureHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
@@ -9,9 +8,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.http.MediaType;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.context.request.RequestContextListener;
 import org.springframework.web.multipart.MultipartResolver;
@@ -24,11 +20,11 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
+import org.thymeleaf.templateresolver.ITemplateResolver;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Configuration
@@ -43,40 +39,6 @@ public class AppWebConfig implements WebMvcConfigurer {
         this.applicationContext = applicationContext;
     }
 
-    @Bean
-    public ThymeleafViewResolver viewResolver(){
-        ThymeleafViewResolver viewResolver = new ThymeleafViewResolver();
-        viewResolver.setTemplateEngine(templateEngine());
-        viewResolver.setCharacterEncoding("UTF-8");
-        return viewResolver;
-    }
-
-    @Bean
-    public SpringTemplateEngine templateEngine(){
-        SpringTemplateEngine templateEngine = new SpringTemplateEngine();
-        templateEngine.setTemplateResolver(templateResolver());
-        templateEngine.setEnableSpringELCompiler(true);
-        templateEngine.addDialect(new Java8TimeDialect());
-        templateEngine.setAdditionalDialects(getSpringSecurityDialect());
-        return templateEngine;
-    }
-    @Bean
-    public SpringResourceTemplateResolver templateResolver(){
-        SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
-        templateResolver.setApplicationContext(this.applicationContext);
-        templateResolver.setCharacterEncoding("UTF-8");
-        templateResolver.setPrefix("/WEB-INF/templates/");
-        templateResolver.setSuffix(".html");
-        templateResolver.setTemplateMode(TemplateMode.HTML);
-        templateResolver.setCacheable(false);
-        return templateResolver;
-    }
-    @Bean
-    public Set<IDialect> getSpringSecurityDialect(){
-        Set<IDialect> set = new HashSet<>();
-        set.add(new SpringSecurityDialect());
-        return set;
-    }
 
     @Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer){
@@ -99,6 +61,7 @@ public class AppWebConfig implements WebMvcConfigurer {
     @Override
     @Bean
     public LocalValidatorFactoryBean getValidator(){
+
         LocalValidatorFactoryBean bean = new LocalValidatorFactoryBean();
         bean.setValidationMessageSource(messageSource());
         return bean;
@@ -113,4 +76,40 @@ public class AppWebConfig implements WebMvcConfigurer {
     public RequestContextListener requestContextListener(){
         return new RequestContextListener();
     }
+
+    @Bean
+    public ThymeleafViewResolver viewResolver(Set<ITemplateResolver> resolvers){
+        ThymeleafViewResolver viewResolver = new ThymeleafViewResolver();
+        viewResolver.setTemplateEngine(templateEngine());
+        viewResolver.setCharacterEncoding("UTF-8");
+        return viewResolver;
+    }
+    @Bean
+    public SpringTemplateEngine templateEngine(){
+        SpringTemplateEngine templateEngine = new SpringTemplateEngine();
+        templateEngine.addTemplateResolver(webTemplateResolver());
+        templateEngine.setEnableSpringELCompiler(true);
+        templateEngine.addDialect(new Java8TimeDialect());
+        templateEngine.setAdditionalDialects(getSpringSecurityDialect());
+        return templateEngine;
+    }
+
+    @Bean
+    public SpringResourceTemplateResolver webTemplateResolver(){
+        SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
+        templateResolver.setApplicationContext(this.applicationContext);
+        templateResolver.setCharacterEncoding("UTF-8");
+        templateResolver.setPrefix("/WEB-INF/templates/");
+        templateResolver.setSuffix(".html");
+        templateResolver.setTemplateMode(TemplateMode.HTML);
+        templateResolver.setCacheable(false);
+        return templateResolver;
+    }
+    @Bean
+    public Set<IDialect> getSpringSecurityDialect(){
+        Set<IDialect> set = new HashSet<>();
+        set.add(new SpringSecurityDialect());
+        return set;
+    }
+
 }

@@ -6,8 +6,10 @@ import net.stevencai.stevenweb.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.*;
+import org.thymeleaf.context.WebContext;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/api/account")
@@ -40,7 +42,9 @@ public class AccountApiController {
     }
 
     @PostMapping("/resendVerificationEmail")
-    public ResponseMessage resendVerificationEmail(@RequestBody RequestObject obj, HttpServletRequest request){
+    public ResponseMessage resendVerificationEmail(@RequestBody RequestObject obj,
+                                                   HttpServletRequest request,
+                                                   HttpServletResponse response){
         User user = accountService.findUserByEmail(obj.email);
         if(user == null){
             return new ResponseMessage(false);
@@ -50,7 +54,9 @@ public class AccountApiController {
     }
 
     @PostMapping("/resendResetPasswordEmail")
-    public ResponseMessage resendResetPasswordEmail(@RequestBody RequestObject obj,HttpServletRequest request){
+    public ResponseMessage resendResetPasswordEmail(@RequestBody RequestObject obj,
+                                                    HttpServletRequest request,
+                                                    HttpServletResponse response){
         User user = null;
         if(obj.username == null) {
             user = accountService.findUserByEmail(obj.email);

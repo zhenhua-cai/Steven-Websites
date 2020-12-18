@@ -31,9 +31,6 @@ public class HomeController {
     public String aboutMe(){
         return "about";
     }
-    @GetMapping("contact")
-    public String contactMe(){
-        return "contact";
-    }
+
 
 }
