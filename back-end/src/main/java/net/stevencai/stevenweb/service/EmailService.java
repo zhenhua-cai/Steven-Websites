@@ -13,7 +13,10 @@ public interface EmailService {
     void sendVerification(User user, String path)throws SendingEmailFailException;
     @Async
     void resendVerification(User user,String path )throws SendingEmailFailException;
+    @Async
+    void resendResetPassword(User user,String path )throws SendingEmailFailException;
 
     @Async
     void sendResetPassword(User user, String path);
+
 }

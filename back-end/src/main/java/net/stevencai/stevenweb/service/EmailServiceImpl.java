@@ -75,7 +75,12 @@ public class EmailServiceImpl implements EmailService {
         accountService.removeAllVerificationTokenForUser(user);
         sendVerification(user, path);
     }
-
+    @Override
+    @Async
+    public void resendResetPassword(User user, String path) throws SendingEmailFailException{
+        accountService.removeAllVerificationTokenForUser(user);
+        sendResetPassword(user, path);
+    }
     @Override
     public void sendResetPassword(User user, String path) {
         String token = appUtil.createVerificationToken(user);

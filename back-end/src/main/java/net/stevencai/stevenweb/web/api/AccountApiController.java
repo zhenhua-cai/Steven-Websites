@@ -68,7 +68,7 @@ public class AccountApiController {
         if(user == null){
             return new ResponseMessage(false);
         }
-        emailService.resendVerification(user, request.getContextPath()+"/account/registrationConfirm");
+        emailService.resendResetPassword(user, request.getContextPath()+"/account/resetPassword");
         return new ResponseMessage();
     }
 
