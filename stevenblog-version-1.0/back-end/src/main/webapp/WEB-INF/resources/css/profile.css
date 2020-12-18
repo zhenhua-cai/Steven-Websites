@@ -1,0 +1,77 @@
+.nav-item{
+    text-transform: uppercase;
+    font-size: 0.6em;
+    font-weight: bold;
+    margin-left: 20px !important;
+}
+
+.navbar-dark .navbar-nav li.nav-item a.nav-link{
+    text-transform: uppercase;
+    font-weight: bold;
+    color:white;
+}
+.navbar-collapse .navbar-nav .nav-item .nav-link:hover{
+    color:darkgray;
+}
+.page-header{
+    flex:0 1 auto;
+    background-color: #343a40!important;
+}
+.page-main{
+    flex:1 1 auto;
+}
+.dropdown-menu{
+    padding:0;
+}
+.nav-dropdown-item:hover{
+    background-color: lightskyblue;
+}
+.page{
+    height:100vh;
+    display: flex;
+    flex-flow: column;
+}
+#editor-container{
+    width: 75%;
+}
+#content{
+    max-width: 100%;
+    word-wrap: break-word;
+}
+a.nav-button{
+    text-transform: uppercase;
+    color:white !important;
+    font-weight: bolder;
+}
+.flex-div{
+    display: flex;
+}
+.flex-child{
+    flex:1 0 auto;
+}
+.flex-child-extend{
+    flex:1 1 auto;
+}
+button.btn-small{
+    padding:5px;
+    border-radius: 5px;
+    display: inline-block;
+    font-weight: bolder;
+}
+.search{
+    width: 300px;
+    display: inline-block;
+}
+select.form-control{
+    width:fit-content;
+    display: inline-block;
+    padding: 2px;
+    height: fit-content;
+}
+th{
+    text-transform: uppercase;
+}
+.delete:hover{
+    color:red !important;
+    cursor: pointer;
+}

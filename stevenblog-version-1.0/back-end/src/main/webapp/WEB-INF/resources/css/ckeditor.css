@@ -1,0 +1,14 @@
+#editor-container .ck-editor{
+    height: 100%;
+}
+main .ck.ck-content {
+    font-size: 1em;
+    line-height: 1.6em;
+    margin-bottom: 0.8em;
+    height: 100%;
+    padding: 1.5em 2em;
+}
+main .ck.ck-editor__main{
+    height:95%;
+}
+
