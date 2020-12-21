@@ -1,0 +1,9 @@
+.separator{
+  height: 20px;
+}
+.h-95 {
+  min-height: 95%;
+}
+.h-90{
+  height: 95%;
+}

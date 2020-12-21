@@ -1,0 +1,64 @@
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top scrolling-navbar" id="navbar"
+     [ngClass]="{'sticky-bg':!isLandingPage}">
+  <div class="container">
+
+    <a class="navbar-brand" routerLink="/">Steven's Blog</a>
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#basicExampleNav"
+            aria-controls="basicExampleNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="basicExampleNav">
+
+      <ul class="navbar-nav mr-auto smooth-scroll">
+        <li class="nav-item">
+          <a class="nav-link"
+             routerLink="/">
+            <i class="fas fa-home"></i> Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link"
+             routerLink="/articles">
+            <i class="fas fa-book-reader"></i> Articles</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link"
+             routerLink="/about">
+            <i class="fas fa-id-card-alt">
+
+            </i> About</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link"
+             routerLink="/contact">
+            <i class="fas fa-paper-plane"></i> Contact</a>
+        </li>
+      </ul>
+      <ul class="nav navbar-nav ml-auto">
+        <li class="nav-item">
+          <app-navbar-search *ngIf="isShowingSearchBar"
+                             (emptyAndLoseFocus)="handleEmptyAndBlurSearchArea($event)">
+
+          </app-navbar-search>
+          <span class="nav-link" *ngIf="!isShowingSearchBar" (click)="showSearchbar()">
+            <i class="pi pi-search pi-backward" ></i>
+          </span>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link"
+             routerLink="/signIn">
+            <i class="fas fa-sign-in-alt">
+            </i> Sign In</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link"
+             routerLink="/signUp"
+          ><i class="fas fa-user-plus"></i> Sign Up</a>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+
+</nav>

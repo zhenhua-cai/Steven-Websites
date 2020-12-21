@@ -1,0 +1,13 @@
+<span>
+  <span class="p-input-icon-left">
+    <i class="pi pi-search pi-backward" (click)="searchArticle()"></i>
+    <input type="text" pInputText
+           [(ngModel)]="searchTitle"
+           placeholder="Search Articles"
+           (keyup.enter)="searchArticle()" #searchArea (blur)="handleLostFocus($event)">
+  </span>
+</span>
+
+
+
+

@@ -1,0 +1,34 @@
+.top-nav-collapse {
+  background-color: #393e46;
+}
+.sticky-bg{
+  background-color: #393e46;
+}
+@media (max-width: 768px) {
+  .navbar:not(.top-nav-collapse) {
+    background-color: #393e46;
+  }
+}
+
+@media (min-width: 800px) and (max-width: 850px) {
+  .navbar:not(.top-nav-collapse) {
+    background-color: #393e46;
+  }
+}
+a.nav-link{
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition: all  0.5s ease-in-out;
+  -ms-transition: all  0.5s ease-in-out;
+  -o-transition: all  0.5s ease-in-out;
+  transition: all  0.5s ease-in-out;
+}
+a.nav-link:hover{
+  z-index: 1;
+  transform: scale(1.2);
+  -ms-transform: scale(1.2);
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition: all  0.5s ease-in-out;
+  -ms-transition: all  0.5s ease-in-out;
+  -o-transition: all  0.5s ease-in-out;
+  transition: all  0.5s ease-in-out;
+}

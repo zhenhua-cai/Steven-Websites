@@ -1,0 +1,135 @@
+.pa,
+.pa0 {
+  position: absolute;
+}
+
+.bg1 {
+  width: 100%;
+  height: 100%;
+}
+
+.hx-box {
+  top: 50%;
+  left: 50%;
+  width: 600px;
+  height: 600px;
+  transform-style: preserve-3d;
+  transform: translate(-50%, -50%) rotateY(75deg);
+}
+
+.hx-box::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 50px;
+  height: 50px;
+  margin-top: 10px;
+  margin-left: 10px;
+  background: #ff4646;
+  border-radius: 100%;
+  box-shadow: 0 0 3px 0 #ff4646;
+  transform: translate(-50%, -50%) rotateY(-75deg);
+  animation: 20s kernel infinite linear;
+
+}
+
+@keyframes kernel {
+  0% {
+    background-color: #ff4646;
+  }
+  12.5% {
+    background-color: #6155a6;
+  }
+  25% {
+    background-color: #ff8585;
+  }
+  37.5% {
+    background-color: #fdb827;
+  }
+  50% {
+    background-color: #93abd3;
+  }
+  62.5%{
+    background-color: #c24914;
+  }
+  75% {
+    background-color: #61b15a;
+  }
+  87.5% {
+    background-color: #153e90;
+  }
+  100% {
+    background-color: #ff4646;
+  }
+}
+
+.hx-box ul {
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  list-style: none;
+  animation: hxz 20s linear infinite;
+}
+
+@keyframes hxz {
+  0% {
+    transform: rotateX(0deg);
+  }
+  100% {
+    transform: rotateX(-360deg);
+  }
+}
+
+.hx-box ul li {
+  width: 100%;
+  height: 100%;
+  border: 5px solid #f05454;
+  border-radius: 1000px;
+  animation: changeColor 5s linear infinite;
+}
+
+.hx-box ul li span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: url(../../../../assets/images/hx.png) no-repeat center center;
+  background-size: 100% 100%;
+  animation: hx 3s linear infinite;
+}
+
+@keyframes hx {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes changeColor {
+  0% {
+    border-color: #f05454;
+  }
+  25% {
+    border-color: #a685e2;
+  }
+  50% {
+    border-color: #93abd3;
+  }
+  75% {
+    border-color: #ffa45b;
+  }
+  100% {
+    border-color: #f05454;
+  }
+}
+
+.hx-k2 {
+  transform: rotateX(60deg) rotateZ(60deg);
+}
+
+.hx-k3 {
+  transform: rotateX(120deg) rotateZ(120deg);
+}
+.hx-k4 {
+  transform: rotateX(90deg) rotateY(90deg);
+}

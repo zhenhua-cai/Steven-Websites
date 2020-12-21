@@ -1,0 +1,16 @@
+<div class="w-100 ml-auto mr-auto article-list-item"
+     [ngClass]="{'scale-item':gainFocus}">
+  <div class="m-3 p-3 shadow p-3 mb-5 bg-white rounded">
+    <a class="text-wrap text-break article-title"
+       (focus)="gainFocus = true;" (blur)="gainFocus=false;" (click)="navigate()">
+      {{article.title}}
+    </a>
+    <span class="article-info">
+      <small>Posted by </small>
+      <small>{{article.username}}</small><br>
+      <small>Last Modified On </small>
+      <small>{{article.lastModified|date: 'medium'}}</small>
+    </span>
+  </div>
+</div>
+
