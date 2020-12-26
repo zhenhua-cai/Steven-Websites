@@ -3,6 +3,7 @@ package net.stevencai.blog.backend.clientResource;
 import lombok.Data;
 import net.stevencai.blog.backend.entity.Article;
 import net.stevencai.blog.backend.entity.ArticleDraft;
+import net.stevencai.blog.backend.entity.Post;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -39,7 +40,7 @@ public class ArticleResource {
         this.lastModified = article.getLastModifiedDateTime();
         this.title = article.getTitle();
     }
-    public ArticleResource(ArticleDraft article){
+    public ArticleResource(Post article) {
         this.id= article.getId();
         this.username = article.getUser().getUsername();
         this.createDate = article.getCreateDateTime();

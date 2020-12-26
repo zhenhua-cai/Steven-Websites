@@ -1,0 +1,30 @@
+<div class="mb-1">
+  <button pButton type="button" label="Back"
+          icon="pi pi-arrow-left"
+          class="p-button-outlined p-button-raised p-button-rounded p-button-sm shadow-lg"
+          (click)="backButtonClicked($event)">
+  </button>
+  <span class="float-right" *ngIf="isInOwerMode">
+      <span>
+              <button pButton type="button" label="Edit"
+                      icon="far fa-edit"
+                      class="p-button-outlined p-button-raised p-button-rounded p-button-sm shadow-lg"
+                      (click)="editArticle($event)">
+        </button>
+      </span>
+      <span class="ml-1">
+                <button pButton type="button" label="Delete"
+                        icon="far fa-trash-alt"
+                        class="p-button-outlined p-button-raised p-button-rounded p-button-sm shadow-lg"
+                        (click)="deleteArticle($event)">
+        </button>
+      </span>
+
+  </span>
+
+</div>
+
+<div class="container shadow-lg bg-white rounded">
+  <div #articleContent class="mt-1 p-5">
+  </div>
+</div>

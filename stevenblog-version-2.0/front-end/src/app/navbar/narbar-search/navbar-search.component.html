@@ -1,12 +1,14 @@
-<span>
-  <span class="p-input-icon-left">
-    <i class="pi pi-search pi-backward" (click)="searchArticle()"></i>
-    <input type="text" pInputText
-           [(ngModel)]="searchTitle"
-           placeholder="Search Articles"
-           (keyup.enter)="searchArticle()" #searchArea (blur)="handleLostFocus($event)">
-  </span>
+<span class="form-inline waves-light" mdbWavesEffect id="search-form">
+    <div class="md-form my-0 d-flex d-inline-block">
+        <i class="pi pi-search pi-backward flex-grow-0" (click)="searchArticle()"></i>
+        <input class="form-control ml-1 flex-grow-1"
+               type="text"
+               placeholder="Search Articles"
+               [(ngModel)]="searchTitle"
+               (keyup.enter)="searchArticle()">
+    </div>
 </span>
+
 
 
 

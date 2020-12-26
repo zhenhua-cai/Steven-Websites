@@ -1,0 +1,17 @@
+<div class="d-flex flex-column align-items-stretch min-h-100">
+  <div class="flex-grow-0">
+    <app-navbar [isLandingPage]="false"></app-navbar>
+  </div>
+  <main class="flex-grow-1 d-flex ml-auto mr-auto align-items-stretch">
+    <div class="ml-auto mr-auto container min-h-100">
+      <div class="ml-auto mr-auto min-h-100 d-flex flex-column">
+          <router-outlet></router-outlet>
+      </div>
+    </div>
+  </main>
+  <div class="flex-grow-0 bg-blog min-w-100 clearfix">
+    <app-footer></app-footer>
+  </div>
+
+</div>
+

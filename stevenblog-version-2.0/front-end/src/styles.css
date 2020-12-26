@@ -2,6 +2,7 @@
 html,
 body {
   height: 100%;
+  min-width: 400px;
 }
 
 .media {
@@ -11,4 +12,41 @@ body {
 
 #articleContent > h1 {
   font-weight: bold;
+}
+
+span#remember-me-block {
+  text-align: center;
+}
+
+span label.p-checkbox-label {
+  margin-bottom: 0 !important;
+}
+
+.bg-blog {
+  background-color: #393e46;
+}
+
+.min-h-100 {
+  min-height: 100%;
+}
+
+.min-w-100 {
+  min-width: 100%;
+}
+
+.h-fit-content {
+  height: fit-content;
+}
+
+.container {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.h-95 {
+  min-height: 95%;
+}
+
+.h-90 {
+  height: 95%;
 }

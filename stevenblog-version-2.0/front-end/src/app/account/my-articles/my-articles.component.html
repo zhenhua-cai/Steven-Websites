@@ -1,0 +1,60 @@
+
+<div class="my-2 p-2">
+  <p-toast></p-toast>
+  <p-contextMenu #cm [model]="items" appendTo="body" ></p-contextMenu>
+  <div class="card p-2">
+    <p-table [value]="articles"
+             dataKey="id"
+             selectionMode="single"
+             [(selection)]="selectedArticle"
+             [(contextMenuSelection)]="selectedArticle"
+             [contextMenu]="cm"
+             [loading]="isLoading"
+             [lazy]="true"
+             (onLazyLoad)="loadingArticles($event)"
+             [paginator]="true"
+             [rows]="pageSize"
+             [showCurrentPageReport]="true"
+             [totalRecords]="totalArticles"
+             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} articles"
+             [rowsPerPageOptions]="[5,10,20,50]"
+             styleClass="p-datatable-striped p-datatable-gridlines"
+    >
+      <ng-template pTemplate="caption">
+        <div class="d-flex justify-content-end">
+                <span class="p-input-icon-right p-ml-auto">
+                    <i class="pi pi-search" (click)="searchArticles($event)"></i>
+                    <input pInputText type="text"
+                           [(ngModel)]="searchValue"
+                           (input)="clearIfEmpty($event)"
+                           placeholder="Search Articles"
+                           (keyup.enter)="searchArticles($event)"/>
+                </span>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header">
+        <tr >
+          <th style="display: none">Id</th>
+          <th pSortableColumn="title" class="text-center">Title
+            <p-sortIcon field="title"></p-sortIcon>
+          </th>
+          <th pSortableColumn="createDate" class="text-center">Creation Date
+            <p-sortIcon field="createDate"></p-sortIcon>
+          </th>
+          <th pSortableColumn="lastModified" class="text-center">Last Modified
+            <p-sortIcon field="lastModified"></p-sortIcon>
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-article>
+        <tr [pSelectableRow]="article" [pContextMenuRow]="article">
+          <td style="display: none">{{article.id}}</td>
+          <td class="text-center">{{article.title}}</td>
+          <td class="text-center">{{article.createDate | date: 'medium'}}</td>
+          <td class="text-center">{{article.lastModified | date: 'medium'}}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
+

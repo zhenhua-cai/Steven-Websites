@@ -1,0 +1,26 @@
+.separator{
+  height: 20px;
+}
+@media only screen and (min-width: 1200px) {
+  main {
+    width: 100%;
+    margin-top: 7%;
+  }
+}
+@media only screen and (max-width: 600px) {
+  main {
+    width: 100%;
+    margin-top: 10%;
+  }
+}
+@media only screen and (max-width: 1200px) {
+  main {
+    width: 100%;
+    margin-top: 10%;
+  }
+}
+main{
+  margin-bottom: 3%;
+  width: 100%;
+  height:fit-content;
+}

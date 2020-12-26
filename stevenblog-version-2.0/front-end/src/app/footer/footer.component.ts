@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {NavbarService} from '../navbar/navbar.service';
 
 @Component({
   selector: 'app-footer',

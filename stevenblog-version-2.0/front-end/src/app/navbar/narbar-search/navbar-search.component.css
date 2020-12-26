@@ -1,0 +1,30 @@
+#search-form,#search-form span,#search-form input {
+  border-bottom: none;
+  color:white;
+  margin: 0;
+  padding: 0;
+  align-items: center;
+}
+#search-form div{
+  align-items: center;
+}
+
+#search-form{
+  transform-origin: left;
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition: all  0.5s ease-in-out;
+  -ms-transition: all  0.5s ease-in-out;
+  -o-transition: all  0.5s ease-in-out;
+  transition: all  0.5s ease-in-out;
+}
+#search-form:hover{
+  z-index: 1;
+  transform: scale(1.2);
+  -ms-transform: scale(1.2);
+  transform-origin: left;
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition: all  0.5s ease-in-out;
+  -ms-transition: all  0.5s ease-in-out;
+  -o-transition: all  0.5s ease-in-out;
+  transition: all  0.5s ease-in-out;
+}

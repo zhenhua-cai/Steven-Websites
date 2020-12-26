@@ -1,11 +1,10 @@
 import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
 import {NavbarComponent} from './navbar.component';
 import {SharedModule} from '../shared/shared.module';
 import {InputTextModule} from 'primeng/inputtext';
 import {FormsModule} from '@angular/forms';
 import {NavbarSearchComponent} from './narbar-search/navbar-search.component';
-
+import {MDBBootstrapModule, WavesModule, ButtonsModule, BadgeModule} from 'angular-bootstrap-md';
 
 @NgModule({
   declarations: [
@@ -15,7 +14,11 @@ import {NavbarSearchComponent} from './narbar-search/navbar-search.component';
   imports: [
     SharedModule,
     InputTextModule,
-    FormsModule
+    FormsModule,
+    MDBBootstrapModule.forRoot(),
+    WavesModule,
+    ButtonsModule,
+    BadgeModule
   ],
   exports: [
     NavbarComponent,

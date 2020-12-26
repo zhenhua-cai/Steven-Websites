@@ -1,9 +1,11 @@
 .top-nav-collapse {
   background-color: #393e46;
 }
-.sticky-bg{
+
+.sticky-bg {
   background-color: #393e46;
 }
+
 @media (max-width: 768px) {
   .navbar:not(.top-nav-collapse) {
     background-color: #393e46;
@@ -15,20 +17,50 @@
     background-color: #393e46;
   }
 }
-a.nav-link{
+
+.scale-on-hover {
   -webkit-transition: all 0.5s ease-in-out;
-  -moz-transition: all  0.5s ease-in-out;
-  -ms-transition: all  0.5s ease-in-out;
-  -o-transition: all  0.5s ease-in-out;
-  transition: all  0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;
+  -ms-transition: all 0.5s ease-in-out;
+  -o-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
 }
-a.nav-link:hover{
+
+.scale-on-hover:hover {
   z-index: 1;
   transform: scale(1.2);
   -ms-transform: scale(1.2);
   -webkit-transition: all 0.5s ease-in-out;
-  -moz-transition: all  0.5s ease-in-out;
-  -ms-transition: all  0.5s ease-in-out;
-  -o-transition: all  0.5s ease-in-out;
-  transition: all  0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;
+  -ms-transition: all 0.5s ease-in-out;
+  -o-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
+}
+
+.transparent-drop-down {
+  background-color: transparent;
+  border-color: gray;
+}
+
+.transparent-drop-down a {
+  color: white;
+}
+
+.transparent-drop-down a:hover {
+  background-color: darkgray;
+}
+
+a.dropdown-item:hover {
+  background-color: #a7c5eb;
+}
+
+.message {
+  position: relative;
+}
+
+.badge-notification {
+  position: absolute;
+  top: -8px;
+  right: -5px;
+  transform: scale(0.7);
 }

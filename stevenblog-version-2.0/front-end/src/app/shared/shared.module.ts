@@ -12,8 +12,6 @@ import {InputTextModule} from 'primeng/inputtext';
     CommonModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    FormsModule,
-    InputTextModule,
   ],
   exports: [
     CommonModule,

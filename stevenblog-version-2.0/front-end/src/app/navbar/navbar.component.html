@@ -2,7 +2,7 @@
      [ngClass]="{'sticky-bg':!isLandingPage}">
   <div class="container">
 
-    <a class="navbar-brand" routerLink="/">Steven's Blog</a>
+    <a class="navbar-brand" routerLink="/" (click)="clearSearchTitleIfExists()">Steven's Blog</a>
 
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#basicExampleNav"
             aria-controls="basicExampleNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -13,48 +13,68 @@
 
       <ul class="navbar-nav mr-auto smooth-scroll">
         <li class="nav-item">
-          <a class="nav-link"
-             routerLink="/">
+          <a class="nav-link scale-on-hover"
+             routerLink="/" (click)="clearSearchTitleIfExists()">
             <i class="fas fa-home"></i> Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link"
-             routerLink="/articles">
+          <a class="nav-link scale-on-hover"
+             routerLink="/articles" (click)="clearSearchTitleIfExists()">
             <i class="fas fa-book-reader"></i> Articles</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link"
-             routerLink="/about">
+          <a class="nav-link scale-on-hover"
+             routerLink="/about" (click)="clearSearchTitleIfExists()">
             <i class="fas fa-id-card-alt">
 
             </i> About</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link"
-             routerLink="/contact">
+          <a class="nav-link scale-on-hover"
+             routerLink="/contact" (click)="clearSearchTitleIfExists()">
             <i class="fas fa-paper-plane"></i> Contact</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link">
+                      <app-navbar-search>
+          </app-navbar-search>
+          </a>
         </li>
       </ul>
       <ul class="nav navbar-nav ml-auto">
-        <li class="nav-item">
-          <app-navbar-search *ngIf="isShowingSearchBar"
-                             (emptyAndLoseFocus)="handleEmptyAndBlurSearchArea($event)">
-
-          </app-navbar-search>
-          <span class="nav-link" *ngIf="!isShowingSearchBar" (click)="showSearchbar()">
-            <i class="pi pi-search pi-backward" ></i>
-          </span>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link"
-             routerLink="/signIn">
+        <li class="nav-item" *ngIf="!loggedIn">
+          <a class="nav-link scale-on-hover"
+             routerLink="/login" (click)="clearSearchTitleIfExists()">
             <i class="fas fa-sign-in-alt">
             </i> Sign In</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link"
-             routerLink="/signUp"
+        <li class="nav-item scale-on-hover" *ngIf="!loggedIn">
+          <a class="nav-link scale-on-hover"
+             routerLink="/signUp" (click)="clearSearchTitleIfExists()"
           ><i class="fas fa-user-plus"></i> Sign Up</a>
+        </li>
+        <li class="nav-item " *ngIf="loggedIn">
+          <a class="nav-link scale-on-hover" (click)="clearSearchTitleIfExists()" routerLink="/account/messages">
+            <span class="message">
+                <i class="fas fa-envelope fa-lg"></i>
+                <span class="badge rounded-pill badge-notification bg-danger" *ngIf="numOfMsg > 0">
+                  {{numOfMsg < 100 ? numOfMsg : '99+'}}
+                </span>
+            </span>
+          </a>
+        </li>
+        <li class="nav-item dropdown" dropdown *ngIf="loggedIn">
+          <a dropdownToggle mdbWavesEffect type="button" class="nav-link dropdown-toggle waves-light">
+            <i class="fas fa-user"></i><span class="caret"></span></a>
+          <div *dropdownMenu class="dropdown-menu dropdown dropdown-primary" role="menu"
+               [ngClass]="{'transparent-drop-down':isLandingPage}">
+            <a class="dropdown-item waves-light" mdbWavesEffect routerLink="/account/profile" (click)="clearSearchTitleIfExists()">Profile</a>
+            <a class="dropdown-item waves-light" mdbWavesEffect routerLink="/account/articles" (click)="clearSearchTitleIfExists()">My Articles</a>
+            <div class="divider dropdown-divider"></div>
+            <a class="dropdown-item"
+               (click)="logout()"
+            ><i class="fas fa-sign-out-alt"></i>Logout</a>
+          </div>
         </li>
       </ul>
     </div>
