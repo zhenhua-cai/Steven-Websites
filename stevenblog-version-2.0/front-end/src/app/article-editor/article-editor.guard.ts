@@ -17,7 +17,7 @@ export class ArticleEditorGuard implements CanActivate, CanDeactivate<ArticleEdi
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 
-    if (!this.articleEditorService.isAbleToAccessEditor && !this.articleEditorService.isEditMode()) {
+    if (!this.articleEditorService.isAbleToAccessEditor) {
       this.router.navigate(['/account/articles']);
     }
     return true;
@@ -33,8 +33,8 @@ export class ArticleEditorGuard implements CanActivate, CanDeactivate<ArticleEdi
       this.articleEditorService.continueNavigateUrl = nextState.url;
       return false;
     }
-    this.articleEditorService.setEditMode(false);
     this.articleEditorService.continueNavigateUrl = null;
+    this.articleEditorService.isAbleToAccessEditor = false;
     return true;
   }
 

@@ -7,10 +7,9 @@ import {Router} from '@angular/router';
   providedIn: 'root'
 })
 export class ArticleEditorService {
-  editMode = false;
   editingDraft = true;
   private _isNewArticle = false;
-  isAbleToAccessEditor = true;
+  isAbleToAccessEditor = false;
   editorHasUnsavedData = false;
   showSaveArticlePopupEvent = new Subject<boolean>();
   continueNavigateUrl: string = null;
@@ -30,19 +29,17 @@ export class ArticleEditorService {
 
   setEditingDraft(value: boolean): void {
     this.editingDraft = value;
-    this.editMode = true;
   }
 
-  setEditMode(value: boolean): void {
-    this.editMode = value;
+  disableEditor(): void {
+    this.isAbleToAccessEditor = false;
+    this.setNewArticle(false);
+    this.editorHasUnsavedData = false;
+    this.continueNavigateUrl = null;
   }
 
   showSaveArticlePopupBeforeLeave(): void {
     this.showSaveArticlePopupEvent.next(true);
-  }
-
-  isEditMode(): boolean {
-    return this.editMode;
   }
 
   isEditingDraft(): boolean {
@@ -55,26 +52,6 @@ export class ArticleEditorService {
 
   isNewArticle(): boolean {
     return this._isNewArticle;
-  }
-
-  showWarningToast(summary: string, detail: string): void {
-    this.showToastMsg('warn', summary, detail);
-  }
-
-  showInfoToast(summary: string, detail: string): void {
-    this.showToastMsg('info', summary, detail);
-  }
-
-  showErrorToast(summary: string, detail: string): void {
-    this.showToastMsg('error', summary, detail);
-  }
-
-  showSuccessToast(summary: string, detail: string): void {
-    this.showToastMsg('success', summary, detail);
-  }
-
-  showToastMsg(severity: string, summary: string, detail: string): void {
-    this.messageService.add({severity, summary, detail});
   }
 
   confirm(header: string, msg: string, icon: string,

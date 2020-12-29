@@ -89,10 +89,3 @@ export class ArticlesService {
   }
 
 }
-
-interface Page {
-  size: number;
-  totalElements: number;
-  totalPages: number;
-  number: number;
-}

@@ -4,14 +4,6 @@
       <span class="hole rounded-circle shadow-lg justify-content-start"></span>
       <span class="hole rounded-circle shadow-lg justify-content-end"></span>
     </div>
-    <!-- block when login in progress-->
-    <p-blockUI [blocked]="blocked"></p-blockUI>
-    <div  *ngIf="blocked" class="loading">
-      <p-progressSpinner></p-progressSpinner>
-    </div>
-    <!-- error toast -->
-    <p-toast position="top-center" baseZIndex="1"></p-toast>
-
     <!--login form-->
     <div class="p-5">
       <div class="text-center mb-2">

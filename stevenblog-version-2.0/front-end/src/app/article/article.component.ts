@@ -6,6 +6,7 @@ import {Location} from '@angular/common';
 import {Observable, Subject, Subscription} from 'rxjs';
 import {ArticleEditorService} from '../article-editor/article-editor.service';
 import {ActionStatusResponse} from '../shared/data-transaction.service';
+import {AppService} from '../app.service';
 
 declare var hljs: any;
 
@@ -26,6 +27,7 @@ export class ArticleComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(private articlesService: ArticlesService,
               private activatedRoute: ActivatedRoute,
               private router: Router,
+              private appService: AppService,
               private location: Location,
               private articleEditorService: ArticleEditorService) {
   }
@@ -119,11 +121,11 @@ export class ArticleComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private showSuccessPublishedMsg(): void {
-    this.articleEditorService.showSuccessToast('Published', 'Successfully Published Article.');
+    this.appService.showSuccessToast('Published', 'Successfully Published Article.');
   }
 
   showDeleteArticleFailMsg(): void {
-    this.articleEditorService.showErrorToast('Delete Failed', 'Unable to delete. Please try again later.');
+    this.appService.showErrorToast('Delete Failed', 'Unable to delete. Please try again later.');
   }
 
   private applyHighlightjs(): void {

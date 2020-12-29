@@ -11,38 +11,18 @@ import {MessageService} from 'primeng/api';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit, OnDestroy {
+export class LoginComponent implements OnInit {
   rememberMe = false;
-  authProcessSubscription: Subscription;
   blocked = false;
 
-  constructor(private loginService: AuthService,
-              private router: Router,
-              private messageService: MessageService) {
+  constructor(private loginService: AuthService) {
   }
 
   ngOnInit(): void {
-    // get response from authentication process.
-    this.authProcessSubscription = this.loginService.authProcessResponse.subscribe((result) => {
-      this.blocked = false;
-      if (result.success) {
-        this.router.navigate(['/']);
-      } else {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Login Error',
-          detail: result.msg
-        });
-      }
-    });
   }
 
   onSubmit(user: AttemptLoginUser): void {
     this.blocked = true;
     this.loginService.login(user);
-  }
-
-  ngOnDestroy(): void {
-    this.authProcessSubscription.unsubscribe();
   }
 }

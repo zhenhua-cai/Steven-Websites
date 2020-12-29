@@ -98,7 +98,7 @@ export class PublishComponent implements OnInit, OnDestroy {
   }
 
   private showSaveFailedMsg(): void {
-    this.articleEditorService.showErrorToast('Save Failed', 'Unable to save article. Please try later.');
+    this.appService.showErrorToast('Save Failed', 'Unable to save article. Please try later.');
   }
 
 }

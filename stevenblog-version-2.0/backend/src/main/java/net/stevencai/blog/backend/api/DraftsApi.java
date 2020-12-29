@@ -10,6 +10,8 @@ import net.stevencai.blog.backend.service.ArticleDraftService;
 import net.stevencai.blog.backend.service.UtilService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -18,6 +20,15 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin("http://localhost:4200")
 public class DraftsApi extends PostApi {
     private ArticleDraftService draftService;
+
+    @GetMapping("/hello1")
+    public String hello1() {
+        return "hello1";
+    }
+    @PostMapping("/hello2")
+    public String hello2() {
+        return "hello2";
+    }
 
     @Autowired
     public void setdraftService(ArticleDraftService draftService) {
@@ -53,12 +64,12 @@ public class DraftsApi extends PostApi {
         return new ArticleResponse(draftService.findArticleDraftById(id));
     }
 
-    @PostMapping("/save")
+    @PostMapping("save")
     public ArticleResponse saveArticleDraft(@RequestBody ArticleResource articleResource) {
         return new ArticleResponse(draftService.saveArticleDraft(articleResource));
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("delete/{id}")
     public ActionStatusResponse deleteArticleDraft(@PathVariable("id") String id) {
         if (id == null) {
             return new ActionStatusResponse(false);

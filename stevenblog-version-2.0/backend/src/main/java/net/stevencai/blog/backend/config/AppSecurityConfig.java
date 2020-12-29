@@ -1,6 +1,7 @@
 package net.stevencai.blog.backend.config;
 
 import net.stevencai.blog.backend.entryPoint.JwtAuthEntryPoint;
+import net.stevencai.blog.backend.filter.AuthenticationFilter;
 import net.stevencai.blog.backend.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -12,10 +13,10 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import javax.sql.DataSource;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -24,6 +25,13 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
     private AuthService authService;
 
     private JwtAuthEntryPoint jwtAuthEntryPoint;
+
+    private AuthenticationFilter authenticationFilter;
+
+    @Autowired
+    public void setAuthenticationFilter(AuthenticationFilter authenticationFilter) {
+        this.authenticationFilter = authenticationFilter;
+    }
 
     @Autowired
     public void setJwtAuthEntryPoint(JwtAuthEntryPoint jwtAuthEntryPoint) {
@@ -42,19 +50,27 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS).permitAll()
+                .antMatchers("/api/auth").permitAll()
                 .antMatchers("/api/articles/").permitAll()
-                .anyRequest()
-                .permitAll()
+                .antMatchers("/api/articles/search").permitAll()
+                .antMatchers("/api/articles/{.{20,}}").permitAll()
+                .antMatchers("/api/articles/**").hasRole("WRITER")
+                .antMatchers("/api/drafts/**").hasRole("WRITER")
+                .antMatchers("/api/account/**").authenticated()
                 .and()
-                .exceptionHandling().authenticationEntryPoint(jwtAuthEntryPoint);
+                .exceptionHandling().authenticationEntryPoint(jwtAuthEntryPoint)
+                .and().sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
     }
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(authService).passwordEncoder(passwordEncoder());
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 

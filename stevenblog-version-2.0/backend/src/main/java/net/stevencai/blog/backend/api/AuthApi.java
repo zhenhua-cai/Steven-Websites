@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 
 @RestController
-@RequestMapping("/api/account")
+@RequestMapping("/api/auth")
 @CrossOrigin("http://localhost:4200")
-public class AccountApi {
+public class AuthApi {
 
     private AuthenticationManager authenticationManager;
     private AccountService accountService;
@@ -42,29 +42,18 @@ public class AccountApi {
     }
 
     @PostMapping("/login")
-    public AuthResponse login(@RequestBody(required = false) ApplicationUser applicationUser,
-                              HttpServletResponse response) {
+    public AuthResponse login(@RequestBody(required = false) ApplicationUser applicationUser) {
 
         authenticate(applicationUser.getUsername(), applicationUser.getPassword());
         User user = accountService.findUserByUsername(applicationUser.getUsername());
         String jwt = jwtService.generateJwt(applicationUser.getUsername());
-        AuthResponse authResponse = new AuthResponse(HttpStatus.OK.value(), jwt);
+        AuthResponse authResponse = new AuthResponse(jwt);
         Roles roles = new Roles(user.getAuthorities());
-        authResponse.setRole(roles);
+        authResponse.setRoles(roles);
         return authResponse;
     }
 
     private void authenticate(String username, String password) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
     }
-
-    private boolean isAuthenticated() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null) {
-            return false;
-        }
-
-        return !(authentication instanceof AnonymousAuthenticationToken);
-    }
-
 }

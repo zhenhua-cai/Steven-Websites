@@ -7,6 +7,7 @@ import {ArticlesService} from '../../articles-list/articles.service';
 import {LazyLoadEvent, MenuItem} from 'primeng/api';
 import {Observable} from 'rxjs';
 import {ArticleEditorService} from '../../article-editor/article-editor.service';
+import {AppService} from '../../app.service';
 
 @Component({
   selector: 'app-my-articles',
@@ -30,6 +31,7 @@ export class MyArticlesComponent implements OnInit {
   constructor(private articleService: ArticlesService,
               private accountService: AccountService,
               private router: Router,
+              private appService: AppService,
               private activateRoute: ActivatedRoute,
               private articleEditorService: ArticleEditorService) {
   }
@@ -42,7 +44,7 @@ export class MyArticlesComponent implements OnInit {
       {label: 'Delete', icon: 'far pi-fw fa-trash-alt', command: () => this.onDeleteArticle()}
     ];
     this.isDraftRoute = this.router.url !== '/account/articles';
-    this.articleEditorService.isAbleToAccessEditor = false;
+    this.articleEditorService.disableEditor();
   }
 
   /**
@@ -74,7 +76,6 @@ export class MyArticlesComponent implements OnInit {
     }
   }
 
-
   onDeleteArticle(): void {
     if (this.selectedArticle == null) {
       return;
@@ -90,7 +91,7 @@ export class MyArticlesComponent implements OnInit {
     if (this.selectedArticle == null) {
       return;
     }
-    let deleteResponse: Observable<ActionStatusResponse> = null;
+    let deleteResponse: Observable<ActionStatusResponse>;
     if (this.isDraftRoute) {
       deleteResponse = this.articleService.deleteArticleDraftById(this.selectedArticle.id);
     } else {
@@ -110,8 +111,6 @@ export class MyArticlesComponent implements OnInit {
         } else {
           this.showDeleteArticleFailMsg();
         }
-      }, error => {
-        this.showDeleteArticleFailMsg();
       }
     );
   }
@@ -281,7 +280,7 @@ export class MyArticlesComponent implements OnInit {
   }
 
   private showDeleteArticleFailMsg(): void {
-    this.articleEditorService.showErrorToast('Delete Article Failed', 'Unable to delete article. Please try later');
+    this.appService.showErrorToast('Delete Article Failed', 'Unable to delete article. Please try later');
   }
 
   private showDeleteArticleSuccessMsg(): void {
@@ -294,7 +293,7 @@ export class MyArticlesComponent implements OnInit {
       summary = 'Article Deleted';
       details = 'Successfully deleted article.';
     }
-    this.articleEditorService.showSuccessToast(summary, details);
+    this.appService.showSuccessToast(summary, details);
   }
 
 }

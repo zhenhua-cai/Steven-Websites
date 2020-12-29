@@ -123,7 +123,6 @@ export class ArticleEditorComponent implements OnInit {
         }
       },
       error => {
-        this.showLoadArticleFailMsg();
         this.isProcessing = false;
         this.lockArticle = true;
       });
@@ -221,8 +220,6 @@ export class ArticleEditorComponent implements OnInit {
               this.showDeleteArticleFailMsg();
               return;
             }
-          }, error => {
-            this.showDeleteArticleFailMsg();
           }
         );
       });
@@ -341,7 +338,6 @@ export class ArticleEditorComponent implements OnInit {
       callBackOnSuccess,
       error => {
         this.appService.unblockScreen();
-        this.showSaveFailedMsg();
         this.isProcessing = false;
       }
     );

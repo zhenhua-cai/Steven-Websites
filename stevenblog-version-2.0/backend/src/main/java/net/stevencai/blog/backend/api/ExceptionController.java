@@ -1,7 +1,9 @@
 package net.stevencai.blog.backend.api;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import net.stevencai.blog.backend.exception.ArticleNotFoundException;
 import net.stevencai.blog.backend.response.AuthResponse;
+import net.stevencai.blog.backend.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,19 +15,41 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class ExceptionController extends ResponseEntityExceptionHandler {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(ExpiredJwtException.class)
-    public AuthResponse handle401(){
-        return new AuthResponse(HttpStatus.UNAUTHORIZED.value(),null,"Invalid JWT");
+    public ErrorResponse handle401() {
+        ErrorResponse response = new ErrorResponse();
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setError(HttpStatus.UNAUTHORIZED.toString());
+        response.setMessage("Invalid JWT");
+        return response;
     }
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(BadCredentialsException.class)
-    public AuthResponse authFail(){
-        return new AuthResponse(HttpStatus.UNAUTHORIZED.value(),null,"Invalid Username/Password");
+    public ErrorResponse authFail() {
+        ErrorResponse response = new ErrorResponse();
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setError(HttpStatus.UNAUTHORIZED.toString());
+        response.setMessage("Invalid Username/Password");
+        return response;
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ArticleNotFoundException.class)
+    public ErrorResponse articleNotFoundException(){
+        ErrorResponse response = new ErrorResponse();
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setError(HttpStatus.UNAUTHORIZED.toString());
+        response.setMessage("Article Not Found");
+        return response;
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(Exception.class)
-    public AuthResponse globalException(){
-        return new AuthResponse(HttpStatus.BAD_REQUEST.value(),null,"Unknown Errors");
+    public ErrorResponse globalException() {
+        ErrorResponse response = new ErrorResponse();
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setError(HttpStatus.UNAUTHORIZED.toString());
+        response.setMessage("Unknown Error");
+        return response;
     }
 }

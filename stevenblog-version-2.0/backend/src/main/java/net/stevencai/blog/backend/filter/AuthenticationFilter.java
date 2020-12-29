@@ -1,10 +1,11 @@
 package net.stevencai.blog.backend.filter;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureException;
 import net.stevencai.blog.backend.service.AccountService;
 import net.stevencai.blog.backend.service.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,7 +17,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -26,9 +26,6 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
     private AccountService accountService;
     private JwtService jwtService;
-
-    @Value("${JWT_COOKIE_NAME}")
-    private String jwtCookieName;
 
     @Autowired
     public void setJwtService(JwtService jwtService) {
@@ -50,9 +47,10 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             jwtToken = requestTokenHeader.substring(7);
             try {
                 username = jwtService.getUsernameFromJwt(jwtToken);
-            } catch (IllegalArgumentException | ExpiredJwtException e) {
+            } catch (IllegalArgumentException | ExpiredJwtException | SignatureException e) {
                 //nothing needs
             }
+            catch(MalformedJwtException ignored){}
         }
         if (username != null && !isAuthenticated()) {
             UserDetails userDetails = accountService.findUserByUsername(username);
