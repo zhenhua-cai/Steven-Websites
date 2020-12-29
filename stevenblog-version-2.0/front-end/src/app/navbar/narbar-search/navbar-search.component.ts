@@ -24,7 +24,7 @@ export class NavbarSearchComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * search article by title.
+   * search article by ArticlePublishTitle.
    */
   searchArticle(): void {
     if (!this.validateTitle()) {
@@ -34,7 +34,7 @@ export class NavbarSearchComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * check if search title is valid.
+   * check if search ArticlePublishTitle is valid.
    * return true if length > 0, otherwise return false;
    */
   validateTitle(): boolean {
@@ -43,8 +43,8 @@ export class NavbarSearchComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * trim leading spaces. if title is null, return empty string.
-   * @param title title to be format
+   * trim leading spaces. if ArticlePublishTitle is null, return empty string.
+   * @param title ArticlePublishTitle to be format
    */
   formatTitle(title: string): string {
     if (title == null) {

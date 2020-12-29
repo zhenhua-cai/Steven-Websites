@@ -2,10 +2,11 @@ import {Component, OnInit} from '@angular/core';
 import {AccountService} from '../account.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Article} from '../../shared/Article';
-import {GetArticlesResponse} from '../../shared/data-transaction.service';
+import {ActionStatusResponse, ArticlesPageResponse} from '../../shared/data-transaction.service';
 import {ArticlesService} from '../../articles-list/articles.service';
 import {LazyLoadEvent, MenuItem} from 'primeng/api';
 import {Observable} from 'rxjs';
+import {ArticleEditorService} from '../../article-editor/article-editor.service';
 
 @Component({
   selector: 'app-my-articles',
@@ -23,21 +24,25 @@ export class MyArticlesComponent implements OnInit {
   items: MenuItem[];
   isDraftRoute = false;
   searchValue: string;
+  searchOrderBy: string = null;
+  searchOrder = -1;
 
   constructor(private articleService: ArticlesService,
               private accountService: AccountService,
               private router: Router,
-              private activateRoute: ActivatedRoute) {
+              private activateRoute: ActivatedRoute,
+              private articleEditorService: ArticleEditorService) {
   }
 
   ngOnInit(): void {
     this.accountService.accountRouteChange(this.router.url);
     this.items = [
       {label: 'View', icon: 'pi pi-fw pi-search', command: () => this.viewArticle(this.selectedArticle)},
-      {label: 'Edit', icon: 'far pi-fw fa-edit', command: () => this.editArticle(this.selectedArticle)},
-      {label: 'Delete', icon: 'far pi-fw fa-trash-alt', command: () => this.deleteArticle(this.selectedArticle)}
+      {label: 'Edit', icon: 'far pi-fw fa-edit', command: () => this.onEditArticle()},
+      {label: 'Delete', icon: 'far pi-fw fa-trash-alt', command: () => this.onDeleteArticle()}
     ];
     this.isDraftRoute = this.router.url !== '/account/articles';
+    this.articleEditorService.isAbleToAccessEditor = false;
   }
 
   /**
@@ -51,6 +56,9 @@ export class MyArticlesComponent implements OnInit {
     // event.rows is the number of rows showing in the table.
     // ex: Page 0 - first element index is 0. Page 1 - first element index is event.row + 1;
     this.currentPage = event.first / event.rows;
+    this.searchOrderBy = event.sortField;
+    this.searchOrder = event.sortOrder;
+    this.pageSize = event.rows;
     this.searchArticlesBy(this.searchValue, event.sortField, event.sortOrder, event.rows);
   }
 
@@ -67,12 +75,66 @@ export class MyArticlesComponent implements OnInit {
   }
 
 
-  deleteArticle(selectedArticle: Article): void {
-
+  onDeleteArticle(): void {
+    if (this.selectedArticle == null) {
+      return;
+    }
+    this.articleEditorService.confirm('Delete Confirmation',
+      'Delete cannot be undone. Do you want to continue?',
+      'fas fa-skull-crossbones', 'p-button-danger',
+      this.deleteArticle.bind(this)
+    );
   }
 
-  editArticle(selectedArticle: Article): void {
+  deleteArticle(): void {
+    if (this.selectedArticle == null) {
+      return;
+    }
+    let deleteResponse: Observable<ActionStatusResponse> = null;
+    if (this.isDraftRoute) {
+      deleteResponse = this.articleService.deleteArticleDraftById(this.selectedArticle.id);
+    } else {
+      deleteResponse = this.articleService.deleteArticleById(this.selectedArticle.id);
+    }
+    deleteResponse.subscribe(
+      (response) => {
+        if (response.status) {
+          this.showDeleteArticleSuccessMsg();
+          this.isLoading = true;
+          this.updateCurrentPage().subscribe(
+            (responseData) => {
+              this.resolveArticlesResponse(responseData);
+              this.isLoading = false;
+            }
+          );
+        } else {
+          this.showDeleteArticleFailMsg();
+        }
+      }, error => {
+        this.showDeleteArticleFailMsg();
+      }
+    );
+  }
 
+  onEditArticle(): void {
+    if (this.selectedArticle == null) {
+      return;
+    }
+    this.articleEditorService.confirm('Edit Confirmation',
+      'Do you want to edit this article?',
+      'far fa-edit', 'p-button-warning',
+      this.editArticle.bind(this)
+    );
+  }
+
+  editArticle(): void {
+    this.articleEditorService.isAbleToAccessEditor = true;
+    if (this.isDraftRoute) {
+      this.articleEditorService.setEditingDraft(true);
+    } else {
+      this.articleEditorService.setEditingDraft(false);
+    }
+    this.router.navigate([`/account/edit/${this.selectedArticle.id}`]);
   }
 
   /**
@@ -105,7 +167,7 @@ export class MyArticlesComponent implements OnInit {
   }
 
   /**
-   * search articles by search value(title). order by certain field -- asc or desc
+   * search articles by search value(ArticlePublishTitle). order by certain field -- asc or desc
    * @param title search value.
    * @param orderBy
    * @param order
@@ -135,34 +197,46 @@ export class MyArticlesComponent implements OnInit {
    * search article by author name and order by certain field.
    * if this page is in draft route. then it searches ArticleDraft instead.
    * * @param size size of the searching page.
-   * @param title article title to be searched.
+   * @param title article ArticlePublishTitle to be searched.
    * @param sortField order by field.
    * @param sortOrder 1 - asc, -1 desc. desc by default.
    * @private
    */
   private searchArticlesByAuthorAndTitleOrderBy(title: string, sortField: string,
-                                                sortOrder: number, size: number): Observable<GetArticlesResponse> {
-    if (!this.isDraftRoute) {
-      return this.articleService
-        .fetchArticlesByAuthorAndTitleOrderBy(this.accountService.getUsername(), title, sortField,
-          sortOrder, this.currentPage, size);
-    }
-    return this.articleService.fetchDraftsByAuthorAndTitleOrderBy(this.accountService.getUsername(), title,
-      sortField, sortOrder, this.currentPage, size);
+                                                sortOrder: number, size: number): Observable<ArticlesPageResponse> {
+    return this.updateTablePage(title, sortField, sortOrder, this.currentPage, size);
   }
 
   /**
    * search article by author name. if this page is in draft route. then it searches ArticleDraft instead.
    * result will be order by last modified date time by default.
-   * @param title article title to be searched
+   * @param title article ArticlePublishTitle to be searched
    * @param size size of the searching page.
    * @private
    */
-  private searchArticlesByAuthorAndTitle(title: string, size: number): Observable<GetArticlesResponse> {
+  private searchArticlesByAuthorAndTitle(title: string, size: number): Observable<ArticlesPageResponse> {
     if (!this.isDraftRoute) {
       return this.articleService.fetchArticlesByAuthorAndTitle(this.accountService.getUsername(), title, this.currentPage, size);
     }
     return this.articleService.fetchDraftsByAuthorAndTitle(this.accountService.getUsername(), title, this.currentPage, size);
+  }
+
+  private updateCurrentPage(): Observable<ArticlesPageResponse> {
+    if (this.searchOrder == null) {
+      return this.searchArticlesByAuthorAndTitle(this.searchValue, this.pageSize);
+    }
+    return this.updateTablePage(this.searchValue, this.searchOrderBy, this.searchOrder, this.currentPage, this.pageSize);
+  }
+
+  private updateTablePage(title: string, sortField: string,
+                          sortOrder: number, page: number, size: number): Observable<ArticlesPageResponse> {
+    if (!this.isDraftRoute) {
+      return this.articleService
+        .fetchArticlesByAuthorAndTitleOrderBy(this.accountService.getUsername(), title, sortField,
+          sortOrder, page, size);
+    }
+    return this.articleService.fetchDraftsByAuthorAndTitleOrderBy(this.accountService.getUsername(), title,
+      sortField, sortOrder, page, size);
   }
 
   /**
@@ -178,7 +252,7 @@ export class MyArticlesComponent implements OnInit {
    *  }
    * @private
    */
-  private resolveArticlesResponse(articlesResponse: GetArticlesResponse): void {
+  private resolveArticlesResponse(articlesResponse: ArticlesPageResponse): void {
     this.articles = articlesResponse.articles;
     this.totalArticles = articlesResponse.responsePage.totalElements;
     this.pageSize = articlesResponse.responsePage.size;
@@ -200,4 +274,27 @@ export class MyArticlesComponent implements OnInit {
       this.router.navigate([`/account/articles/${this.selectedArticle.id}`]);
     }
   }
+
+  createNewArticle($event: MouseEvent): void {
+    this.articleEditorService.isAbleToAccessEditor = true;
+    this.router.navigate(['/account/new']);
+  }
+
+  private showDeleteArticleFailMsg(): void {
+    this.articleEditorService.showErrorToast('Delete Article Failed', 'Unable to delete article. Please try later');
+  }
+
+  private showDeleteArticleSuccessMsg(): void {
+    let summary;
+    let details;
+    if (this.isDraftRoute) {
+      summary = 'Article Draft Deleted';
+      details = 'Successfully deleted article draft.';
+    } else {
+      summary = 'Article Deleted';
+      details = 'Successfully deleted article.';
+    }
+    this.articleEditorService.showSuccessToast(summary, details);
+  }
+
 }

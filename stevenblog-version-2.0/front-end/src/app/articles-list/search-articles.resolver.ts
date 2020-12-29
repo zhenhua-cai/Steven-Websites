@@ -5,18 +5,18 @@ import {
   ActivatedRouteSnapshot
 } from '@angular/router';
 import {Observable, of} from 'rxjs';
-import {GetArticlesResponse} from '../shared/data-transaction.service';
+import {ArticlesPageResponse} from '../shared/data-transaction.service';
 import {ArticlesService} from './articles.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class SearchArticlesResolver implements Resolve<GetArticlesResponse> {
+export class SearchArticlesResolver implements Resolve<ArticlesPageResponse> {
 
   constructor(private articlesService: ArticlesService) {
   }
 
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<GetArticlesResponse> {
+  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<ArticlesPageResponse> {
     return this.articlesService.searchArticleByTitle(route.params.title, 0, 10);
   }
 }

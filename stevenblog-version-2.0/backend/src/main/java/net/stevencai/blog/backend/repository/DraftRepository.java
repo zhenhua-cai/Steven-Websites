@@ -6,7 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface DraftRepository extends JpaRepository<ArticleDraft, String> {
+public interface DraftRepository extends JpaRepository<ArticleDraft, String>, ArticleDraftSaveExtension {
     Page<ArticleDraft> findAllByUserUsernameAndTitleContainingOrderByLastModifiedDateTimeDesc(String username, String title, Pageable pageable);
 
     Page<ArticleDraft> findAllByOrderByLastModifiedDateTimeDesc(Pageable pageable);

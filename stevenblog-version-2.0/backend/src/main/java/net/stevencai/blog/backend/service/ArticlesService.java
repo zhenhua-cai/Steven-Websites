@@ -7,7 +7,12 @@ import org.springframework.data.domain.Page;
 
 public interface ArticlesService {
     ArticleResource findArticleById(String id);
+
     Page<Article> findArticles(int page, int size);
+
+    void saveArticle(Article article);
+
+    void saveArticle(ArticleResource articleResource);
 
     Page<Article> findArticlesByAuthorAndTitleOrderByTitle(String author, String title, int page, int size);
 
@@ -56,4 +61,10 @@ public interface ArticlesService {
     Page<Article> findArticlesOrderByLastModifiedDateTimeAsc(int page, int size);
 
     Page<Article> findArticlesByAuthorAndTitleOrderByCreateDateTimeDesc(String author, String title, int page, int size);
+
+    void deleteArticleById(String id);
+
+    ArticleResource publishArticle(ArticleResource articleResource);
+
+    ArticleResource loadArticleToEdit(String id);
 }

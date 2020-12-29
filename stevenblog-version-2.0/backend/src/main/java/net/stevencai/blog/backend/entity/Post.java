@@ -7,6 +7,8 @@ public interface Post {
 
     String getTitle();
 
+    String getSummary();
+
     String getPath();
 
     LocalDateTime getCreateDateTime();

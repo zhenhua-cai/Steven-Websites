@@ -41,12 +41,8 @@
                 <label for="password">Password</label>
             </span>
           </div>
-          <div class="my-3 ">
-            <span class="d-inline-block" id="remember-me-block">
-              <p-checkbox name="rememberMe" label="Remember Me" ngModel value="{{rememberMe}}" [binary]="true"
-                          (click)="rememberMe=!rememberMe"></p-checkbox>
-            </span>
-            <span class="d-inline-block float-right" id="forget-password">
+          <div class="my-3 d-flex justify-content-end">
+            <span class="d-inline-block " id="forget-password">
               <a routerLink="/reset-password">Forget Password?</a>
             </span>
           </div>

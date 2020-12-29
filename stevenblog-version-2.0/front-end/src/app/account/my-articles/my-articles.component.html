@@ -1,7 +1,6 @@
-
 <div class="my-2 p-2">
   <p-toast></p-toast>
-  <p-contextMenu #cm [model]="items" appendTo="body" ></p-contextMenu>
+  <p-contextMenu #cm [model]="items" appendTo="body"></p-contextMenu>
   <div class="card p-2">
     <p-table [value]="articles"
              dataKey="id"
@@ -21,8 +20,15 @@
              styleClass="p-datatable-striped p-datatable-gridlines"
     >
       <ng-template pTemplate="caption">
-        <div class="d-flex justify-content-end">
-                <span class="p-input-icon-right p-ml-auto">
+        <div class="d-flex justify-content-between">
+                <span>
+                      <button pButton type="button" label="New"
+                              icon="far fa-edit"
+                              class="p-button-outlined p-button-raised p-button-rounded p-button-sm"
+                              (click)="createNewArticle($event)">
+                </button>
+              </span>
+          <span class="p-input-icon-right p-ml-auto">
                     <i class="pi pi-search" (click)="searchArticles($event)"></i>
                     <input pInputText type="text"
                            [(ngModel)]="searchValue"
@@ -33,7 +39,7 @@
         </div>
       </ng-template>
       <ng-template pTemplate="header">
-        <tr >
+        <tr>
           <th style="display: none">Id</th>
           <th pSortableColumn="title" class="text-center">Title
             <p-sortIcon field="title"></p-sortIcon>
@@ -49,7 +55,8 @@
       <ng-template pTemplate="body" let-article>
         <tr [pSelectableRow]="article" [pContextMenuRow]="article">
           <td style="display: none">{{article.id}}</td>
-          <td class="text-center">{{article.title}}</td>
+          <td class="text-center"
+              [ngClass]="{'alert-danger':article.title==null}">{{article.title == null ? 'Title Is Missing' : article.title}}</td>
           <td class="text-center">{{article.createDate | date: 'medium'}}</td>
           <td class="text-center">{{article.lastModified | date: 'medium'}}</td>
         </tr>
@@ -58,3 +65,10 @@
   </div>
 </div>
 
+<!-- confirmation -->
+<p-confirmDialog icon="pi pi-exclamation-triangle" key="default"
+                 defaultFocus="reject"
+                 acceptButtonStyleClass="p-button-outlined"
+                 rejectButtonStyleClass="p-button-outlined"
+></p-confirmDialog>
+<!--end confirmation -->

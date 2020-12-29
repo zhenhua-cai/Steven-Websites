@@ -1,66 +1,81 @@
-.article-list-item{
-  -webkit-transition: all  0.5s ease-in-out;
-  -moz-transition: all  0.5s ease-in-out;
-  -ms-transition: all  0.5s ease-in-out;
-  -o-transition: all  0.5s ease-in-out;
+.article-list-item {
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;
+  -ms-transition: all 0.5s ease-in-out;
+  -o-transition: all 0.5s ease-in-out;
   transition: all 0.5s ease-in-out;
 }
-.article-list-item:hover{
+
+.article-list-item:hover {
   transform: scale(1.5);
   -ms-transform: scale(1.5);
-  -webkit-transition: all  0.5s ease-in-out;
-  -moz-transition: all  0.5s ease-in-out;
-  -ms-transition: all  0.5s ease-in-out;
-  -o-transition: all  0.5s ease-in-out;
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;
+  -ms-transition: all 0.5s ease-in-out;
+  -o-transition: all 0.5s ease-in-out;
   transition: all 0.5s ease-in-out;
 }
-span.article-info{
+
+span.article-info {
   cursor: default;
 }
-a.article-title{
+
+a.article-title {
   cursor: default;
 }
-.article-title{
+
+.article-title {
   font-size: x-large;
   display: block;
   color: #222831;
-  font-weight:bold;
-  width:fit-content;
-  -webkit-transition: all  0.5s ease-in-out;
-  -moz-transition: all  0.5s ease-in-out;
-  -ms-transition: all  0.5s ease-in-out;
-  -o-transition: all  0.5s ease-in-out;
+  font-weight: bold;
+  width: fit-content;
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;
+  -ms-transition: all 0.5s ease-in-out;
+  -o-transition: all 0.5s ease-in-out;
   transition: all 0.5s ease-in-out;
 }
-.article-info{
-  color:darkgray;
+
+.article-info {
+  color: darkgray;
 }
-a.article-title:hover{
+
+a.article-title:hover {
   z-index: 1;
-  color:#c24914;
-  cursor:pointer;
+  color: #c24914;
+  cursor: pointer;
   -webkit-transition: all 0.5s ease-in-out;
-  -moz-transition: all  0.5s ease-in-out;
-  -ms-transition: all  0.5s ease-in-out;
-  -o-transition: all  0.5s ease-in-out;
-  transition: all  0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;
+  -ms-transition: all 0.5s ease-in-out;
+  -o-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
 }
-a:focus{
-  outline:none;
-  color:#c24914;
-  cursor:pointer;
+
+a:focus {
+  outline: none;
+  color: #c24914;
+  cursor: pointer;
   -webkit-transition: all 0.5s ease-in-out;
-  -moz-transition: all  0.5s ease-in-out;
-  -ms-transition: all  0.5s ease-in-out;
-  -o-transition: all  0.5s ease-in-out;
-  transition: all  0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;
+  -ms-transition: all 0.5s ease-in-out;
+  -o-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
 }
-.scale-item{
+
+.scale-item {
   transform: scale(1.5);
   -ms-transform: scale(1.5);
-  -webkit-transition: all  0.5s ease-in-out;
-  -moz-transition: all  0.5s ease-in-out;
-  -ms-transition: all  0.5s ease-in-out;
-  -o-transition: all  0.5s ease-in-out;
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;
+  -ms-transition: all 0.5s ease-in-out;
+  -o-transition: all 0.5s ease-in-out;
   transition: all 0.5s ease-in-out;
+}
+
+.article-summary {
+  font-size: 0.8rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis !important;
 }

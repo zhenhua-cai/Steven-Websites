@@ -2,7 +2,6 @@
 html,
 body {
   height: 100%;
-  min-width: 400px;
 }
 
 .media {
@@ -12,10 +11,6 @@ body {
 
 #articleContent > h1 {
   font-weight: bold;
-}
-
-span#remember-me-block {
-  text-align: center;
 }
 
 span label.p-checkbox-label {
@@ -49,4 +44,26 @@ span label.p-checkbox-label {
 
 .h-90 {
   height: 95%;
+}
+
+div.ck.ck-content {
+  height: 100%;
+}
+
+.p-sidebar-content {
+  height: 100%;
+}
+
+.p-toggleable-content, .p-panel-content {
+  height: 100%;
+}
+
+.no-border, .no-border .p-toggleable-content, .no-border .p-panel-content {
+  border: none !important;
+  padding: 0 !important;
+}
+
+.disable-button {
+  pointer-events: none;
+  opacity: 0.4;
 }

@@ -11,6 +11,9 @@
       <small>Last Modified On </small>
       <small>{{article.lastModified|date: 'medium'}}</small>
     </span>
+    <small class="text-break text-wrap d-block article-summary">
+      {{article.summary ? article.summary : ''}}
+    </small>
   </div>
 </div>
 

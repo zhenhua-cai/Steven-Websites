@@ -1,0 +1,12 @@
+<div class="container row  shadow-lg bg-white rounded h-100 p-3 " >
+  <div class="col-12 ml-auto mr-auto h-100">
+    <div class="ml-auto mr-auto h-100 d-flex flex-column">
+      <div class="flex-grow-0 " >
+        <p-tabMenu [model]="items" [activeItem]="activeItem"></p-tabMenu>
+      </div>
+      <div class="flex-grow-1 ">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </div>
+</div>

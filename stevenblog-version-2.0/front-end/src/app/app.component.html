@@ -1,1 +1,5 @@
 <router-outlet></router-outlet>
+<p-toast position="top-center" baseZIndex="1"></p-toast>
+<p-blockUI [blocked]="needsToBlock">
+  <i class="pi pi-spin pi-spinner" style="font-size: 3rem"></i>
+</p-blockUI>

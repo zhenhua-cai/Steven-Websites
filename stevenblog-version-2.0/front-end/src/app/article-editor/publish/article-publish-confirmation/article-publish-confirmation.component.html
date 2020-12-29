@@ -1,0 +1,56 @@
+<div class="">
+  <div *ngIf="!isInPreview">
+    <p-card>
+      <ng-template pTemplate="header">
+        <div class="p-grid p-nogutter d-flex justify-content-end">
+          <button pButton type="button" icon="pi pi-times" iconPos="left" (click)="cancel()"
+                  class="p-button-text  p-button-rounded p-button-sm">
+          </button>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="title">
+        Article Publish Confirmation
+      </ng-template>
+      <ng-template pTemplate="subtitle">
+        Enter your article description
+      </ng-template>
+      <ng-template pTemplate="content">
+        <div class="p-field p-col-12">
+          <label>Article Title</label>
+          <p>
+            <b>{{article.title}}</b>
+          </p>
+        </div>
+        <div class="p-field p-col-12">
+          <label>Article Summary</label>
+          <p>{{article.summary ? article.summary : '-'}}</p>
+        </div>
+        <div class="p-field p-col-12">
+          <label>Article Content</label>
+          <p class="d-block">
+            <button pButton type="button" icon="pi pi-search" iconPos="left" (click)="previewArticle()"
+                    label="Preview" class="p-button-outlined p-button-raised p-button-rounded">
+            </button>
+          </p>
+
+        </div>
+      </ng-template>
+      <ng-template pTemplate="footer">
+        <div class="p-grid p-nogutter d-flex justify-content-between">
+          <p-button label="Back" (onClick)="prevPage()" icon="pi pi-angle-left"></p-button>
+          <p-button label="Publish" (onClick)="publishArticle()" icon="pi pi-angle-right" iconPos="right"></p-button>
+        </div>
+      </ng-template>
+    </p-card>
+  </div>
+  <!--preview article-->
+  <div *ngIf="isInPreview">
+    <div class="p-grid p-nogutter d-flex justify-content-end">
+      <button pButton type="button" icon="pi pi-times" iconPos="left" (click)="cancelPreview()"
+              class="p-button-text p-button-raised p-button-rounded p-button-sm">
+      </button>
+    </div>
+    <div id="articleContent" class="mt-1 p-5">
+    </div>
+  </div>
+</div>

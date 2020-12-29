@@ -1,0 +1,43 @@
+.article-editor-outer-container {
+  height: 100%;
+}
+
+.loading {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-left: -3em;
+  margin-top: -5em;
+  z-index: 1;
+}
+
+.sidebar-button {
+  z-index: 1;
+  position: absolute;
+  right: 0;
+  top: 20%;
+}
+
+.lock-screen-button {
+  z-index: 1;
+  position: absolute;
+  top: 20%;
+}
+
+.no-header {
+  display: none !important;
+}
+
+.navbar-height {
+  height: 30px;
+}
+
+@media screen and (max-width: 620px) {
+  .lock-screen-button {
+    display: none;
+  }
+}
+
+.publish-steps {
+  position: absolute;
+}

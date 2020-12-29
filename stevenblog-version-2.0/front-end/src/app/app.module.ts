@@ -15,8 +15,11 @@ import {LandingPageModule} from './landing-page/landing-page.module';
 import {ArticlesListModule} from './articles-list/articles-list.module';
 import {ArticleModule} from './article/article.module';
 import {AddAuthCookieInterceptor} from './shared/add-auth-cookie.interceptor';
-import {MessageService} from 'primeng/api';
+import {ConfirmationService, MessageService} from 'primeng/api';
 import {AccountModule} from './account/account.module';
+import {ArticleEditorModule} from './article-editor/article-editor.module';
+import {ToastModule} from 'primeng/toast';
+import {BlockUIModule} from 'primeng/blockui';
 
 @NgModule({
   declarations: [
@@ -37,12 +40,16 @@ import {AccountModule} from './account/account.module';
     LandingPageModule,
     ArticlesListModule,
     ArticleModule,
-    AccountModule
+    AccountModule,
+    ArticleEditorModule,
+    ToastModule,
+    BlockUIModule
   ],
   providers: [
     [
       {provide: HTTP_INTERCEPTORS, useClass: AddAuthCookieInterceptor, multi: true},
-      MessageService
+      MessageService,
+      ConfirmationService,
     ]
   ],
   exports: [

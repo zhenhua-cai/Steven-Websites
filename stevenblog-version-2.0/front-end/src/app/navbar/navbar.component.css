@@ -64,3 +64,7 @@ a.dropdown-item:hover {
   right: -5px;
   transform: scale(0.7);
 }
+.navbar .dropdown-menu-right {
+  right: 0;
+  left: auto;
+}

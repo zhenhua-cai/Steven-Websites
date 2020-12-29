@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {DataTransactionService} from './data-transaction.service';
 import {AttemptLoginUser, AuthedUser} from './ApplicationUser.model';
 import {BehaviorSubject, Subject} from 'rxjs';
+import {Router} from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ export class AuthService {
   authedUser: AuthedUser = null;
   userAuthedEvent = new BehaviorSubject<AuthedUser>(null);
 
-  constructor(private dataTransaction: DataTransactionService) {
+  constructor(private dataTransaction: DataTransactionService, private router: Router) {
   }
 
   autoLogin(): void {
@@ -45,6 +46,7 @@ export class AuthService {
     localStorage.removeItem('user');
     this.userAuthedEvent.next(null);
     this.authedUser = null;
+    this.router.navigate(['/login']);
   }
 
   isAuthenticated(): boolean {

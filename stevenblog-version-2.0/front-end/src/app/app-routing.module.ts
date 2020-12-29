@@ -17,6 +17,13 @@ import {MyMessagesComponent} from './account/my-messages/my-messages.component';
 import {AuthGuard} from './shared/auth-guard.service';
 import {DraftResolver} from './account/draft-resolver.service';
 import {MyArticleResolver} from './account/my-article.resolver';
+import {ArticleEditorComponent} from './article-editor/article-editor.component';
+import {ArticleEditorGuard} from './article-editor/article-editor.guard';
+import {NewArticleGuard} from './article-editor/new-article.guard';
+import {PublishComponent} from './article-editor/publish/publish.component';
+import {ArticlePublishTitleComponent} from './article-editor/publish/ArticlePublishTitle/ArticlePublishTitle.component';
+import {ArticlePublishConfirmationComponent} from './article-editor/publish/article-publish-confirmation/article-publish-confirmation.component';
+import {PublishGuard} from './article-editor/publish.guard';
 
 
 const routes: Routes = [
@@ -25,8 +32,8 @@ const routes: Routes = [
     {
       path: 'articles', component: BlogComponent, children: [
         {path: '', component: ArticlesListComponent, resolve: {articlesResponse: ArticlesResolver}},
-        {path: 'search/:title', component: ArticlesListComponent, resolve: {articlesResponse: SearchArticlesResolver}},
-        {path: ':id', component: ArticleComponent, resolve: {article: ArticleResolver}}
+        {path: 'search/:ArticlePublishTitle', component: ArticlesListComponent, resolve: {articlesResponse: SearchArticlesResolver}},
+        {path: ':id', component: ArticleComponent, resolve: {articleResponse: ArticleResolver}}
       ]
     },
     {
@@ -59,10 +66,29 @@ const routes: Routes = [
             {path: 'messages', component: MyMessagesComponent}
           ]
         },
-        {path: 'articles/:id', component: ArticleComponent, resolve: {article: MyArticleResolver}},
+        {path: 'articles/:id', component: ArticleComponent, resolve: {articleResponse: MyArticleResolver}},
         {
-          path: 'drafts/:id', component: ArticleComponent, resolve: {article: DraftResolver}
-        }
+          path: 'drafts/:id', component: ArticleComponent, resolve: {articleResponse: DraftResolver}
+        },
+      ]
+    },
+    {
+      path: 'account/new',
+      canActivate: [AuthGuard, NewArticleGuard, ArticleEditorGuard],
+      canDeactivate: [ArticleEditorGuard, NewArticleGuard],
+      component: ArticleEditorComponent
+    },
+    {
+      path: 'account/edit/:id',
+      canActivate: [AuthGuard, ArticleEditorGuard],
+      canDeactivate: [ArticleEditorGuard],
+      component: ArticleEditorComponent
+    },
+    {
+      path: 'account/publish', canActivate: [AuthGuard, PublishGuard], canActivateChild: [AuthGuard, PublishGuard],
+      canDeactivate: [PublishGuard], component: PublishComponent, children: [
+        {path: 'title', component: ArticlePublishTitleComponent},
+        {path: 'confirmation', component: ArticlePublishConfirmationComponent}
       ]
     }
   ]

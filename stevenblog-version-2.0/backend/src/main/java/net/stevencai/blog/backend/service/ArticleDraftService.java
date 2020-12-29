@@ -56,4 +56,7 @@ public interface ArticleDraftService {
 
     Page<ArticleDraft> findArticleDraftsByAuthorAndTitleOrderByCreateDateTimeDesc(String author, String title, int page, int size);
 
+    ArticleResource saveArticleDraft(ArticleResource articleResource);
+
+    void deleteArticleDraftById(String id);
 }

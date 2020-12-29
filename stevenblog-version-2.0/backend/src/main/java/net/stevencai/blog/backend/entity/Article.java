@@ -1,6 +1,7 @@
 package net.stevencai.blog.backend.entity;
 
 import lombok.Data;
+import net.stevencai.blog.backend.clientResource.ArticleResource;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -8,12 +9,15 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "article")
 @Data
-public class Article implements Post{
+public class Article implements Post {
     @Id
     private String id;
 
     @Column
     private String title;
+
+    @Column
+    private String summary;
 
     @Column
     private LocalDateTime createDateTime;
@@ -39,14 +43,20 @@ public class Article implements Post{
         lastModifiedDateTime = createDateTime;
     }
 
-    public Article(String id, String path, User user) {
+    public Article(String id,
+                   String title,
+                   String summary,
+                   LocalDateTime createDateTime,
+                   LocalDateTime lastModifiedDateTime,
+                   String path, User user) {
         this.id = id;
-        createDateTime = LocalDateTime.now();
-        lastModifiedDateTime = createDateTime;
+        this.title = title;
+        this.createDateTime = createDateTime;
+        this.lastModifiedDateTime = lastModifiedDateTime;
         this.path = path;
         this.user = user;
+        this.summary = summary;
     }
-
 
     public void modified() {
         lastModifiedDateTime = LocalDateTime.now();

@@ -11,6 +11,7 @@ import {ButtonModule} from 'primeng/button';
 import {ContextMenuModule} from 'primeng/contextmenu';
 import {ToastModule} from 'primeng/toast';
 import {FormsModule} from '@angular/forms';
+import {ConfirmDialogModule} from 'primeng/confirmdialog';
 
 
 @NgModule({
@@ -28,7 +29,8 @@ import {FormsModule} from '@angular/forms';
     ButtonModule,
     ContextMenuModule,
     ToastModule,
-    FormsModule
+    FormsModule,
+    ConfirmDialogModule
   ]
 })
 export class AccountModule {

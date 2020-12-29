@@ -1,10 +1,9 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import {ArticleComponent} from './article.component';
 import {SharedModule} from '../shared/shared.module';
 import {ButtonModule} from 'primeng/button';
-
-
+import {ToastModule} from 'primeng/toast';
+import {ConfirmDialogModule} from 'primeng/confirmdialog';
 
 @NgModule({
   declarations: [
@@ -12,7 +11,9 @@ import {ButtonModule} from 'primeng/button';
   ],
   imports: [
     SharedModule,
-    ButtonModule
+    ButtonModule,
+    ToastModule,
+    ConfirmDialogModule,
   ]
 })
 export class ArticleModule { }

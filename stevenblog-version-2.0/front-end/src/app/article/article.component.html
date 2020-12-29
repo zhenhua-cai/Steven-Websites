@@ -4,19 +4,19 @@
           class="p-button-outlined p-button-raised p-button-rounded p-button-sm shadow-lg"
           (click)="backButtonClicked($event)">
   </button>
-  <span class="float-right" *ngIf="isInOwerMode">
+  <span class="float-right" *ngIf="isInOwnerMode">
       <span>
               <button pButton type="button" label="Edit"
                       icon="far fa-edit"
                       class="p-button-outlined p-button-raised p-button-rounded p-button-sm shadow-lg"
-                      (click)="editArticle($event)">
+                      (click)="onEditArticle($event)">
         </button>
       </span>
       <span class="ml-1">
                 <button pButton type="button" label="Delete"
                         icon="far fa-trash-alt"
                         class="p-button-outlined p-button-raised p-button-rounded p-button-sm shadow-lg"
-                        (click)="deleteArticle($event)">
+                        (click)="onDeleteArticle($event)">
         </button>
       </span>
 
@@ -25,6 +25,15 @@
 </div>
 
 <div class="container shadow-lg bg-white rounded">
-  <div #articleContent class="mt-1 p-5">
+  <h1 class="mx-5 pt-5 text-center">{{article.title}}</h1>
+  <div #articleContent id="articleContent" class="mt-1 p-5 bg-white">
   </div>
 </div>
+
+<!-- confirmation -->
+<p-confirmDialog icon="pi pi-exclamation-triangle" key="default"
+                 defaultFocus="reject"
+                 acceptButtonStyleClass="p-button-outlined"
+                 rejectButtonStyleClass="p-button-outlined"
+></p-confirmDialog>
+<!--end confirmation -->

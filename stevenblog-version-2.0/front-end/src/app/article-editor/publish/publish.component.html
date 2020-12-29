@@ -1,0 +1,25 @@
+<div class="article-editor-outer-container p-5">
+  <div class="container h-100 py-3">
+    <div class="card">
+      <p-toast></p-toast>
+      <p-steps [model]="publishSteps" [readonly]="true"></p-steps>
+    </div>
+    <div class="mt-2 p-5 shadow-lg bg-white rounded ">
+        <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
+<!-- quit confirmation -->
+<p-confirmDialog key="saveBeforeLeave" #cd
+                 header="Unsaved Article"
+                 icon="fas fa-save"
+                 message="Do you want to save article before leave?">
+  <p-footer>
+    <button type="button" pButton icon="pi pi-times" label="Discard" (click)="discardArticleBeforeLeave()"
+            class=" p-button-raised p-button-danger"></button>
+    <button type="button" pButton icon="pi pi-circle-off" label="Stay" (click)="cd.close($event)"
+            class=" p-button-raised p-button-warning"></button>
+    <button type="button" pButton icon="pi pi-check" label="Save" (click)="SaveAndLeave()"
+            class=" p-button-raised p-button-success"></button>
+  </p-footer>
+</p-confirmDialog>

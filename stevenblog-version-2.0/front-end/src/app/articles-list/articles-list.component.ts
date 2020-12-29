@@ -4,7 +4,7 @@ import {ArticlesService} from './articles.service';
 
 import {Subscription} from 'rxjs';
 import {ActivatedRoute, Params, Router} from '@angular/router';
-import {GetArticlesResponse} from '../shared/data-transaction.service';
+import {ArticlesPageResponse} from '../shared/data-transaction.service';
 
 @Component({
   selector: 'app-articles-list',
@@ -46,7 +46,7 @@ export class ArticlesListComponent implements OnInit, OnDestroy {
     window.scrollTo(0, 0);
   }
 
-  private resolveArticlesResponse(articlesResponse: GetArticlesResponse): void {
+  private resolveArticlesResponse(articlesResponse: ArticlesPageResponse): void {
     this.articles = articlesResponse.articles;
     this.totalArticles = articlesResponse.responsePage.totalElements;
     this.pageSize = articlesResponse.responsePage.size;

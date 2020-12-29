@@ -16,6 +16,9 @@ public class ArticleDraft implements Post{
     private String title;
 
     @Column
+    private String summary;
+
+    @Column
     private LocalDateTime createDateTime;
 
     @Column
@@ -51,6 +54,17 @@ public class ArticleDraft implements Post{
         this.lastModifiedDateTime = article.getLastModifiedDateTime();
         this.title = article.getTitle();
         this.path = article.getPath();
+        this.summary = article.getSummary();
+    }
+
+    public ArticleDraft(String id, String title, String summary, LocalDateTime createDate, LocalDateTime lastModified, String path, User user) {
+        this.id = id;
+        this.title = title;
+        this.createDateTime = createDate;
+        this.lastModifiedDateTime = lastModified;
+        this.path = path;
+        this.user = user;
+        this.summary = summary;
     }
 
     public void modified(){

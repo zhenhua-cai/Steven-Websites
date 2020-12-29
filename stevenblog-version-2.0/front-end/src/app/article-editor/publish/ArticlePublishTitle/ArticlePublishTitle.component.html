@@ -1,0 +1,47 @@
+<div class="">
+  <p-card>
+    <ng-template pTemplate="header">
+      <div class="p-grid p-nogutter d-flex justify-content-end">
+        <button pButton type="button" icon="pi pi-times" iconPos="left" (click)="cancel()"
+                class="p-button-text  p-button-rounded p-button-sm">
+        </button>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="title">
+      Article Information
+    </ng-template>
+    <ng-template pTemplate="subtitle">
+      Enter your article description
+    </ng-template>
+    <ng-template pTemplate="content">
+      <div class="p-fluid">
+        <div class="p-field">
+          <label for="articleTitle">Article Title</label>
+          <input #title="ngModel" id="articleTitle" type="text" required pInputText [(ngModel)]="article.title"
+                 minlength="10" maxlength="50"
+                 [ngClass]="{'p-invalid': (title.invalid && submitted) || (title.dirty && title.invalid)}">
+          <small *ngIf="(title.invalid && submitted) || (title.dirty && title.invalid)" class="p-error">Article Title
+            should have at least 10 characters.</small>
+        </div>
+        <div class="p-field mt-3">
+          <label for="articleSummary">Summary(Optional)</label>
+          <textarea pInputTextarea [(ngModel)]="article.summary" id="articleSummary" #summary='ngModel'
+                    [rows]="5" [cols]="30" maxlength="256"
+                    [ngClass]="{'p-invalid': (summary.invalid && submitted) || (summary.dirty && title.invalid)}"
+                    autoResize="autoResize"></textarea>
+          <small *ngIf="(summary.invalid && submitted) || (summary.dirty && summary.invalid)" class="p-error">
+            Article summary should have no more than 256 characters.
+          </small>
+        </div>
+
+      </div>
+    </ng-template>
+    <ng-template pTemplate="footer">
+      <div class="p-grid p-nogutter d-flex justify-content-between">
+        <p-button label="Cancel" (onClick)="prevPage()" icon="pi pi-times"></p-button>
+        <p-button label="Next" (onClick)="nextPage()" icon="pi pi-angle-right" iconPos="right"></p-button>
+      </div>
+    </ng-template>
+  </p-card>
+</div>
+

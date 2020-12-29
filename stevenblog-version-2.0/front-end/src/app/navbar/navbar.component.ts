@@ -38,11 +38,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
   logout(): void {
     this.clearSearchTitleIfExists();
     this.authService.logout();
-    this.router.navigate(['/login']);
   }
 
   /**
-   * clear title input.
+   * clear ArticlePublishTitle input.
    * this method should be call before navigate to other url if needed.
    */
   clearSearchTitleIfExists(): void {

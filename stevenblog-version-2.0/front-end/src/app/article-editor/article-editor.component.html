@@ -1,0 +1,53 @@
+<div class="article-editor-outer-container">
+  <div class="container h-100 py-3">
+    <p-panel [showHeader]="false" #panel styleClass="h-100 no-border">
+      <div class="shadow-lg bg-white rounded h-100 ml-auto mr-auto" #editorContainer>
+        <ckeditor [editor]="Editor" [(ngModel)]="content" [config]="editorConfig"
+                  (ready)="onEditorReady($event)"></ckeditor>
+      </div>
+    </p-panel>
+  </div>
+</div>
+<!-- confirmation -->
+<p-confirmDialog icon="pi pi-exclamation-triangle" key="default"
+                 defaultFocus="reject"
+                 acceptButtonStyleClass="p-button-outlined"
+                 rejectButtonStyleClass="p-button-outlined"
+></p-confirmDialog>
+<p-confirmDialog key="saveBeforeLeave" #cd
+                 header="Unsaved Article"
+                 icon="fas fa-save"
+                 message="Do you want to save article before leave?">
+  <p-footer>
+    <button type="button" pButton icon="pi pi-times" label="Discard" (click)="discardArticleBeforeLeave()"
+            class=" p-button-raised p-button-danger"></button>
+    <button type="button" pButton icon="pi pi-circle-off" label="Stay" (click)="cd.close($event)"
+            class=" p-button-raised p-button-warning"></button>
+    <button type="button" pButton icon="pi pi-check" label="Save" (click)="SaveAndLeave()"
+            class=" p-button-raised p-button-success"></button>
+  </p-footer>
+</p-confirmDialog>
+<!--end confirmation -->
+<!-- side bar -->
+<p-sidebar [(visible)]="displaySideBar" position="right" styleClass="p-sidebar-sm">
+  <p-menu [model]="sidebarMenuItems" styleClass="w-100 h-100"></p-menu>
+</p-sidebar>
+
+<button pButton type="button" (click)="displaySideBar = true" *ngIf="showSidebarButton"
+        icon="pi pi-cog"
+        class="p-button-sm  p-button-outlined p-button-raised sidebar-button">
+</button>
+<!-- end of side bar -->
+<!-- lock screen -->
+<p-blockUI [blocked]="lockArticle" [target]="panel">
+  <i class="pi pi-lock" style="font-size: 3rem"></i>
+</p-blockUI>
+
+<div *ngIf="isProcessing" class="loading">
+  <p-progressSpinner></p-progressSpinner>
+</div>
+<button pButton type="button" (click)="lockOrUnlockScreen($event)" *ngIf="displayLockScreenButton"
+        [icon]="lockScreenIcon()"
+        class="p-button-sm  p-button-outlined p-button-raised lock-screen-button">
+</button>
+<!-- end lock screen -->

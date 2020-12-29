@@ -66,7 +66,7 @@
         <li class="nav-item dropdown" dropdown *ngIf="loggedIn">
           <a dropdownToggle mdbWavesEffect type="button" class="nav-link dropdown-toggle waves-light">
             <i class="fas fa-user"></i><span class="caret"></span></a>
-          <div *dropdownMenu class="dropdown-menu dropdown dropdown-primary" role="menu"
+          <div class="dropdown-menu dropdown dropdown-primary dropdown-menu-right" role="menu"
                [ngClass]="{'transparent-drop-down':isLandingPage}">
             <a class="dropdown-item waves-light" mdbWavesEffect routerLink="/account/profile" (click)="clearSearchTitleIfExists()">Profile</a>
             <a class="dropdown-item waves-light" mdbWavesEffect routerLink="/account/articles" (click)="clearSearchTitleIfExists()">My Articles</a>

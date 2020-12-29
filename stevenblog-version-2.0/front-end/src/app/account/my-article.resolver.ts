@@ -7,15 +7,16 @@ import {
 import { Observable, of } from 'rxjs';
 import {ArticlesService} from '../articles-list/articles.service';
 import {Article} from '../shared/Article';
+import {ArticleResponse} from '../shared/data-transaction.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class MyArticleResolver implements Resolve<Article> {
+export class MyArticleResolver implements Resolve<ArticleResponse> {
   constructor(private articlesService: ArticlesService) {
     this.articlesService = articlesService;
   }
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Article> {
+  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<ArticleResponse> {
     return this.articlesService.searchArticleById(route.params.id);
   }
 }
