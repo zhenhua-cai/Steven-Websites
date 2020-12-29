@@ -145,22 +145,20 @@ export class ArticleEditorComponent implements OnInit {
   @HostListener('window:popstate', ['$event']) preventDefaultBackward($event): void {
     $event.preventDefault();
     $event.returnValue = 'Your data will be lost!';
-    if (this.contentChangedSinceSave()) {
-      this.articleEditorService.editorHasUnsavedData = true;
-    }
+    this.articleEditorService.editorHasUnsavedData = this.contentChangedSinceSave();
   }
 
   onCancel(): void {
     this.displaySideBar = false;
     if (!this.contentChangedSinceSave()) {
-      this.location.back();
+      this.router.navigate(['/account/drafts']);
       return;
     }
     this.articleEditorService.confirm('Cancel Confirmation',
       'Do you want to cancel editing?',
       'fas fa-skull-crossbones', 'p-button-danger',
       () => {
-        this.location.back();
+        this.router.navigate(['/account/drafts']);
       });
   }
 
@@ -174,6 +172,8 @@ export class ArticleEditorComponent implements OnInit {
       'Do you want to logout?',
       'fas fa-skull-crossbones', 'p-button-danger',
       () => {
+        this.content = null;
+        this.oldContent = null;
         this.authService.logout();
       });
   }
@@ -195,7 +195,7 @@ export class ArticleEditorComponent implements OnInit {
   onDelete(): void {
     this.displaySideBar = false;
     if (this.editorIsEmpty()) {
-      this.location.back();
+      this.router.navigate(['/account/drafts']);
       return;
     }
     this.articleEditorService.confirm('Delete Confirmation',
@@ -207,14 +207,16 @@ export class ArticleEditorComponent implements OnInit {
         // in that case. this.article is not null, we need to check this.article.id
         if (this.article == null || this.article.id == null) {
           // if this.article == null, it means nothing saved yet. just go back to prev page.
-          this.location.back();
+          this.router.navigate(['/account/drafts']);
           return;
         }
         // remove this article from db. we don't delete published article. only the draft.
         this.articlesService.deleteArticleDraftById(this.article.id).subscribe(
           (response) => {
             if (response.status) {
-              this.location.back();
+              this.content = null;
+              this.oldContent = null;
+              this.router.navigate(['/account/drafts']);
             } else {
               this.showDeleteArticleFailMsg();
               return;
@@ -337,7 +339,7 @@ export class ArticleEditorComponent implements OnInit {
   private saveArticleAndExecuteAfterSuccess(callBackOnSuccess: (response: ArticleResponse) => void): void {
     this.articlesService.saveArticleDraft(this.article).subscribe(
       callBackOnSuccess,
-        error => {
+      error => {
         this.appService.unblockScreen();
         this.showSaveFailedMsg();
         this.isProcessing = false;
