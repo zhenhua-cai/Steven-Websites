@@ -3,19 +3,18 @@ package net.stevencai.blog.backend.api;
 import net.stevencai.blog.backend.clientResource.ApplicationUser;
 import net.stevencai.blog.backend.clientResource.Roles;
 import net.stevencai.blog.backend.entity.User;
+import net.stevencai.blog.backend.exception.TooManyAuthAttemptsException;
 import net.stevencai.blog.backend.response.AuthResponse;
 import net.stevencai.blog.backend.service.AccountService;
+import net.stevencai.blog.backend.service.AuthService;
 import net.stevencai.blog.backend.service.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -25,6 +24,12 @@ public class AuthApi {
     private AuthenticationManager authenticationManager;
     private AccountService accountService;
     private JwtService jwtService;
+    private AuthService authService;
+
+    @Autowired
+    public void setAuthService(AuthService authService) {
+        this.authService = authService;
+    }
 
     @Autowired
     public void setAccountService(AccountService accountService) {
@@ -42,9 +47,18 @@ public class AuthApi {
     }
 
     @PostMapping("/login")
-    public AuthResponse login(@RequestBody(required = false) ApplicationUser applicationUser) {
-
-        authenticate(applicationUser.getUsername(), applicationUser.getPassword());
+    public AuthResponse login(@RequestBody(required = false) ApplicationUser applicationUser,
+                              HttpServletRequest request) {
+        if (!authService.isOkForNextAuthAttempt(request.getRemoteAddr())) {
+            throw new TooManyAuthAttemptsException();
+        }
+        try {
+            authenticate(applicationUser.getUsername(), applicationUser.getPassword());
+        } catch (BadCredentialsException ex) {
+            authService.increaseAuthAttempts(request.getRemoteAddr());
+            throw ex;
+        }
+        authService.clearAuthAttempts(request.getRemoteAddr());
         User user = accountService.findUserByUsername(applicationUser.getUsername());
         String jwt = jwtService.generateJwt(applicationUser.getUsername());
         AuthResponse authResponse = new AuthResponse(jwt);

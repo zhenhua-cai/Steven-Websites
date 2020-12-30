@@ -1,12 +1,10 @@
 <component name="ArtifactManager">
-  <artifact type="exploded-war" name="stevenblog-version1:war exploded">
-    <output-path>$PROJECT_DIR$/out/artifacts/stevenblog_version1_war_exploded</output-path>
+  <artifact type="exploded-war" name="back-end:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/back_end_war_exploded</output-path>
     <root id="root">
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
-          <element id="module-output" name="stevenblog-version1" />
-          <element id="library" level="application" name="bootstrap" />
-          <element id="library" level="application" name="jquery-3.5.1" />
+          <element id="module-output" name="back-end" />
         </element>
         <element id="directory" name="lib">
           <element id="library" level="project" name="Maven: org.aspectj:aspectjrt:1.9.6" />
@@ -87,7 +85,7 @@
           <element id="library" level="project" name="Maven: com.fasterxml.uuid:java-uuid-generator:4.0.1" />
         </element>
       </element>
-      <element id="javaee-facet-resources" facet="stevenblog-version1/web/Web" />
+      <element id="javaee-facet-resources" facet="back-end/web/Web" />
     </root>
   </artifact>
 </component>

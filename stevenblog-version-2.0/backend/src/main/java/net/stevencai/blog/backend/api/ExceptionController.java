@@ -2,6 +2,7 @@ package net.stevencai.blog.backend.api;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import net.stevencai.blog.backend.exception.ArticleNotFoundException;
+import net.stevencai.blog.backend.exception.TooManyAuthAttemptsException;
 import net.stevencai.blog.backend.response.AuthResponse;
 import net.stevencai.blog.backend.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
@@ -40,6 +41,16 @@ public class ExceptionController extends ResponseEntityExceptionHandler {
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setError(HttpStatus.UNAUTHORIZED.toString());
         response.setMessage("Article Not Found");
+        return response;
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(TooManyAuthAttemptsException.class)
+    public ErrorResponse tooManyAuthAttemptsException(){
+        ErrorResponse response = new ErrorResponse();
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setError(HttpStatus.UNAUTHORIZED.toString());
+        response.setMessage("You have too many attempts. Come back later");
         return response;
     }
 
