@@ -9,6 +9,8 @@ import net.stevencai.blog.backend.service.AccountService;
 import net.stevencai.blog.backend.service.AuthService;
 import net.stevencai.blog.backend.service.EmailService;
 import net.stevencai.blog.backend.service.JwtService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -27,6 +29,7 @@ public class AuthApi {
     private JwtService jwtService;
     private AuthService authService;
     private EmailService emailService;
+    private final Logger logger = LoggerFactory.getLogger(AuthApi.class);
 
     @Autowired
     public void setEmailService(EmailService emailService) {
