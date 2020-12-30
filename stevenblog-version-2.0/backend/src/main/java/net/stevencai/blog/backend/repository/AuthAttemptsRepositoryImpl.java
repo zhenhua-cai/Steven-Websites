@@ -35,16 +35,6 @@ public class AuthAttemptsRepositoryImpl implements AuthAttemptsRepository {
     }
 
     @Override
-    public void increaseAttempts(String ip) {
-        AuthAttempts authAttempts = getAuthAttemptsObj(ip);
-        if (authAttempts == null) {
-            authAttempts = new AuthAttempts();
-        }
-        authAttempts.setAttempts(authAttempts.getAttempts() + 1);
-        setAuthAttemptsObj(ip, authAttempts);
-    }
-
-    @Override
     public void clearAttempts(String ip) {
         redis.delete(ip);
     }
@@ -67,13 +57,14 @@ public class AuthAttemptsRepositoryImpl implements AuthAttemptsRepository {
         if (hasRemainingAttempts) {
             return true;
         }
-        boolean lastAttemptWas2HoursAgo = authAttempts.getLastAttempt()
+        boolean ableToAttempt = authAttempts.getLastAttempt()
                 .plusHours(ATTEMPTS_MIN_DURATION)
                 .isBefore(LocalDateTime.now());
-        if (lastAttemptWas2HoursAgo) {
+        //if user is able to attempt after ATTEMPTS_MIN_DURATION, then unblock ip, and clear attempts.
+        if (ableToAttempt) {
             clearAttempts(ip);
         }
-        return lastAttemptWas2HoursAgo;
+        return ableToAttempt;
     }
 
     private AuthAttempts getAuthAttemptsObj(String ip) {
@@ -84,4 +75,15 @@ public class AuthAttemptsRepositoryImpl implements AuthAttemptsRepository {
         redis.opsForValue().set(ip, authAttempts);
     }
 
+    public boolean needsToNotifyOwnerAfterIncrease(String ip) {
+        AuthAttempts authAttempts = getAuthAttemptsObj(ip);
+        if (authAttempts == null) {
+            authAttempts = new AuthAttempts();
+        }
+        authAttempts.setAttempts(authAttempts.getAttempts() + 1);
+
+        setAuthAttemptsObj(ip, authAttempts);
+
+        return authAttempts.getAttempts() >= MAX_ATTEMPTS;
+    }
 }

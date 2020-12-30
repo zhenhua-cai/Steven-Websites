@@ -38,8 +38,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void increaseAuthAttempts(String ip) {
-        authAttemptsRepository.increaseAttempts(ip);
+    public boolean needsToNotifyOwnerAfterIncrease(String ip) {
+        return authAttemptsRepository.needsToNotifyOwnerAfterIncrease(ip);
     }
 
     @Override

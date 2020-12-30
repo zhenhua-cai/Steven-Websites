@@ -4,7 +4,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface AuthService extends UserDetailsService {
     boolean isOkForNextAuthAttempt(String ip);
-    void increaseAuthAttempts(String ip);
+
+    boolean needsToNotifyOwnerAfterIncrease(String ip);
 
     void clearAuthAttempts(String remoteAddr);
 }

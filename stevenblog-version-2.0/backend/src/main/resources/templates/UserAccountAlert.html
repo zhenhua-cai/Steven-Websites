@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Alert</title>
+</head>
+<body>
+    <div>
+        <h2>Hello,<span th:text="${username}"></span>,</h2>
+        <p>
+            Your account has abnormal login attempts from <span th:text="${ipAddress}"></span>
+            at <span th:text="${#temporals.format(loginTime, 'MM/dd/yyyy HH:mm:ss')}"></span>.
+        </p>
+        <p>
+            Currently <span th:text="${ipAddress}"></span> is blocked for <span th:text="${blockHours}"></span> hours.
+            If this was you, please <a href="">reset your password</a>.
+        </p>
+    </div>
+</body>
+</html>

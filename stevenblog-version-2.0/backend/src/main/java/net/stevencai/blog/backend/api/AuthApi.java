@@ -7,6 +7,7 @@ import net.stevencai.blog.backend.exception.TooManyAuthAttemptsException;
 import net.stevencai.blog.backend.response.AuthResponse;
 import net.stevencai.blog.backend.service.AccountService;
 import net.stevencai.blog.backend.service.AuthService;
+import net.stevencai.blog.backend.service.EmailService;
 import net.stevencai.blog.backend.service.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,6 +26,12 @@ public class AuthApi {
     private AccountService accountService;
     private JwtService jwtService;
     private AuthService authService;
+    private EmailService emailService;
+
+    @Autowired
+    public void setEmailService(EmailService emailService) {
+        this.emailService = emailService;
+    }
 
     @Autowired
     public void setAuthService(AuthService authService) {
@@ -49,16 +56,19 @@ public class AuthApi {
     @PostMapping("/login")
     public AuthResponse login(@RequestBody(required = false) ApplicationUser applicationUser,
                               HttpServletRequest request) {
-        if (!authService.isOkForNextAuthAttempt(request.getRemoteAddr())) {
+        String ip = request.getRemoteAddr();
+        if (!authService.isOkForNextAuthAttempt(ip)) {
             throw new TooManyAuthAttemptsException();
         }
         try {
             authenticate(applicationUser.getUsername(), applicationUser.getPassword());
         } catch (BadCredentialsException ex) {
-            authService.increaseAuthAttempts(request.getRemoteAddr());
+            if (authService.needsToNotifyOwnerAfterIncrease(ip)) {
+                this.emailService.sendUserAuthAlert(applicationUser.getUsername(), ip);
+            }
             throw ex;
         }
-        authService.clearAuthAttempts(request.getRemoteAddr());
+        authService.clearAuthAttempts(ip);
         User user = accountService.findUserByUsername(applicationUser.getUsername());
         String jwt = jwtService.generateJwt(applicationUser.getUsername());
         AuthResponse authResponse = new AuthResponse(jwt);

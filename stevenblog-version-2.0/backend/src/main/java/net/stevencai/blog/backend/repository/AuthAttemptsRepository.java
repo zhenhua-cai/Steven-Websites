@@ -6,10 +6,9 @@ import org.springframework.stereotype.Repository;
 
 public interface AuthAttemptsRepository {
     int getAttempts(String ip);
-
-    void increaseAttempts(String ip);
-
     void clearAttempts(String ip);
 
     boolean okForNextAttempts(String ip);
+
+    boolean needsToNotifyOwnerAfterIncrease(String ip);
 }
