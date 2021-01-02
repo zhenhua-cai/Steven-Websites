@@ -4,6 +4,8 @@ import net.stevencai.blog.backend.entity.ArticleDraft;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -22,14 +24,17 @@ public class DraftRepositoryImpl extends PostSaveExtension implements ArticleDra
     }
 
     @Override
-    public void saveArticleDraft(ArticleDraft articleDraft) {
+    @CachePut(value="articleDraftCache", key="#result.id")
+    public ArticleDraft saveArticleDraft(ArticleDraft articleDraft) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
         savePost(articleDraft, entityManager.unwrap(Session.class));
         entityManager.getTransaction().commit();
+        return articleDraft;
     }
 
     @Override
+    @CacheEvict("articleDraftCache")
     public void deleteByIdIfExists(String id) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();

@@ -1,8 +1,9 @@
 package net.stevencai.blog.backend.entity;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public interface Post {
+public interface Post extends Serializable {
     String getId();
 
     String getTitle();

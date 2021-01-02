@@ -1,10 +1,10 @@
-<div class="mb-1">
+<div class="mb-1 d-flex justify-content-between">
   <button pButton type="button" label="Back"
           icon="pi pi-arrow-left"
           class="p-button-outlined p-button-raised p-button-rounded p-button-sm shadow-lg"
           (click)="backButtonClicked($event)">
   </button>
-  <span class="float-right" *ngIf="isInOwnerMode">
+  <span *ngIf="isInOwnerMode">
       <span>
               <button pButton type="button" label="Edit"
                       icon="far fa-edit"

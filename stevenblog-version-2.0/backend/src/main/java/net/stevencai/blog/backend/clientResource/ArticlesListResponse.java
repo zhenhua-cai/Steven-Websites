@@ -2,10 +2,11 @@ package net.stevencai.blog.backend.clientResource;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Data
-public class ArticlesListResponse {
+public class ArticlesListResponse implements Serializable {
     private List<ArticleResource> articles;
     private ResponsePage responsePage;
 

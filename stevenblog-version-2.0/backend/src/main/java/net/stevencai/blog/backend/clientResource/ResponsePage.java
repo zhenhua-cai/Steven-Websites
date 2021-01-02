@@ -2,8 +2,10 @@ package net.stevencai.blog.backend.clientResource;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class ResponsePage {
+public class ResponsePage implements Serializable {
 
     private int size;
     private int number;

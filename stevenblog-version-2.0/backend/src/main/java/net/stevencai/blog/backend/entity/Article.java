@@ -4,12 +4,13 @@ import lombok.Data;
 import net.stevencai.blog.backend.clientResource.ArticleResource;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "article")
 @Data
-public class Article implements Post {
+public class Article implements Post, Serializable {
     @Id
     private String id;
 

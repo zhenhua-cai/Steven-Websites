@@ -3,12 +3,13 @@ package net.stevencai.blog.backend.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
 @Data
 @Table(name="articleDraft")
-public class ArticleDraft implements Post{
+public class ArticleDraft implements Post, Serializable {
     @Id
     private String id;
 

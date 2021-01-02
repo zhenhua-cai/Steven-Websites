@@ -8,10 +8,11 @@ import net.stevencai.blog.backend.entity.Post;
 import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
-public class ArticleResource {
+public class ArticleResource implements Serializable {
 
     private String id;
 

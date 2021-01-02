@@ -3,10 +3,11 @@ package net.stevencai.blog.backend.clientResource;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 @Data
-public class Roles {
+public class Roles implements Serializable {
     private String[] roles;
 
     public Roles() {

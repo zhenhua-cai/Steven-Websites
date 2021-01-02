@@ -34,32 +34,47 @@ export class ArticleComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.isInOwnerMode = this.router.url.startsWith('/account/');
+    this.isDraftArticle = this.router.url.startsWith('/account/drafts');
     this.activatedRoute.data.subscribe(
       (data) => {
         if (data.articleResponse.articleResource) {
           this.article = data.articleResponse.articleResource;
         } else if (data.articleResponse.accessToken) {
-          this.articlesService.searchArticleById(this.activatedRoute.snapshot.params.id).subscribe(
-            (articleResponse) => {
-              this.article = articleResponse.articleResource;
-              if (this.isComponentRendered) {
-                this.articleContent.nativeElement.innerHTML = this.article.content;
-              }
-            }
-          );
+          this.appService.storeAuthToken(data.articleResponse.accessToken, data.articleResponse.refreshToken);
+          this.reloadDataAfterAccessTokenRefresh();
         }
       }
     );
-    this.isInOwnerMode = this.router.url.startsWith('/account/');
-    this.isDraftArticle = this.router.url.startsWith('/account/drafts');
+
     this.articlePublishedSubscription = this.articlesService.publishedArticleEvent.subscribe(
       (value) => {
         this.isJustPublishedArticle = value;
-        this.applyHighlightjs();
+        if (this.article) {
+          this.applyHighlightjs();
+        }
       }
     );
     this.articleEditorService.isAbleToAccessEditor = false;
+  }
 
+  private reloadDataAfterAccessTokenRefresh(): void {
+    let articleResponseData;
+    if (this.isDraftArticle) {
+      articleResponseData = this.articlesService.searchArticleDraftById(this.activatedRoute.snapshot.params.id);
+    }
+    else if(this.isInOwnerMode){
+      articleResponseData = this.articlesService.searchArticleToEditById(this.activatedRoute.snapshot.params.id);
+    }
+    articleResponseData.subscribe(
+      (articleResponse) => {
+        this.article = articleResponse.articleResource;
+        if (this.isComponentRendered) {
+          this.articleContent.nativeElement.innerHTML = this.article.content;
+          this.applyHighlightjs();
+        }
+      }
+    );
   }
 
   ngOnDestroy(): void {
