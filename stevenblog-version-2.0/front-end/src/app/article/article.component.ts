@@ -1,9 +1,9 @@
-import {AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ArticlesService} from '../articles-list/articles.service';
 import {Article} from '../shared/Article';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Location} from '@angular/common';
-import {Observable, Subject, Subscription} from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
 import {ArticleEditorService} from '../article-editor/article-editor.service';
 import {ActionStatusResponse} from '../shared/data-transaction.service';
 import {AppService} from '../app.service';
@@ -64,11 +64,11 @@ export class ArticleComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  backButtonClicked($event: MouseEvent): void {
+  backButtonClicked(ignore: MouseEvent): void {
     this.location.back();
   }
 
-  onEditArticle($event: MouseEvent): void {
+  onEditArticle(ignore: MouseEvent): void {
     this.articleEditorService.confirm('Edit Confirmation',
       'Do you want to edit this article?',
       'far fa-edit', 'p-button-warning',
@@ -89,7 +89,7 @@ export class ArticleComponent implements OnInit, OnDestroy, AfterViewInit {
     this.router.navigate([`/account/edit/${this.article.id}`]);
   }
 
-  onDeleteArticle($event: MouseEvent): void {
+  onDeleteArticle(ignore: MouseEvent): void {
     this.articleEditorService.confirm('Delete Confirmation',
       'Delete cannot be undone. Do you want to continue?',
       'fas fa-skull-crossbones', 'p-button-danger',
@@ -101,21 +101,23 @@ export class ArticleComponent implements OnInit, OnDestroy, AfterViewInit {
    * delete article or article draft
    */
   deleteArticle(): void {
-    let deleteResponse: Observable<ActionStatusResponse> = null;
+    let deleteResponse: Observable<ActionStatusResponse>;
     if (this.isDraftArticle) {
       deleteResponse = this.articlesService.deleteArticleDraftById(this.article.id);
     } else {
       deleteResponse = this.articlesService.deleteArticleById(this.article.id);
     }
+    this.appService.blockScreen();
     deleteResponse.subscribe(
       (response) => {
+        this.appService.unblockScreen();
         if (response.status) {
           this.location.back();
         } else {
           this.showDeleteArticleFailMsg();
         }
       }, error => {
-        this.showDeleteArticleFailMsg();
+        this.articlesService.handle401Error(error, this.deleteArticle.bind(this));
       }
     );
   }

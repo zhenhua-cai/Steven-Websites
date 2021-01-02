@@ -1,9 +1,9 @@
 package net.stevencai.blog.backend.api;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import net.stevencai.blog.backend.exception.ArticleNotFoundException;
 import net.stevencai.blog.backend.exception.TooManyAuthAttemptsException;
-import net.stevencai.blog.backend.response.AuthResponse;
 import net.stevencai.blog.backend.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -15,12 +15,12 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @RestControllerAdvice
 public class ExceptionController extends ResponseEntityExceptionHandler {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    @ExceptionHandler(ExpiredJwtException.class)
+    @ExceptionHandler({ExpiredJwtException.class})
     public ErrorResponse handle401() {
         ErrorResponse response = new ErrorResponse();
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setError(HttpStatus.UNAUTHORIZED.toString());
-        response.setMessage("Invalid JWT");
+        response.setMessage("JWT Expired");
         return response;
     }
 
@@ -36,7 +36,7 @@ public class ExceptionController extends ResponseEntityExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ArticleNotFoundException.class)
-    public ErrorResponse articleNotFoundException(){
+    public ErrorResponse articleNotFoundException() {
         ErrorResponse response = new ErrorResponse();
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setError(HttpStatus.UNAUTHORIZED.toString());
@@ -46,14 +46,22 @@ public class ExceptionController extends ResponseEntityExceptionHandler {
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(TooManyAuthAttemptsException.class)
-    public ErrorResponse tooManyAuthAttemptsException(){
+    public ErrorResponse tooManyAuthAttemptsException() {
         ErrorResponse response = new ErrorResponse();
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setError(HttpStatus.UNAUTHORIZED.toString());
         response.setMessage("You have too many attempts. Come back later");
         return response;
     }
-
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler({JwtException.class})
+    public ErrorResponse handleInvalidJWT() {
+        ErrorResponse response = new ErrorResponse();
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setError(HttpStatus.UNAUTHORIZED.toString());
+        response.setMessage("Invalid JWT");
+        return response;
+    }
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(Exception.class)
     public ErrorResponse globalException() {

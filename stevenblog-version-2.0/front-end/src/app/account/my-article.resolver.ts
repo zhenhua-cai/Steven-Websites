@@ -6,7 +6,6 @@ import {
 } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import {ArticlesService} from '../articles-list/articles.service';
-import {Article} from '../shared/Article';
 import {ArticleResponse} from '../shared/data-transaction.service';
 
 @Injectable({

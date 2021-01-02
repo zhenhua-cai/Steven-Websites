@@ -84,8 +84,7 @@ export class PublishComponent implements OnInit, OnDestroy {
         this.goToEditor();
       },
       error => {
-        this.appService.unblockScreen();
-        this.showSaveFailedMsg();
+        this.articlesService.handle401Error(error, this.SaveAndLeave.bind(this));
       }
     );
   }
@@ -96,9 +95,4 @@ export class PublishComponent implements OnInit, OnDestroy {
     this.publishService.isInPublishProgress = false;
     this.router.navigate([`/account/edit/${this.article.id}`]);
   }
-
-  private showSaveFailedMsg(): void {
-    this.appService.showErrorToast('Save Failed', 'Unable to save article. Please try later.');
-  }
-
 }

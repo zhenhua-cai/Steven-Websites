@@ -5,13 +5,19 @@ import net.stevencai.blog.backend.clientResource.Roles;
 
 @Data
 public class AuthResponse {
-    private String jwt;
-    private Roles roles;
+    private String accessToken;
+
+    private String refreshToken;
 
     public AuthResponse() {
     }
 
-    public AuthResponse( String jwt) {
-        this.jwt = jwt;
+    public AuthResponse(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public AuthResponse(String refreshToken, String accessToken) {
+        this.refreshToken = refreshToken;
+        this.accessToken = accessToken;
     }
 }

@@ -67,4 +67,9 @@ public interface ArticlesService {
     ArticleResource publishArticle(ArticleResource articleResource);
 
     ArticleResource loadArticleToEdit(String id);
+
+    Page<Article> searchArticlesByAuthorOrTitleOrderByLastModifiedDateTimeDesc(String author, String title, int page, int size);
+
+    Page<Article> searchArticlesByAuthorOrTitleOrderBy(String author, String title, String sortBy, Integer sortOrder, int page, int size);
+
 }

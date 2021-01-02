@@ -6,5 +6,4 @@ export class AttemptLoginUser {
 export class AuthedUser {
   username: string;
   roles: string[];
-  token: string;
 }

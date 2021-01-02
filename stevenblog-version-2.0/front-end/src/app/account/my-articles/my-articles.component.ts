@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {AccountService} from '../account.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Article} from '../../shared/Article';
@@ -14,7 +14,7 @@ import {AppService} from '../../app.service';
   templateUrl: './my-articles.component.html',
   styleUrls: ['./my-articles.component.css']
 })
-export class MyArticlesComponent implements OnInit {
+export class MyArticlesComponent implements OnInit, OnDestroy {
 
   articles: Article[];
   totalArticles: number;
@@ -35,6 +35,10 @@ export class MyArticlesComponent implements OnInit {
               private activateRoute: ActivatedRoute,
               private articleEditorService: ArticleEditorService) {
   }
+
+  ngOnDestroy(): void {
+  }
+
 
   ngOnInit(): void {
     this.accountService.accountRouteChange(this.router.url);
@@ -102,15 +106,23 @@ export class MyArticlesComponent implements OnInit {
         if (response.status) {
           this.showDeleteArticleSuccessMsg();
           this.isLoading = true;
-          this.updateCurrentPage().subscribe(
-            (responseData) => {
-              this.resolveArticlesResponse(responseData);
-              this.isLoading = false;
-            }
-          );
+          this.updateCurrentAfterDelete();
         } else {
           this.showDeleteArticleFailMsg();
         }
+      }, error => {
+        this.articleService.handle401Error(error, this.deleteArticle.bind(this));
+      }
+    );
+  }
+
+  private updateCurrentAfterDelete(): void {
+    this.updateCurrentPage().subscribe(
+      (responseData) => {
+        this.resolveArticlesResponse(responseData);
+        this.isLoading = false;
+      }, error => {
+        this.articleService.handle401Error(error, this.updateCurrentAfterDelete.bind(this));
       }
     );
   }
@@ -180,6 +192,8 @@ export class MyArticlesComponent implements OnInit {
         .subscribe((articlesResponse) => {
           this.resolveArticlesResponse(articlesResponse);
           this.isLoading = false;
+        }, error => {
+          this.articleService.handle401Error(error, this.searchArticlesBy.bind(this), title, orderBy, order, pageSize);
         });
     } else {
       // sort field not present, by default, sort by last modified date.
@@ -188,6 +202,8 @@ export class MyArticlesComponent implements OnInit {
           (articlesResponse) => {
             this.resolveArticlesResponse(articlesResponse);
             this.isLoading = false;
+          }, error => {
+            this.articleService.handle401Error(error, this.searchArticlesBy.bind(this), title, orderBy, order, pageSize);
           });
     }
   }
@@ -215,9 +231,9 @@ export class MyArticlesComponent implements OnInit {
    */
   private searchArticlesByAuthorAndTitle(title: string, size: number): Observable<ArticlesPageResponse> {
     if (!this.isDraftRoute) {
-      return this.articleService.fetchArticlesByAuthorAndTitle(this.accountService.getUsername(), title, this.currentPage, size);
+      return this.articleService.fetchMyArticlesByTitle(title, this.currentPage, size);
     }
-    return this.articleService.fetchDraftsByAuthorAndTitle(this.accountService.getUsername(), title, this.currentPage, size);
+    return this.articleService.fetchMyDraftsByTitle(title, this.currentPage, size);
   }
 
   private updateCurrentPage(): Observable<ArticlesPageResponse> {
@@ -231,10 +247,10 @@ export class MyArticlesComponent implements OnInit {
                           sortOrder: number, page: number, size: number): Observable<ArticlesPageResponse> {
     if (!this.isDraftRoute) {
       return this.articleService
-        .fetchArticlesByAuthorAndTitleOrderBy(this.accountService.getUsername(), title, sortField,
+        .fetchMyArticlesByTitleOrderBy(title, sortField,
           sortOrder, page, size);
     }
-    return this.articleService.fetchDraftsByAuthorAndTitleOrderBy(this.accountService.getUsername(), title,
+    return this.articleService.fetchMyDraftsByTitleOrderBy(title,
       sortField, sortOrder, page, size);
   }
 

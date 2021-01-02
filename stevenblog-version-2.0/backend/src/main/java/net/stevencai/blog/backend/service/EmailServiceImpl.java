@@ -2,7 +2,6 @@ package net.stevencai.blog.backend.service;
 
 import net.stevencai.blog.backend.entity.User;
 import net.stevencai.blog.backend.exception.SendingEmailFailException;
-import org.apache.juli.logging.LogFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +25,12 @@ public class EmailServiceImpl implements EmailService {
     private AccountService accountService;
     private final Logger logger = LoggerFactory.getLogger(EmailServiceImpl.class);
 
-    @Value("${AUTH_ATTEMPTS_MIN_DURATION_AFTER_FAIL}")
+    @Value("${auth.min.duration.after.fail}")
     private int blockHours;
+
+    @Value("${steven.blog.domain}")
+    private String host;
+
     private SpringTemplateEngine thymeleaf;
 
     @Autowired
@@ -57,6 +60,7 @@ public class EmailServiceImpl implements EmailService {
         attributes.put("ipAddress", ip);
         attributes.put("loginTime", LocalDateTime.now());
         attributes.put("blockHours", blockHours);
+        attributes.put("resetLinnk", generateLink("account/resetPassword"));
         sendEmail("UserAccountAlert", attributes, user.getEmail(), "Account Login Alert");
     }
 
@@ -76,5 +80,9 @@ public class EmailServiceImpl implements EmailService {
         } catch (MessagingException e) {
             logger.error("Fail to send email to " + sendTo, e);
         }
+    }
+
+    private String generateLink(String path) {
+        return host + path;
     }
 }

@@ -59,4 +59,9 @@ public interface ArticleDraftService {
     ArticleResource saveArticleDraft(ArticleResource articleResource);
 
     void deleteArticleDraftById(String id);
+
+    Page<ArticleDraft> searchArticleDraftsByAuthorOrTitleOrderByLastModifiedDateTimeDesc(String name, String title, int page, int size);
+
+    Page<ArticleDraft> searchArticleDraftsByAuthorOrTitleOrderBy(String author, String title, String sortBy, Integer sortOrder, int page, int size);
+
 }

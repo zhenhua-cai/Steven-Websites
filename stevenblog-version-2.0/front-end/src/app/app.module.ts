@@ -14,12 +14,13 @@ import {SharedModule} from './shared/shared.module';
 import {LandingPageModule} from './landing-page/landing-page.module';
 import {ArticlesListModule} from './articles-list/articles-list.module';
 import {ArticleModule} from './article/article.module';
-import {AddAuthCookieInterceptor} from './shared/add-auth-cookie.interceptor';
+import {AddAuthTokenInterceptor} from './shared/add-auth-token-interceptor.service';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {AccountModule} from './account/account.module';
 import {ArticleEditorModule} from './article-editor/article-editor.module';
 import {ToastModule} from 'primeng/toast';
 import {BlockUIModule} from 'primeng/blockui';
+import {ErrorModule} from './error/error.module';
 
 @NgModule({
   declarations: [
@@ -43,11 +44,12 @@ import {BlockUIModule} from 'primeng/blockui';
     AccountModule,
     ArticleEditorModule,
     ToastModule,
-    BlockUIModule
+    BlockUIModule,
+    ErrorModule
   ],
   providers: [
     [
-      {provide: HTTP_INTERCEPTORS, useClass: AddAuthCookieInterceptor, multi: true},
+      {provide: HTTP_INTERCEPTORS, useClass: AddAuthTokenInterceptor, multi: true},
       MessageService,
       ConfirmationService,
     ]

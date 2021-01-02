@@ -27,6 +27,7 @@
     "bootstrap": "^4.5.3",
     "jquery": "^3.5.1",
     "jquery-ui-dist": "^1.12.1",
+    "jwt-decode": "^3.1.2",
     "mdbootstrap": "^4.19.2",
     "primeicons": "^4.1.0",
     "primeng": "^11.0.0",

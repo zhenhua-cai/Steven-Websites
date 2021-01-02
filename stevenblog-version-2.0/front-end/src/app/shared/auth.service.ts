@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
-import {DataTransactionService} from './data-transaction.service';
+import {AuthResponse, DataTransactionService} from './data-transaction.service';
 import {AttemptLoginUser, AuthedUser} from './ApplicationUser.model';
-import {BehaviorSubject, Subject} from 'rxjs';
+import {BehaviorSubject} from 'rxjs';
 import {Router} from '@angular/router';
 import {AppService} from '../app.service';
 
@@ -9,55 +9,77 @@ import {AppService} from '../app.service';
   providedIn: 'root'
 })
 export class AuthService {
+  isLoggedIn = false;
   authedUser: AuthedUser = null;
-  userAuthedEvent = new BehaviorSubject<AuthedUser>(null);
+  userAuthedEvent = new BehaviorSubject<boolean>(null);
 
   constructor(private dataTransaction: DataTransactionService,
               private router: Router,
               private appService: AppService) {
   }
 
+  /**
+   * auto login. check if user info is stored.
+   * if true, autologin, otherwise, not login.
+   */
   autoLogin(): void {
-    this.authedUser = JSON.parse(localStorage.getItem('user'));
-
-    this.userAuthedEvent.next(this.authedUser);
+    const refreshToken = this.appService.getRefreshToken();
+    if (!refreshToken) {
+      this.clearAuthInfo();
+      return;
+    }
+    this.authedUser = this.appService.getUserInfo();
+    if (this.authedUser) {
+      this.isLoggedIn = true;
+      this.userAuthedEvent.next(true);
+    }
+    else{
+      this.clearAuthInfo();
+    }
   }
 
   login(user: AttemptLoginUser): void {
     this.appService.blockScreen();
+    this.appService.isLoggingIn = true;
     this.dataTransaction.login(user).subscribe(
-      (responseData) => {
-        this.authedUser = new AuthedUser();
-        this.authedUser.username = user.username;
-        this.authedUser.token = 'Bearer ' + responseData.jwt;
-        this.authedUser.roles = responseData.roles;
-        localStorage.setItem('user', JSON.stringify(this.authedUser));
+      (authResponse) => {
         this.appService.unblockScreen();
-        this.userAuthedEvent.next(this.authedUser);
+        this.isLoggedIn = true;
+        this.authedUser = this.processAuthResponse(user, authResponse);
+        this.userAuthedEvent.next(true);
+        this.appService.isLoggingIn = false;
         this.router.navigate(['/']);
-      }, error => {
+      }, ignore => {
         this.appService.unblockScreen();
+        this.appService.isLoggingIn = false;
       }
     );
   }
 
-  logout(): void {
-    localStorage.removeItem('user');
-    this.userAuthedEvent.next(null);
-    this.authedUser = null;
-    this.router.navigate(['/login']);
+  logout(): Promise<boolean> {
+    this.clearAuthInfo();
+    return this.router.navigate(['/login']);
   }
 
   isAuthenticated(): boolean {
-    return this.authedUser != null;
+    return this.isLoggedIn;
   }
 
-  getUsername(): string {
-    return this.authedUser != null ? this.authedUser.username : null;
-  }
-}
 
-export class AuthResult {
-  success: boolean;
-  msg: string;
+  clearAuthInfo(): void {
+    this.appService.clearAuthInfo();
+    this.userAuthedEvent.next(false);
+    this.isLoggedIn = false;
+  }
+
+  /**
+   * store authed information: user info, access token , refresh token.
+   * @param user
+   * @param authResponse
+   * @private
+   */
+  private processAuthResponse(user: AttemptLoginUser, authResponse: AuthResponse): AuthedUser {
+    this.appService.storeAuthToken(authResponse.accessToken, authResponse.refreshToken);
+    return this.appService.storeUserInfo(user, authResponse.roles);
+  }
 }

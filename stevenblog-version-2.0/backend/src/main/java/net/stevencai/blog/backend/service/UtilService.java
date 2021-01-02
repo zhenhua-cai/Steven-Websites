@@ -1,6 +1,8 @@
 package net.stevencai.blog.backend.service;
 
 
+import javax.servlet.http.HttpServletRequest;
+
 public interface UtilService {
     String getArticlesBasePath();
     String getArticleDraftsBasePath();
@@ -15,4 +17,5 @@ public interface UtilService {
         return str == null || str.length() == 0;
     }
 
+    String getClientIp(HttpServletRequest request);
 }

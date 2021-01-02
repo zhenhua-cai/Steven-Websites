@@ -42,7 +42,7 @@ export class ArticlePublishTitleComponent implements OnInit, OnDestroy {
 
     this.formatArticleTitleAndSummary();
     if (!this.isValidTitle()) {
-      this.messageService.add({severity: 'error', detail: 'Article Title should have at least 5 characters'});
+      this.messageService.add({severity: 'error', detail: 'Article Title\'s length should between 10 and 150 characters'});
       hasError = true;
     }
     if (!this.isValidSummary()) {
@@ -63,7 +63,8 @@ export class ArticlePublishTitleComponent implements OnInit, OnDestroy {
    * @private
    */
   private isValidTitle(): boolean {
-    return this.article != null && this.article.title != null && this.article.title.length >= 10;
+    return this.article != null && this.article.title != null
+      && this.article.title.length >= 10 && this.article.title.length <= 150;
   }
 
   /**

@@ -8,7 +8,7 @@
         <RollingFile name="WroxFileAppender" fileName="./stevenblog/logs/steven-blog-log.log"
                      filePattern="./stevenblog/logs/application-%d{MM-dd-yyyy}-%i.log">
             <PatternLayout>
-                <pattern>%d{HH:mm:ss.SSS} [%t] %X{id} %X{username} %-5level %c{36} %l: %msg%n</pattern>
+                <pattern>%d{DEFAULT} [%t] %X{id} %X{username} %-5level %c{36} %l: %msg%n</pattern>
             </PatternLayout>
             <Policies>
                 <SizeBasedTriggeringPolicy size="10 MB" />

@@ -14,7 +14,7 @@
         </p>
         <p>
             Currently <span th:text="${ipAddress}"></span> is blocked for <span th:text="${blockHours}"></span> hours.
-            If this was you, please <a href="">reset your password</a>.
+            If this was you, please <a th:href="${resetLink}">reset your password</a>.
         </p>
     </div>
 </body>

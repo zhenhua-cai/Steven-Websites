@@ -9,7 +9,8 @@ import net.stevencai.blog.backend.exception.ArticleNotAbleToWriteToDiskException
 import net.stevencai.blog.backend.exception.ArticleNotFoundException;
 import net.stevencai.blog.backend.repository.ArticleRepository;
 import net.stevencai.blog.backend.repository.DraftRepository;
-import net.stevencai.blog.backend.response.ArticleResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,6 +34,7 @@ public class ArticlesServiceImpl implements ArticlesService, ArticleDraftService
     private DraftRepository draftRepository;
     private UtilService utilService;
     private AccountService accountService;
+    private final Logger logger = LoggerFactory.getLogger(ArticlesServiceImpl.class);
 
     @Autowired
     public void setAccountService(AccountService accountService) {
@@ -399,6 +401,205 @@ public class ArticlesServiceImpl implements ArticlesService, ArticleDraftService
 
     }
 
+    @Override
+    public Page<Article> searchArticlesByAuthorOrTitleOrderBy(String author, String title,
+                                                              String sortBy, Integer sortOrder,
+                                                              int page, int size) {
+        Page<Article> pageable = null;
+        switch (sortBy.toLowerCase()) {
+            case "title":
+                if (sortOrder == null || sortOrder == -1) {
+                    pageable = searchArticlesByAuthorOrTitleOrderByTitleDesc(author, title, page, size);
+                } else {
+                    pageable = searchArticlesByAuthorOrTitleOrderByTitleAsc(author, title, page, size);
+                }
+                break;
+            case "createdatetime":
+                if (sortOrder == null || sortOrder == -1) {
+                    pageable = searchArticlesByAuthorOrTitleOrderByCreateDateTimeDesc(author, title, page, size);
+                } else {
+                    pageable = searchArticlesByAuthorOrTitleOrderByCreateDateTimeAsc(author, title, page, size);
+                }
+                break;
+            case "lastmodifieddatetime":
+            default:
+                if (sortOrder == null || sortOrder == -1) {
+                    pageable = searchArticlesByAuthorOrTitleOrderByLastModifiedDateTimeDesc(author, title, page, size);
+                } else {
+                    pageable = searchArticlesByAuthorOrTitleOrderByLastModifiedDateTimeAsc(author, title, page, size);
+                }
+                break;
+        }
+        return pageable;
+    }
+
+    @Override
+    public Page<ArticleDraft> searchArticleDraftsByAuthorOrTitleOrderBy(String author, String title,
+                                                                        String sortBy, Integer sortOrder,
+                                                                        int page, int size) {
+        Page<ArticleDraft> pageable = null;
+        switch (sortBy.toLowerCase()) {
+            case "title":
+                if (sortOrder == null || sortOrder == -1) {
+                    pageable = searchArticleDraftsByAuthorOrTitleOrderByTitleDesc(author, title, page, size);
+                } else {
+                    pageable = searchArticleDraftsByAuthorOrTitleOrderByTitleAsc(author, title, page, size);
+                }
+                break;
+            case "createdatetime":
+                if (sortOrder == null || sortOrder == -1) {
+                    pageable = searchArticleDraftsByAuthorOrTitleOrderByCreateDateTimeDesc(author, title, page, size);
+                } else {
+                    pageable = searchArticleDraftsByAuthorOrTitleOrderByCreateDateTimeAsc(author, title, page, size);
+                }
+                break;
+            case "lastmodifieddatetime":
+            default:
+                if (sortOrder == null || sortOrder == -1) {
+                    pageable = searchArticleDraftsByAuthorOrTitleOrderByLastModifiedDateTimeDesc(author, title, page, size);
+                } else {
+                    pageable = searchArticleDraftsByAuthorOrTitleOrderByLastModifiedDateTimeAsc(author, title, page, size);
+                }
+                break;
+        }
+        return pageable;
+    }
+
+    @Override
+    public Page<ArticleDraft> searchArticleDraftsByAuthorOrTitleOrderByLastModifiedDateTimeDesc(String author, String title, int page, int size) {
+        if (!UtilService.isNullOrEmpty(author) && !UtilService.isNullOrEmpty(title)) {
+            return findArticleDraftsByAuthorAndTitleOrderByLastModifiedDateTimeDesc(author, title, page, size);
+        } else if (!UtilService.isNullOrEmpty(author)) {
+            return findArticleDraftsByAuthorOrderByLastModifiedDateTimeDesc(author, page, size);
+        } else if (!UtilService.isNullOrEmpty(title)) {
+            return findArticleDraftsByTitleOrderByLastModifiedDateTimeDesc(title, page, size);
+        }
+        return findArticleDraftsOrderByLastModifiedDateTimeDesc(page, size);
+    }
+
+    @Override
+    public Page<Article> searchArticlesByAuthorOrTitleOrderByLastModifiedDateTimeDesc(String author, String title, int page, int size) {
+        if (!UtilService.isNullOrEmpty(author) && !UtilService.isNullOrEmpty(title)) {
+            return findArticlesByAuthorAndTitleOrderByLastModifiedDateTimeDesc(author, title, page, size);
+        } else if (!UtilService.isNullOrEmpty(author)) {
+            return findArticlesByAuthorOrderByLastModifiedDateTimeDesc(author, page, size);
+        } else if (!UtilService.isNullOrEmpty(title)) {
+            return findArticlesByTitleOrderByLastModifiedDateTimeDesc(title, page, size);
+        }
+        return findArticlesOrderByLastModifiedDateTimeDesc(page, size);
+    }
+
+    private Page<Article> searchArticlesByAuthorOrTitleOrderByTitleDesc(String author, String title, int page, int size) {
+        if (!UtilService.isNullOrEmpty(author) && !UtilService.isNullOrEmpty(title)) {
+            return findArticlesByAuthorAndTitleOrderByTitle(author, title, page, size);
+        } else if (!UtilService.isNullOrEmpty(author)) {
+            return findArticlesByAuthorOrderByTitleDesc(author, page, size);
+        } else if (!UtilService.isNullOrEmpty(title)) {
+            return findArticlesByTitleOrderByTitleDesc(title, page, size);
+        }
+        return findArticlesOrderByTitleDesc(page, size);
+    }
+
+    private Page<Article> searchArticlesByAuthorOrTitleOrderByTitleAsc(String author, String title, int page, int size) {
+        if (!UtilService.isNullOrEmpty(author) && !UtilService.isNullOrEmpty(title)) {
+            return findArticlesByAuthorAndTitleOrderByTitleAsc(author, title, page, size);
+        } else if (!UtilService.isNullOrEmpty(author)) {
+            return findArticlesByAuthorOrderByTitleAsc(author, page, size);
+        } else if (!UtilService.isNullOrEmpty(title)) {
+            return findArticlesByTitleOrderByTitleAsc(title, page, size);
+        }
+        return findArticlesOrderByTitleAsc(page, size);
+    }
+
+    private Page<Article> searchArticlesByAuthorOrTitleOrderByCreateDateTimeDesc(String author, String title, int page, int size) {
+        if (!UtilService.isNullOrEmpty(author) && !UtilService.isNullOrEmpty(title)) {
+            return findArticlesByAuthorAndTitleOrderByCreateDateTimeDesc(author, title, page, size);
+        } else if (!UtilService.isNullOrEmpty(author)) {
+            return findArticlesByAuthorOrderByCreateDateTimeDesc(author, page, size);
+        } else if (!UtilService.isNullOrEmpty(title)) {
+            return findArticlesByTitleOrderByCreateDateTimeDesc(title, page, size);
+        }
+        return findArticlesOrderByCreateDateTimeDesc(page, size);
+    }
+
+    private Page<Article> searchArticlesByAuthorOrTitleOrderByCreateDateTimeAsc(String author, String title, int page, int size) {
+        if (!UtilService.isNullOrEmpty(author) && !UtilService.isNullOrEmpty(title)) {
+            return findArticlesByAuthorAndTitleOrderByCreateDateTimeAsc(author, title, page, size);
+        } else if (!UtilService.isNullOrEmpty(author)) {
+            return findArticlesByAuthorOrderByCreateDateTimeAsc(author, page, size);
+        } else if (!UtilService.isNullOrEmpty(title)) {
+            return findArticlesByTitleOrderByCreateDateTimeAsc(title, page, size);
+        }
+        return findArticlesOrderByCreateDateTimeAsc(page, size);
+    }
+
+    private Page<Article> searchArticlesByAuthorOrTitleOrderByLastModifiedDateTimeAsc(String author, String title, int page, int size) {
+        if (!UtilService.isNullOrEmpty(author) && !UtilService.isNullOrEmpty(title)) {
+            return findArticlesByAuthorAndTitleOrderByLastModifiedDateTimeAsc(author, title, page, size);
+        } else if (!UtilService.isNullOrEmpty(author)) {
+            return findArticlesByAuthorOrderByLastModifiedDateTimeAsc(author, page, size);
+        } else if (!UtilService.isNullOrEmpty(title)) {
+            return findArticlesByTitleOrderByLastModifiedDateTimeAsc(title, page, size);
+        }
+        return findArticlesOrderByLastModifiedDateTimeAsc(page, size);
+    }
+
+    private Page<ArticleDraft> searchArticleDraftsByAuthorOrTitleOrderByTitleDesc(String author, String title, int page, int size) {
+        if (!UtilService.isNullOrEmpty(author) && !UtilService.isNullOrEmpty(title)) {
+            return findArticleDraftsByAuthorAndTitleOrderByTitle(author, title, page, size);
+        } else if (!UtilService.isNullOrEmpty(author)) {
+            return findArticleDraftsByAuthorOrderByTitleDesc(author, page, size);
+        } else if (!UtilService.isNullOrEmpty(title)) {
+            return findArticleDraftsByTitleOrderByTitleDesc(title, page, size);
+        }
+        return findArticleDraftsOrderByTitleDesc(page, size);
+    }
+
+    private Page<ArticleDraft> searchArticleDraftsByAuthorOrTitleOrderByTitleAsc(String author, String title, int page, int size) {
+        if (!UtilService.isNullOrEmpty(author) && !UtilService.isNullOrEmpty(title)) {
+            return findArticleDraftsByAuthorAndTitleOrderByTitleAsc(author, title, page, size);
+        } else if (!UtilService.isNullOrEmpty(author)) {
+            return findArticleDraftsByAuthorOrderByTitleAsc(author, page, size);
+        } else if (!UtilService.isNullOrEmpty(title)) {
+            return findArticleDraftsByTitleOrderByTitleAsc(title, page, size);
+        }
+        return findArticleDraftsOrderByTitleAsc(page, size);
+    }
+
+    private Page<ArticleDraft> searchArticleDraftsByAuthorOrTitleOrderByCreateDateTimeDesc(String author, String title, int page, int size) {
+        if (!UtilService.isNullOrEmpty(author) && !UtilService.isNullOrEmpty(title)) {
+            return findArticleDraftsByAuthorAndTitleOrderByCreateDateTimeDesc(author, title, page, size);
+        } else if (!UtilService.isNullOrEmpty(author)) {
+            return findArticleDraftsByAuthorOrderByCreateDateTimeDesc(author, page, size);
+        } else if (!UtilService.isNullOrEmpty(title)) {
+            return findArticleDraftsByTitleOrderByCreateDateTimeDesc(title, page, size);
+        }
+        return findArticleDraftsOrderByCreateDateTimeDesc(page, size);
+    }
+
+    private Page<ArticleDraft> searchArticleDraftsByAuthorOrTitleOrderByCreateDateTimeAsc(String author, String title, int page, int size) {
+        if (!UtilService.isNullOrEmpty(author) && !UtilService.isNullOrEmpty(title)) {
+            return findArticleDraftsByAuthorAndTitleOrderByCreateDateTimeAsc(author, title, page, size);
+        } else if (!UtilService.isNullOrEmpty(author)) {
+            return findArticleDraftsByAuthorOrderByCreateDateTimeAsc(author, page, size);
+        } else if (!UtilService.isNullOrEmpty(title)) {
+            return findArticleDraftsByTitleOrderByCreateDateTimeAsc(title, page, size);
+        }
+        return findArticleDraftsOrderByCreateDateTimeAsc(page, size);
+    }
+
+
+    private Page<ArticleDraft> searchArticleDraftsByAuthorOrTitleOrderByLastModifiedDateTimeAsc(String author, String title, int page, int size) {
+        if (!UtilService.isNullOrEmpty(author) && !UtilService.isNullOrEmpty(title)) {
+            return findArticleDraftsByAuthorAndTitleOrderByLastModifiedDateTimeAsc(author, title, page, size);
+        } else if (!UtilService.isNullOrEmpty(author)) {
+            return findArticleDraftsByAuthorOrderByLastModifiedDateTimeAsc(author, page, size);
+        } else if (!UtilService.isNullOrEmpty(title)) {
+            return findArticleDraftsByTitleOrderByLastModifiedDateTimeAsc(title, page, size);
+        }
+        return findArticleDraftsOrderByLastModifiedDateTimeAsc(page, size);
+    }
+
     private ArticleResource getArticleResource(Post post) {
         ArticleResource articleResource = new ArticleResource(post);
         loadArticleFromDisk(post.getPath(), articleResource);
@@ -414,6 +615,7 @@ public class ArticlesServiceImpl implements ArticlesService, ArticleDraftService
             }
             articleResource.setContent(article.toString());
         } catch (IOException e) {
+            logger.error("Article not found", e);
             throw new ArticleNotFoundException(e);
         }
     }
@@ -432,7 +634,7 @@ public class ArticlesServiceImpl implements ArticlesService, ArticleDraftService
                 createFileName(articleResource, parentPath), user);
     }
 
-    private ArticleDraft getArticleDraft(ArticleResource articleResource) throws UsernameNotFoundException{
+    private ArticleDraft getArticleDraft(ArticleResource articleResource) throws UsernameNotFoundException {
         User user = accountService.findUserByUsername(articleResource.getUsername());
         if (user == null) {
             throw new UsernameNotFoundException("Cannot find username [" + articleResource.getUsername() + "] for post resource");
@@ -451,6 +653,7 @@ public class ArticlesServiceImpl implements ArticlesService, ArticleDraftService
             bUfferedWriter.write(articleResource.getContent());
 
         } catch (IOException e) {
+            logger.error("Unable to write to disk", e);
             throw new ArticleNotAbleToWriteToDiskException(e);
         }
     }
@@ -466,9 +669,11 @@ public class ArticlesServiceImpl implements ArticlesService, ArticleDraftService
         LocalDateTime dateTime = articleResource.getCreateDate();
         return createDirectoryForPost(pathStr, dateTime);
     }
+
     /**
      * create directory to save post. directory is constructed based on base path and current date.
      * format: basepath/year/month/day/
+     *
      * @param basePath base path
      * @param dateTime current date time.
      * @return formatted directory path.
@@ -480,6 +685,7 @@ public class ArticlesServiceImpl implements ArticlesService, ArticleDraftService
             try {
                 Files.createDirectories(path);
             } catch (IOException e) {
+                logger.error("Unable to create directory", e);
                 throw new ArticleNotAbleToWriteToDiskException(e);
             }
         }
@@ -495,6 +701,7 @@ public class ArticlesServiceImpl implements ArticlesService, ArticleDraftService
         try {
             Files.deleteIfExists(path);
         } catch (IOException e) {
+            logger.error("Article Not Found", e);
             throw new ArticleNotFoundException("Article doesn't exist");
         }
     }

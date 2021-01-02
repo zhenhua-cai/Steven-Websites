@@ -35,16 +35,20 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
     public void setAuthenticationFilter(AuthenticationFilter authenticationFilter) {
         this.authenticationFilter = authenticationFilter;
     }
+    @Autowired
+    public void setAuthService(AuthService authService) {
+        this.authService = authService;
+    }
 
     @Autowired
     public void setJwtAuthEntryPoint(JwtAuthEntryPoint jwtAuthEntryPoint) {
         this.jwtAuthEntryPoint = jwtAuthEntryPoint;
     }
-
-    @Autowired
-    public void setAuthService(AuthService authService) {
-        this.authService = authService;
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
+
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -73,24 +77,8 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
     public AuthenticationManager authenticationManager() throws Exception {
         return super.authenticationManager();
     }
 
-    @Bean
-    public LettuceConnectionFactory lettuceConnectionFactory() {
-        return new LettuceConnectionFactory();
-    }
-
-    @Bean
-    public RedisTemplate<String, Object> redisTemplate() {
-        RedisTemplate<String, Object> template = new RedisTemplate<>();
-        template.setConnectionFactory(lettuceConnectionFactory());
-        return template;
-    }
 }

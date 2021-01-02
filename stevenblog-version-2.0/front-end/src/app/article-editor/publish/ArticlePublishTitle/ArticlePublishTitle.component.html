@@ -18,7 +18,7 @@
         <div class="p-field">
           <label for="articleTitle">Article Title</label>
           <input #title="ngModel" id="articleTitle" type="text" required pInputText [(ngModel)]="article.title"
-                 minlength="10" maxlength="50"
+                 minlength="10" maxlength="150"
                  [ngClass]="{'p-invalid': (title.invalid && submitted) || (title.dirty && title.invalid)}">
           <small *ngIf="(title.invalid && submitted) || (title.dirty && title.invalid)" class="p-error">Article Title
             should have at least 10 characters.</small>

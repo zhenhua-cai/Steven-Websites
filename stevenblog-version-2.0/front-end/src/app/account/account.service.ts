@@ -9,13 +9,10 @@ export class AccountService {
 
   accountRouteEvent = new Subject<string>();
 
-  constructor(private authService: AuthService) {
+  constructor() {
   }
 
   accountRouteChange(route: string): void {
     this.accountRouteEvent.next(route);
-  }
-  getUsername(): string{
-    return this.authService.getUsername();
   }
 }

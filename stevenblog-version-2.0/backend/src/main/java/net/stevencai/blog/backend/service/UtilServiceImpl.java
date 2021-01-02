@@ -9,6 +9,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -22,7 +23,7 @@ public class UtilServiceImpl implements UtilService {
     private Environment env;
     private PasswordEncoder passwordEncoder;
 
-    @Value("${JWT_RAW_SECRET}")
+    @Value("${jwt.raw.secret}")
     private String jwtRawSecret;
 
     private String jwtSecret;
@@ -55,6 +56,7 @@ public class UtilServiceImpl implements UtilService {
         }
         return getArticlesBasePath() + File.separator + draftPath.substring(draftBasePath.length());
     }
+
     @Override
     public String convertArticlePathToDraftPath(String articlePath) {
         String articleBasePath = getArticlesBasePath();
@@ -63,6 +65,7 @@ public class UtilServiceImpl implements UtilService {
         }
         return getArticlesBasePath() + File.separator + articlePath.substring(articleBasePath.length());
     }
+
     @Override
     public String getJwtSecret() {
         if (jwtSecret != null) {
@@ -77,6 +80,15 @@ public class UtilServiceImpl implements UtilService {
         UUID uuid = Generators.timeBasedGenerator().generate();
         byte[] userBytes = passwordEncoder.encode(username).getBytes();
         return byteArrayToHexString(userBytes) + uuid.toString() + generateTimeBasedRandomString();
+    }
+
+    @Override
+    public String getClientIp(HttpServletRequest request) {
+        String ip = request.getHeader("x-forwarded-for");
+        if (ip == null) {
+            return request.getRemoteAddr();
+        }
+        return ip;
     }
 
     private void generateJwtSecret() {

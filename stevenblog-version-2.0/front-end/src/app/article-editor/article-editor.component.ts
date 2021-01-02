@@ -20,7 +20,7 @@ declare var $: any;
   templateUrl: './article-editor.component.html',
   styleUrls: ['./article-editor.component.css']
 })
-export class ArticleEditorComponent implements OnInit {
+export class ArticleEditorComponent implements OnInit, OnDestroy {
   public Editor = CKEditor;
   editorConfig = {};
   @ViewChild('editorContainer', {static: true}) editorContainer: ElementRef;
@@ -32,7 +32,7 @@ export class ArticleEditorComponent implements OnInit {
   article: Article;
   content = '';
   displaySideBar = false;
-  lockArticle = false;
+  lockArticle = true;
   showSidebarButton = true;
   oldContent: string;
   isDataLoaded = false;
@@ -52,6 +52,12 @@ export class ArticleEditorComponent implements OnInit {
               private activatedRoute: ActivatedRoute,
               private publishService: PublishService,
               private appService: AppService) {
+  }
+
+  ngOnDestroy(): void {
+    if (this.showSaveArticlePopupSubscription) {
+      this.showSaveArticlePopupSubscription.unsubscribe();
+    }
   }
 
   ngOnInit(): void {
@@ -90,7 +96,6 @@ export class ArticleEditorComponent implements OnInit {
         }
       }
     );
-
     this.articleEditorService.isAbleToAccessEditor = false;
     // save oldContent, will be used in revert.
     this.oldContent = this.content;
@@ -102,18 +107,18 @@ export class ArticleEditorComponent implements OnInit {
     }
     // if it's editing draft, load draft. otherwise, load published.
     this.articleId = this.activatedRoute.snapshot.params.id;
-    let articleResponse: Observable<ArticleResponse> = null;
+    this.loadArticle();
+  }
+
+  private loadArticle(): void {
+    this.lockArticle = true;
+    let articleResponse: Observable<ArticleResponse>;
     if (this.articleEditorService.isEditingDraft()) {
       articleResponse = this.articlesService.searchArticleDraftById(this.articleId);
     } else {
       articleResponse = this.articlesService.searchArticleToEditById(this.articleId);
     }
     articleResponse.subscribe((articleResponseData) => {
-        if (articleResponseData.articleResource.content !== null && articleResponseData.articleResource.content.length > 0) {
-          console.log('Editor Content Loaded');
-        } else {
-          console.log(articleResponseData);
-        }
         this.article = articleResponseData.articleResource;
         this.content = this.article.content;
         this.oldContent = this.content;
@@ -121,10 +126,10 @@ export class ArticleEditorComponent implements OnInit {
         if (this.isProcessing) {
           this.isProcessing = false;
         }
+        this.lockArticle = false;
       },
       error => {
-        this.isProcessing = false;
-        this.lockArticle = true;
+        this.articlesService.handle401Error(error, this.loadArticle.bind(this));
       });
   }
 
@@ -200,29 +205,36 @@ export class ArticleEditorComponent implements OnInit {
     this.articleEditorService.confirm('Delete Confirmation',
       'Delete cannot be undone. Do you want to continue?',
       'fas fa-skull-crossbones', 'p-button-danger',
-      () => {
-        // usually we only need to check if this.article is null,
-        // but there are special cases that when we failed to save article,
-        // in that case. this.article is not null, we need to check this.article.id
-        if (this.article == null || this.article.id == null) {
-          // if this.article == null, it means nothing saved yet. just go back to prev page.
+      this.deleteAfterConfirm.bind(this)
+    );
+  }
+
+  private deleteAfterConfirm(): void {
+    // usually we only need to check if this.article is null,
+    // but there are special cases that when we failed to save article,
+    // in that case. this.article is not null, we need to check this.article.id
+    if (this.article == null || this.article.id == null) {
+      // if this.article == null, it means nothing saved yet. just go back to prev page.
+      this.router.navigate(['/account/drafts']);
+      return;
+    }
+    this.appService.blockScreen();
+    // remove this article from db. we don't delete published article. only the draft.
+    this.articlesService.deleteArticleDraftById(this.article.id).subscribe(
+      (response) => {
+        this.appService.unblockScreen();
+        if (response.status) {
+          this.content = null;
+          this.oldContent = null;
           this.router.navigate(['/account/drafts']);
+        } else {
+          this.showDeleteArticleFailMsg();
           return;
         }
-        // remove this article from db. we don't delete published article. only the draft.
-        this.articlesService.deleteArticleDraftById(this.article.id).subscribe(
-          (response) => {
-            if (response.status) {
-              this.content = null;
-              this.oldContent = null;
-              this.router.navigate(['/account/drafts']);
-            } else {
-              this.showDeleteArticleFailMsg();
-              return;
-            }
-          }
-        );
-      });
+      }, error => {
+        this.articlesService.handle401Error(error, this.deleteAfterConfirm.bind(this));
+      }
+    );
   }
 
   onNew(): void {
@@ -339,6 +351,7 @@ export class ArticleEditorComponent implements OnInit {
       error => {
         this.appService.unblockScreen();
         this.isProcessing = false;
+        this.articlesService.handle401Error(error, this.saveArticleAndExecuteAfterSuccess.bind(this), callBackOnSuccess);
       }
     );
   }
@@ -377,6 +390,7 @@ export class ArticleEditorComponent implements OnInit {
     if (this.isDataLoaded) {
       this.isProcessing = false;
     }
+    this.lockArticle = false;
     this.articleContentElement = $('div.ck.ck-content.ck-editor__editable');
   }
 
@@ -388,7 +402,7 @@ export class ArticleEditorComponent implements OnInit {
     }
   }
 
-  lockOrUnlockScreen($event: MouseEvent): void {
+  lockOrUnlockScreen(ignore: MouseEvent): void {
     this.lockArticle = !this.lockArticle;
     this.displaySideBar = false;
     this.showSidebarButton = !this.showSidebarButton;
@@ -452,7 +466,7 @@ export class ArticleEditorComponent implements OnInit {
    */
   private updateArticle(): boolean {
     if (this.article == null) {
-      this.article = new Article(null, null, this.content, this.authService.getUsername(), null, null, null);
+      this.article = new Article(null, null, this.content, null, null, null, null);
       return true;
     }
     this.article.content = this.content;
@@ -484,10 +498,6 @@ export class ArticleEditorComponent implements OnInit {
     this.appService.showSuccessToast('Saved', 'Successfully saved article');
   }
 
-  private showLoadArticleFailMsg(): void {
-    this.appService.showErrorToast('Load Article Failed', 'Unable to load article. Please try later');
-  }
-
   private showDeleteArticleFailMsg(): void {
     this.appService.showErrorToast('Delete Article Failed', 'Unable to delete article. Please try later');
   }
@@ -495,10 +505,5 @@ export class ArticleEditorComponent implements OnInit {
   private showRevertSuccessMsg(): void {
     this.appService.showSuccessToast('Reverted', 'Revert back to last saved content');
   }
-
-  private showSaveFailedMsg(): void {
-    this.appService.showErrorToast('Save Failed', 'Unable to save article. Please try later.');
-  }
-
 
 }

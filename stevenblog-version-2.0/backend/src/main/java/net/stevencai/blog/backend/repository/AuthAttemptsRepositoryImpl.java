@@ -17,8 +17,8 @@ public class AuthAttemptsRepositoryImpl implements AuthAttemptsRepository {
     private RedisTemplate<String, Object> redis;
 
     @Autowired
-    public AuthAttemptsRepositoryImpl(@Value("${AUTH_MAX_ATTEMPTS}") int MAX_ATTEMPTS,
-                                      @Value("${AUTH_ATTEMPTS_MIN_DURATION_AFTER_FAIL}") int ATTEMPTS_MIN_DURATION) {
+    public AuthAttemptsRepositoryImpl(@Value("${auth.max.attempts}") int MAX_ATTEMPTS,
+                                      @Value("${auth.min.duration.after.fail}") int ATTEMPTS_MIN_DURATION) {
         this.MAX_ATTEMPTS = MAX_ATTEMPTS;
         this.ATTEMPTS_MIN_DURATION = ATTEMPTS_MIN_DURATION;
     }

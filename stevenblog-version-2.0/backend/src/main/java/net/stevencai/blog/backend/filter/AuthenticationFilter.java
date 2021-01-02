@@ -5,10 +5,9 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
 import net.stevencai.blog.backend.service.AccountService;
 import net.stevencai.blog.backend.service.JwtService;
+import net.stevencai.blog.backend.service.UtilService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -26,6 +25,12 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
     private AccountService accountService;
     private JwtService jwtService;
+    private UtilService utilService;
+
+    @Autowired
+    public void setUtilService(UtilService utilService) {
+        this.utilService = utilService;
+    }
 
     @Autowired
     public void setJwtService(JwtService jwtService) {
@@ -45,16 +50,22 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         String jwtToken = null;
         if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
             jwtToken = requestTokenHeader.substring(7);
+            System.out.println(this.utilService.getClientIp(httpServletRequest));
             try {
+                // if client ip changed. don't authenticate this client.
+                // this will send 401 back to client, and client needs to
+                // send refresh token to server to get a new access token
+                if(this.jwtService.isAccessTokenIpChanged(jwtToken, this.utilService.getClientIp(httpServletRequest))){
+                    throw new IllegalArgumentException("Client IP Changed");
+                }
                 username = jwtService.getUsernameFromJwt(jwtToken);
-            } catch (IllegalArgumentException | ExpiredJwtException | SignatureException e) {
-                //nothing needs
+            } catch (IllegalArgumentException | ExpiredJwtException
+                    | SignatureException | MalformedJwtException | NullPointerException ignore) {
             }
-            catch(MalformedJwtException ignored){}
         }
-        if (username != null && !isAuthenticated()) {
+        if (username != null && !this.accountService.isAuthenticated()) {
             UserDetails userDetails = accountService.findUserByUsername(username);
-            if (jwtService.validateJwt(jwtToken, userDetails)) {
+            if (jwtService.usernameMatch(jwtToken, userDetails)) {
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken
                         = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
@@ -62,15 +73,6 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             }
         }
         filterChain.doFilter(httpServletRequest, httpServletResponse);
-    }
-
-    private boolean isAuthenticated() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null) {
-            return false;
-        }
-
-        return !(authentication instanceof AnonymousAuthenticationToken);
     }
 
 }

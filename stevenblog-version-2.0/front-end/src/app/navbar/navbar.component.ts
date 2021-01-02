@@ -1,8 +1,7 @@
-import {Component, ElementRef, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {AuthService} from '../shared/auth.service';
-import {AuthedUser} from '../shared/ApplicationUser.model';
 import {ArticlesService} from '../articles-list/articles.service';
 
 @Component({
@@ -25,8 +24,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.userSubscription = this.authService.userAuthedEvent.subscribe(
-      (user) => {
-        this.loggedIn = user !== null;
+      (isLoggedIn) => {
+        this.loggedIn = isLoggedIn;
       }
     );
   }

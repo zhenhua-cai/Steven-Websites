@@ -13,16 +13,13 @@ import {MessageService} from 'primeng/api';
 })
 export class LoginComponent implements OnInit {
   rememberMe = false;
-  blocked = false;
-
-  constructor(private loginService: AuthService) {
+  constructor(private authService: AuthService) {
   }
 
   ngOnInit(): void {
   }
 
   onSubmit(user: AttemptLoginUser): void {
-    this.blocked = true;
-    this.loginService.login(user);
+    this.authService.login(user);
   }
 }

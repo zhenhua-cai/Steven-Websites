@@ -3,15 +3,15 @@ package net.stevencai.blog.backend.api;
 import net.stevencai.blog.backend.clientResource.ArticleResource;
 import net.stevencai.blog.backend.clientResource.ArticlesListResponse;
 import net.stevencai.blog.backend.entity.Article;
-import net.stevencai.blog.backend.exception.ArticleNotFoundException;
 import net.stevencai.blog.backend.response.ActionStatusResponse;
 import net.stevencai.blog.backend.response.ArticleResponse;
-import net.stevencai.blog.backend.service.ArticleDraftService;
 import net.stevencai.blog.backend.service.ArticlesService;
 import net.stevencai.blog.backend.service.UtilService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/articles")
@@ -38,11 +38,11 @@ public class ArticlesApi extends PostApi {
             @RequestParam(value = "sortOrder", required = false) Integer sortOrder,
             @RequestParam("page") int page,
             @RequestParam("size") int size) {
-        Page<Article> pageable = null;
+        Page<Article> pageable;
         if (UtilService.isNullOrEmpty(sortBy)) {
-            pageable = searchArticlesByAuthorOrTitleOrderByLastModifiedDateTimeDesc(author, title, page, size);
+            pageable = this.articlesService.searchArticlesByAuthorOrTitleOrderByLastModifiedDateTimeDesc(author, title, page, size);
         } else {
-            pageable = searchArticlesByAuthorOrTitleOrderBy(title, author, sortBy, sortOrder, page, size);
+            pageable = this.articlesService.searchArticlesByAuthorOrTitleOrderBy(title, author, sortBy, sortOrder, page, size);
         }
         return constructArticleResourceResponse(pageable);
     }
@@ -56,6 +56,7 @@ public class ArticlesApi extends PostApi {
      * this method will call loadArticleToEdit method.
      * which will first check if there's an article draft with the same id,
      * if there is, return the article draft. otherwise load article.
+     *
      * @param id article id.
      * @return article response which contains article resource.
      */
@@ -74,108 +75,16 @@ public class ArticlesApi extends PostApi {
     }
 
     @PostMapping("/publish")
-    public ArticleResponse publishArticle(@RequestBody ArticleResource articleResource) {
+    public ArticleResponse publishArticle(@RequestBody ArticleResource articleResource, Principal principal) {
         if (articleResource == null) {
             return new ArticleResponse();
+        }
+        if (articleResource.getUsername() == null) {
+            articleResource.setUsername(principal.getName());
         }
         articleResource = articlesService.publishArticle(articleResource);
         return new ArticleResponse(articleResource);
     }
 
-    private Page<Article> searchArticlesByAuthorOrTitleOrderBy(String title, String author,
-                                                               String sortBy, Integer sortOrder,
-                                                               int page, int size) {
-        Page<Article> pageable = null;
-        switch (sortBy.toLowerCase()) {
-            case "title":
-                if (sortOrder == null || sortOrder == -1) {
-                    pageable = searchArticlesByAuthorOrTitleOrderByTitleDesc(author, title, page, size);
-                } else {
-                    pageable = searchArticlesByAuthorOrTitleOrderByTitleAsc(author, title, page, size);
-                }
-                break;
-            case "createdatetime":
-                if (sortOrder == null || sortOrder == -1) {
-                    pageable = searchArticlesByAuthorOrTitleOrderByCreateDateTimeDesc(author, title, page, size);
-                } else {
-                    pageable = searchArticlesByAuthorOrTitleOrderByCreateDateTimeAsc(author, title, page, size);
-                }
-                break;
-            case "lastmodifieddatetime":
-            default:
-                if (sortOrder == null || sortOrder == -1) {
-                    pageable = searchArticlesByAuthorOrTitleOrderByLastModifiedDateTimeDesc(author, title, page, size);
-                } else {
-                    pageable = searchArticlesByAuthorOrTitleOrderByLastModifiedDateTimeAsc(author, title, page, size);
-                }
-                break;
-        }
-        return pageable;
-    }
 
-    private Page<Article> searchArticlesByAuthorOrTitleOrderByTitleDesc(String author, String title, int page, int size) {
-        if (!UtilService.isNullOrEmpty(author) && !UtilService.isNullOrEmpty(title)) {
-            return articlesService.findArticlesByAuthorAndTitleOrderByTitle(author, title, page, size);
-        } else if (!UtilService.isNullOrEmpty(author)) {
-            return articlesService.findArticlesByAuthorOrderByTitleDesc(author, page, size);
-        } else if (!UtilService.isNullOrEmpty(title)) {
-            return articlesService.findArticlesByTitleOrderByTitleDesc(title, page, size);
-        }
-        return articlesService.findArticlesOrderByTitleDesc(page, size);
-    }
-
-    private Page<Article> searchArticlesByAuthorOrTitleOrderByTitleAsc(String author, String title, int page, int size) {
-        if (!UtilService.isNullOrEmpty(author) && !UtilService.isNullOrEmpty(title)) {
-            return articlesService.findArticlesByAuthorAndTitleOrderByTitleAsc(author, title, page, size);
-        } else if (!UtilService.isNullOrEmpty(author)) {
-            return articlesService.findArticlesByAuthorOrderByTitleAsc(author, page, size);
-        } else if (!UtilService.isNullOrEmpty(title)) {
-            return articlesService.findArticlesByTitleOrderByTitleAsc(title, page, size);
-        }
-        return articlesService.findArticlesOrderByTitleAsc(page, size);
-    }
-
-    private Page<Article> searchArticlesByAuthorOrTitleOrderByCreateDateTimeDesc(String author, String title, int page, int size) {
-        if (!UtilService.isNullOrEmpty(author) && !UtilService.isNullOrEmpty(title)) {
-            return articlesService.findArticlesByAuthorAndTitleOrderByCreateDateTimeDesc(author, title, page, size);
-        } else if (!UtilService.isNullOrEmpty(author)) {
-            return articlesService.findArticlesByAuthorOrderByCreateDateTimeDesc(author, page, size);
-        } else if (!UtilService.isNullOrEmpty(title)) {
-            return articlesService.findArticlesByTitleOrderByCreateDateTimeDesc(title, page, size);
-        }
-        return articlesService.findArticlesOrderByCreateDateTimeDesc(page, size);
-    }
-
-    private Page<Article> searchArticlesByAuthorOrTitleOrderByCreateDateTimeAsc(String author, String title, int page, int size) {
-        if (!UtilService.isNullOrEmpty(author) && !UtilService.isNullOrEmpty(title)) {
-            return articlesService.findArticlesByAuthorAndTitleOrderByCreateDateTimeAsc(author, title, page, size);
-        } else if (!UtilService.isNullOrEmpty(author)) {
-            return articlesService.findArticlesByAuthorOrderByCreateDateTimeAsc(author, page, size);
-        } else if (!UtilService.isNullOrEmpty(title)) {
-            return articlesService.findArticlesByTitleOrderByCreateDateTimeAsc(title, page, size);
-        }
-        return articlesService.findArticlesOrderByCreateDateTimeAsc(page, size);
-    }
-
-    private Page<Article> searchArticlesByAuthorOrTitleOrderByLastModifiedDateTimeDesc(String author, String title, int page, int size) {
-        if (!UtilService.isNullOrEmpty(author) && !UtilService.isNullOrEmpty(title)) {
-            return articlesService.findArticlesByAuthorAndTitleOrderByLastModifiedDateTimeDesc(author, title, page, size);
-        } else if (!UtilService.isNullOrEmpty(author)) {
-            return articlesService.findArticlesByAuthorOrderByLastModifiedDateTimeDesc(author, page, size);
-        } else if (!UtilService.isNullOrEmpty(title)) {
-            return articlesService.findArticlesByTitleOrderByLastModifiedDateTimeDesc(title, page, size);
-        }
-        return articlesService.findArticlesOrderByLastModifiedDateTimeDesc(page, size);
-    }
-
-    private Page<Article> searchArticlesByAuthorOrTitleOrderByLastModifiedDateTimeAsc(String author, String title, int page, int size) {
-        if (!UtilService.isNullOrEmpty(author) && !UtilService.isNullOrEmpty(title)) {
-            return articlesService.findArticlesByAuthorAndTitleOrderByLastModifiedDateTimeAsc(author, title, page, size);
-        } else if (!UtilService.isNullOrEmpty(author)) {
-            return articlesService.findArticlesByAuthorOrderByLastModifiedDateTimeAsc(author, page, size);
-        } else if (!UtilService.isNullOrEmpty(title)) {
-            return articlesService.findArticlesByTitleOrderByLastModifiedDateTimeAsc(title, page, size);
-        }
-        return articlesService.findArticlesOrderByLastModifiedDateTimeAsc(page, size);
-    }
 }

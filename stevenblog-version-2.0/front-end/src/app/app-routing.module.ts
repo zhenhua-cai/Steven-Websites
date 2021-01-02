@@ -24,6 +24,8 @@ import {PublishComponent} from './article-editor/publish/publish.component';
 import {ArticlePublishTitleComponent} from './article-editor/publish/ArticlePublishTitle/ArticlePublishTitle.component';
 import {ArticlePublishConfirmationComponent} from './article-editor/publish/article-publish-confirmation/article-publish-confirmation.component';
 import {PublishGuard} from './article-editor/publish.guard';
+import {ErrorComponent} from './error/error.component';
+import {AccessDeniedComponent} from './error/access-denied/access-denied.component';
 
 
 const routes: Routes = [
@@ -89,6 +91,12 @@ const routes: Routes = [
       canDeactivate: [PublishGuard], component: PublishComponent, children: [
         {path: 'title', component: ArticlePublishTitleComponent},
         {path: 'confirmation', component: ArticlePublishConfirmationComponent}
+      ]
+    },
+    {
+      path: 'error', component: BlogComponent, children: [
+        {path: '', component: ErrorComponent},
+        {path: 'access-denied', component: AccessDeniedComponent}
       ]
     }
   ]
