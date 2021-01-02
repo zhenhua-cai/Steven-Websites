@@ -25,7 +25,7 @@
 </div>
 
 <div class="container shadow-lg bg-white rounded">
-  <h1 class="mx-5 pt-5 text-center">{{article.title}}</h1>
+  <h1 class="mx-5 pt-5 text-center">{{article ? article.title : ''}}</h1>
   <div #articleContent id="articleContent" class="mt-1 p-5 bg-white">
   </div>
 </div>

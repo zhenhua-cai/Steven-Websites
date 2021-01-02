@@ -81,8 +81,9 @@ public class AuthApi {
         }
         String accessToken = jwtService.generateAccessToken(username);
         String refreshToken = jwtService.generateRefreshToken(username);
-        // associate access token with ip. if request ip not matches ip in access token. authentication fails.
-        this.jwtService.associateAccessToken(accessToken, ip);
+        // uncomment this until solve IPv6 problem.
+//        // associate access token with ip. if request ip not matches ip in access token. authentication fails.
+//        this.jwtService.associateAccessToken(accessToken, ip);
         this.jwtService.blockDeprecatedRefreshToken(username, refreshToken);
         return new AuthResponse(refreshToken, accessToken);
     }
@@ -105,7 +106,8 @@ public class AuthApi {
         authService.clearAuthAttempts(ip);
         String accessToken = jwtService.generateAccessToken(applicationUser.getUsername());
         String refreshToken = jwtService.generateRefreshToken(applicationUser.getUsername());
-        this.jwtService.associateAccessToken(accessToken, this.utilService.getClientIp(request));
+        // uncomment this after Ipv6 problem solved.
+//        this.jwtService.associateAccessToken(accessToken, this.utilService.getClientIp(request));
         return new AuthResponse(refreshToken, accessToken);
     }
 

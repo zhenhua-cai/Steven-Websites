@@ -50,14 +50,14 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         String jwtToken = null;
         if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
             jwtToken = requestTokenHeader.substring(7);
-            System.out.println(this.utilService.getClientIp(httpServletRequest));
             try {
-                // if client ip changed. don't authenticate this client.
-                // this will send 401 back to client, and client needs to
-                // send refresh token to server to get a new access token
-                if(this.jwtService.isAccessTokenIpChanged(jwtToken, this.utilService.getClientIp(httpServletRequest))){
-                    throw new IllegalArgumentException("Client IP Changed");
-                }
+                // getClientIp sometimes returns IPv6, sometimes returns Ipv4. uncomment this part after solving that problem
+//                // if client ip changed. don't authenticate this client.
+//                // this will send 401 back to client, and client needs to
+//                // send refresh token to server to get a new access token
+//                if(this.jwtService.isAccessTokenIpChanged(jwtToken, this.utilService.getClientIp(httpServletRequest))){
+//                    throw new IllegalArgumentException("Client IP Changed");
+//                }
                 username = jwtService.getUsernameFromJwt(jwtToken);
             } catch (IllegalArgumentException | ExpiredJwtException
                     | SignatureException | MalformedJwtException | NullPointerException ignore) {

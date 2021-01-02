@@ -6,12 +6,17 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.data.redis.cache.RedisCacheConfiguration;
+import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.RedisSerializationContext;
+import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.scheduling.annotation.EnableAsync;
 
+import java.time.Duration;
 import java.util.Properties;
 
 @Configuration
@@ -40,7 +45,19 @@ public class AppConfig {
     }
 
     @Bean
-    public JavaMailSender mailSender(){
+    public RedisCacheManager redisCacheManager(LettuceConnectionFactory lettuceConnectionFactory) {
+        RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig(Thread.currentThread().getContextClassLoader())
+                .disableCachingNullValues()
+                .entryTtl(Duration.ofHours(1))
+                .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(RedisSerializer.string()));
+
+        redisCacheConfiguration.usePrefix();
+        return RedisCacheManager.RedisCacheManagerBuilder.fromConnectionFactory(lettuceConnectionFactory)
+                .cacheDefaults(redisCacheConfiguration).build();
+    }
+
+    @Bean
+    public JavaMailSender mailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost(env.getProperty("email.host"));
         mailSender.setPort(getIntProperty("email.port"));
@@ -49,6 +66,7 @@ public class AppConfig {
         mailSender.setJavaMailProperties(getJavaMailSenderProperties());
         return mailSender;
     }
+
     private Properties getJavaMailSenderProperties() {
 
         // set hibernate properties
@@ -64,12 +82,13 @@ public class AppConfig {
 
     /**
      * read environment property and convert to int
+     *
      * @param propName
      * @return
      */
     private int getIntProperty(String propName) {
-        String propVal=env.getProperty(propName);
+        String propVal = env.getProperty(propName);
         assert propVal != null;
-        return  Integer.parseInt(propVal);
+        return Integer.parseInt(propVal);
     }
 }

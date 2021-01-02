@@ -3,6 +3,7 @@ package net.stevencai.blog.backend.service;
 import net.stevencai.blog.backend.entity.User;
 import net.stevencai.blog.backend.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,11 +24,13 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    @Cacheable("userWithEmailCache")
     public User findUserByEmail(String email) {
         return accountRepository.findUserByEmail(email);
     }
 
     @Override
+    @Cacheable("userWithUsernameCache")
     public User findUserByUsername(String username) {
         return accountRepository.findUserByUsername(username);
     }

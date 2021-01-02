@@ -67,3 +67,9 @@ div.ck.ck-content {
   pointer-events: none;
   opacity: 0.4;
 }
+code {
+  padding: 5px;
+  background-color: lightgray;
+  border-radius: 5px;
+  overflow: scroll;
+}

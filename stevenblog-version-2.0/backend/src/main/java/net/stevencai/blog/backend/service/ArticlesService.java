@@ -10,9 +10,9 @@ public interface ArticlesService {
 
     Page<Article> findArticles(int page, int size);
 
-    void saveArticle(Article article);
+    Article saveArticle(Article article);
 
-    void saveArticle(ArticleResource articleResource);
+    ArticleResource saveArticle(ArticleResource articleResource);
 
     Page<Article> findArticlesByAuthorAndTitleOrderByTitle(String author, String title, int page, int size);
 

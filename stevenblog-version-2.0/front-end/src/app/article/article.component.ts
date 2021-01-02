@@ -5,7 +5,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {Location} from '@angular/common';
 import {Observable, Subscription} from 'rxjs';
 import {ArticleEditorService} from '../article-editor/article-editor.service';
-import {ActionStatusResponse} from '../shared/data-transaction.service';
+import {ActionStatusResponse, AuthResponse} from '../shared/data-transaction.service';
 import {AppService} from '../app.service';
 
 declare var hljs: any;
@@ -22,6 +22,7 @@ export class ArticleComponent implements OnInit, OnDestroy, AfterViewInit {
   isDraftArticle = false;
   isJustPublishedArticle = false;
   articlePublishedSubscription: Subscription;
+  isComponentRendered = false;
   @ViewChild('articleContent', {static: true}) articleContent: ElementRef;
 
   constructor(private articlesService: ArticlesService,
@@ -35,7 +36,18 @@ export class ArticleComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(
       (data) => {
-        this.article = data.articleResponse.articleResource;
+        if (data.articleResponse.articleResource) {
+          this.article = data.articleResponse.articleResource;
+        } else if (data.articleResponse.accessToken) {
+          this.articlesService.searchArticleById(this.activatedRoute.snapshot.params.id).subscribe(
+            (articleResponse) => {
+              this.article = articleResponse.articleResource;
+              if (this.isComponentRendered) {
+                this.articleContent.nativeElement.innerHTML = this.article.content;
+              }
+            }
+          );
+        }
       }
     );
     this.isInOwnerMode = this.router.url.startsWith('/account/');
@@ -55,13 +67,15 @@ export class ArticleComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.articleContent.nativeElement.innerHTML = this.article.content;
+    if (this.article) {
+      this.articleContent.nativeElement.innerHTML = this.article.content;
+    }
     if (this.isJustPublishedArticle) {
       setTimeout(() => {
         this.showSuccessPublishedMsg();
       }, 500);
-
     }
+    this.isComponentRendered = true;
   }
 
   backButtonClicked(ignore: MouseEvent): void {

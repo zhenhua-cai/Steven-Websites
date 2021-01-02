@@ -12,6 +12,9 @@ import net.stevencai.blog.backend.repository.DraftRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -57,6 +60,7 @@ public class ArticlesServiceImpl implements ArticlesService, ArticleDraftService
     }
 
     @Override
+    @Cacheable("articleCache")
     public ArticleResource findArticleById(String id) {
         Article article = articleRepository.findArticleById(id);
         if (article == null) {
@@ -71,16 +75,19 @@ public class ArticlesServiceImpl implements ArticlesService, ArticleDraftService
     }
 
     @Override
-    public void saveArticle(Article article) {
-        articleRepository.save(article);
+    @CachePut(value = "articleCache", key = "#result.id")
+    public Article saveArticle(Article article) {
+        return articleRepository.save(article);
     }
 
     @Override
-    public void saveArticle(ArticleResource articleResource) {
+    @CachePut(value="articleCache", key="#result.id")
+    public ArticleResource saveArticle(ArticleResource articleResource) {
         articleResource.setLastModified(LocalDateTime.now());
         Article article = getArticle(articleResource);
         saveArticleToDisk(article.getPath(), articleResource);
         saveArticle(article);
+        return articleResource;
     }
 
     @Override
@@ -201,6 +208,7 @@ public class ArticlesServiceImpl implements ArticlesService, ArticleDraftService
     }
 
     @Override
+    @CacheEvict(value = "articleCache")
     public void deleteArticleById(String id) {
         Optional<Article> article = articleRepository.findById(id);
         if (article.isPresent()) {
@@ -210,6 +218,7 @@ public class ArticlesServiceImpl implements ArticlesService, ArticleDraftService
     }
 
     @Override
+    @CachePut(value = "articleCache", key = "#result.id")
     public ArticleResource publishArticle(ArticleResource articleResource) {
         if (articleResource.getId() == null) {
             articleResource.setId(utilService.generateUUIDForArticle(articleResource.getUsername()));
@@ -221,6 +230,7 @@ public class ArticlesServiceImpl implements ArticlesService, ArticleDraftService
     }
 
     @Override
+    @Cacheable("articleCache")
     public ArticleResource loadArticleToEdit(String id) {
         Optional<ArticleDraft> articleDraft = draftRepository.findById(id);
         return articleDraft.map(this::getArticleResource).orElseGet(() -> findArticleById(id));
@@ -238,6 +248,7 @@ public class ArticlesServiceImpl implements ArticlesService, ArticleDraftService
     }
 
     @Override
+    @Cacheable("articleDraftCache")
     public ArticleResource findArticleDraftById(String id) {
         Optional<ArticleDraft> article = draftRepository.findById(id);
         if (!article.isPresent()) {
@@ -369,6 +380,7 @@ public class ArticlesServiceImpl implements ArticlesService, ArticleDraftService
     }
 
     @Override
+    @CachePut(value = "articleDraftCache", key = "#result.id")
     public ArticleResource saveArticleDraft(ArticleResource articleResource) {
         if (articleResource.getId() == null) {
             articleResource.setId(utilService.generateUUIDForArticle(articleResource.getUsername()));
@@ -382,6 +394,7 @@ public class ArticlesServiceImpl implements ArticlesService, ArticleDraftService
     }
 
     @Override
+    @CacheEvict("articleDraftCache")
     public void deleteArticleDraftById(String id) {
         Optional<ArticleDraft> articleDraftOptional = draftRepository.findById(id);
         if (articleDraftOptional.isPresent()) {
@@ -405,7 +418,7 @@ public class ArticlesServiceImpl implements ArticlesService, ArticleDraftService
     public Page<Article> searchArticlesByAuthorOrTitleOrderBy(String author, String title,
                                                               String sortBy, Integer sortOrder,
                                                               int page, int size) {
-        Page<Article> pageable = null;
+        Page<Article> pageable;
         switch (sortBy.toLowerCase()) {
             case "title":
                 if (sortOrder == null || sortOrder == -1) {
@@ -437,7 +450,7 @@ public class ArticlesServiceImpl implements ArticlesService, ArticleDraftService
     public Page<ArticleDraft> searchArticleDraftsByAuthorOrTitleOrderBy(String author, String title,
                                                                         String sortBy, Integer sortOrder,
                                                                         int page, int size) {
-        Page<ArticleDraft> pageable = null;
+        Page<ArticleDraft> pageable;
         switch (sortBy.toLowerCase()) {
             case "title":
                 if (sortOrder == null || sortOrder == -1) {
@@ -608,7 +621,7 @@ public class ArticlesServiceImpl implements ArticlesService, ArticleDraftService
 
     private void loadArticleFromDisk(String path, ArticleResource articleResource) {
         try (BufferedReader bufferedReader = Files.newBufferedReader(Paths.get(path), StandardCharsets.UTF_8)) {
-            String line = "";
+            String line;
             StringBuilder article = new StringBuilder();
             while ((line = bufferedReader.readLine()) != null) {
                 article.append(line).append("\n");
@@ -649,7 +662,7 @@ public class ArticlesServiceImpl implements ArticlesService, ArticleDraftService
     }
 
     private void saveArticleToDisk(String path, ArticleResource articleResource) throws ArticleNotAbleToWriteToDiskException {
-        try (BufferedWriter bUfferedWriter = Files.newBufferedWriter(Paths.get(path), StandardCharsets.UTF_8);) {
+        try (BufferedWriter bUfferedWriter = Files.newBufferedWriter(Paths.get(path), StandardCharsets.UTF_8)) {
             bUfferedWriter.write(articleResource.getContent());
 
         } catch (IOException e) {

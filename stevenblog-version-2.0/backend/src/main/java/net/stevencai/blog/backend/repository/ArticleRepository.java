@@ -1,6 +1,7 @@
 package net.stevencai.blog.backend.repository;
 
 import net.stevencai.blog.backend.entity.Article;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -4,10 +4,11 @@ import {
   RouterStateSnapshot,
   ActivatedRouteSnapshot
 } from '@angular/router';
-import {Observable, of} from 'rxjs';
+import {Observable, of, throwError} from 'rxjs';
 import {Article} from '../shared/Article';
 import {ArticlesService} from '../articles-list/articles.service';
-import {ArticleResponse} from '../shared/data-transaction.service';
+import {ArticleResponse, AuthResponse} from '../shared/data-transaction.service';
+import {catchError} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
