@@ -1,0 +1,26 @@
+<div class="container  shadow-lg bg-white rounded h-100 sign-up-outer-container" *ngIf="!inStartPage">
+  <div class="card">
+    <p-steps [model]="signUpSteps" [readonly]="true"></p-steps>
+  </div>
+  <div class="my-3 shadow-lg bg-white rounded ml-auto mr-auto sing-up-info-container" >
+    <router-outlet></router-outlet>
+  </div>
+</div>
+<div  *ngIf="inStartPage">
+  <div class="text-center my-5 ">
+    <button pButton type="button" (click)="starts()"
+            class="p-button-raised p-button-rounded p-button-outlined" label="Start SignUp"></button>
+  </div>
+</div>
+<!-- quit sign-up-confirmation -->
+<p-confirmDialog key="quitSignUp" #cd
+                 header="Leave?"
+                 icon="fas fa-sign-out-alt"
+                 message="Do you want to quit sign up?">
+  <p-footer>
+    <button type="button" pButton icon="pi pi-times" label="Discard" (click)="discard()"
+            class=" p-button-raised p-button-danger"></button>
+    <button type="button" pButton icon="pi pi-circle-off" label="Stay" (click)="cd.close($event)"
+            class=" p-button-raised p-button-warning"></button>
+  </p-footer>
+</p-confirmDialog>

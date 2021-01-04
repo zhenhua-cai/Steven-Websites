@@ -2,8 +2,12 @@ package net.stevencai.blog.backend.api;
 
 import lombok.Data;
 import net.stevencai.blog.backend.clientResource.ApplicationUser;
+import net.stevencai.blog.backend.clientResource.SignUpUser;
+import net.stevencai.blog.backend.entity.User;
 import net.stevencai.blog.backend.exception.AccountSuspiciousBehaviorException;
+import net.stevencai.blog.backend.exception.SignUpValidationFailedException;
 import net.stevencai.blog.backend.exception.TooManyAuthAttemptsException;
+import net.stevencai.blog.backend.response.ActionStatusResponse;
 import net.stevencai.blog.backend.response.AuthResponse;
 import net.stevencai.blog.backend.service.*;
 import org.slf4j.Logger;
@@ -12,9 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -67,7 +73,7 @@ public class AuthApi {
         }
         String jwt = refreshTokenObj.getRefreshToken().substring(7);
         String username = jwtService.getUsernameFromJwt(jwt);
-        if(username == null){
+        if (username == null) {
             throw new IllegalArgumentException("Invalid JWT");
         }
         String ip = this.utilService.getClientIp(request);
@@ -109,6 +115,36 @@ public class AuthApi {
         // uncomment this after Ipv6 problem solved.
 //        this.jwtService.associateAccessToken(accessToken, this.utilService.getClientIp(request));
         return new AuthResponse(refreshToken, accessToken);
+    }
+
+    @PostMapping("/signup")
+    public AuthResponse signUp(@Valid @RequestBody SignUpUser signUpUser, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new SignUpValidationFailedException("Invalid Sign up user data");
+        }
+        User user = accountService.createNewUser(signUpUser);
+        return new AuthResponse();
+    }
+
+    @GetMapping("check")
+    public ActionStatusResponse isUsernameValid(@RequestParam(value = "username", required = false) String username,
+                                                @RequestParam(value = "email", required = false) String email) {
+        if (!UtilService.isNullOrEmpty(username) && !UtilService.isNullOrEmpty(email)) {
+            return new ActionStatusResponse(false);
+        }
+        if (UtilService.isNullOrEmpty(username) && UtilService.isNullOrEmpty(email)) {
+            return new ActionStatusResponse(false);
+        }
+        if (!UtilService.isNullOrEmpty(username)) {
+            if (accountService.isUsernameExist(username)) {
+                return new ActionStatusResponse(false);
+            }
+            return new ActionStatusResponse(true);
+        }
+        if (accountService.isEmailExist(email)) {
+            return new ActionStatusResponse(false);
+        }
+        return new ActionStatusResponse(true);
     }
 
     private void authenticate(String username, String password) {

@@ -131,6 +131,11 @@
             <artifactId>guava</artifactId>
             <version>30.0-jre</version>
         </dependency>
+        <dependency>
+            <groupId>org.passay</groupId>
+            <artifactId>passay</artifactId>
+            <version>1.6.0</version>
+        </dependency>
     </dependencies>
 
     <build>

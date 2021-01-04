@@ -1,5 +1,6 @@
 package net.stevencai.blog.backend.service;
 
+import net.stevencai.blog.backend.clientResource.SignUpUser;
 import net.stevencai.blog.backend.entity.User;
 
 public interface AccountService {
@@ -8,4 +9,10 @@ public interface AccountService {
 
     User findUserByUsername(String username);
     boolean isAuthenticated();
+
+    User createNewUser(SignUpUser signUpUser);
+
+    boolean isUsernameExist(String username);
+
+    boolean isEmailExist(String email);
 }

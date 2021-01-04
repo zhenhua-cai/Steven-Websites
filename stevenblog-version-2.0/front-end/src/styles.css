@@ -72,3 +72,9 @@ code {
   background-color: lightgray;
   border-radius: 5px;
 }
+.required-field{
+  color:red;
+  font-size:50%;
+  padding-bottom:2px;
+}
+

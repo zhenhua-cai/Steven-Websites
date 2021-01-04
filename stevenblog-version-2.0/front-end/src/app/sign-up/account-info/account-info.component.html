@@ -1,0 +1,119 @@
+<p-card>
+
+  <ng-template pTemplate="header">
+    <div class="p-grid p-nogutter d-flex justify-content-end">
+      <button pButton type="button" icon="pi pi-times" iconPos="left" (click)="cancel()"
+              class="p-button-text  p-button-rounded p-button-sm">
+      </button>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="title">
+    Account Information
+  </ng-template>
+  <ng-template pTemplate="subtitle">
+    Enter your account information
+  </ng-template>
+  <ng-template pTemplate="content">
+    <div [ngClass]="{'d-none': errorList.size == 0}" class="alert-danger error-list z-depth-1">
+      <ul *ngFor="let fieldsErrors of errorList | keyvalue">
+        <li *ngFor="let error of fieldsErrors.value ">{{error}}</li>
+      </ul>
+    </div>
+    <div class="p-fluid">
+      <form (ngSubmit)="nextPage()" [formGroup]="signUpForm">
+        <div class="p-field">
+          <label for="username">Username
+            <span class="required-field d-inline-block align-middle"><i class="fas fa-asterisk "></i></span>
+          </label>
+          <div class="p-inputgroup">
+            <span class="p-inputgroup-addon"><i class="pi pi-user"></i></span>
+            <span class="p-input-icon-right d-flex">
+              <i class="pi flex-grow-0" [pTooltip]="toolTipForUsernameIcon()"
+                 [ngClass]="usernameInputIcon()" (click)="isUsernameExists(signUpForm.get('username'))">
+              </i>
+              <input formControlName="username"
+                     id="username" type="text"
+                     pInputText
+                     class="flex-grow-1"
+                     [ngClass]="{'p-invalid': (signUpForm.get('username').invalid && submitted) || usernameAlreadyTaken}">
+            </span>
+          </div>
+        </div>
+        <div class="p-field mt-3">
+          <label for="email">Email <span class="required-field d-inline-block align-middle"><i
+            class="fas fa-asterisk "></i></span></label>
+          <div class="p-inputgroup">
+            <span class="p-inputgroup-addon"><i class="pi pi-envelope"></i></span>
+            <span class="p-input-icon-right d-flex">
+              <i class="pi flex-grow-0"
+                 [ngClass]="{'pi-check valid': !emailAlreadyTaken && !beforeCheckEmail, 'pi-times invalid': emailAlreadyTaken && !beforeCheckEmail}">
+              </i>
+              <input id="email" type="email" class="flex-grow-1"
+                     pInputText
+                     formControlName="email"
+                     [ngClass]="{'p-invalid': (signUpForm.get('email').invalid && submitted) || emailAlreadyTaken}">
+            </span>
+          </div>
+        </div>
+        <div class="p-field mt-3" *ngIf="signUpForm.get('email').valid">
+          <label for="confirmEmail">Confirm Email <span class="required-field d-inline-block align-middle"><i
+            class="fas fa-asterisk "></i></span></label>
+          <div class="p-inputgroup">
+            <span class="p-inputgroup-addon"><i class="pi pi-envelope"></i></span>
+            <input id="confirmEmail" type="email"
+                   pInputText
+                   formControlName="confirmEmail"
+
+                   [ngClass]="{'p-invalid': (!isConfirmEmailValid && submitted) || (signUpForm.get('confirmEmail').dirty && !isConfirmEmailValid)}">
+          </div>
+        </div>
+        <div class="p-field mt-3">
+          <label for="password">Password
+            <span class="required-field d-inline-block align-middle"><i class="fas fa-asterisk "></i></span>
+            <span class="d-inline-block pl-1" [pTooltip]="toolTipForPassword"><i class="fas fa-info-circle"></i></span>
+          </label>
+          <div class="p-inputgroup">
+            <span class="p-inputgroup-addon"><i class="pi pi-key"></i></span>
+            <span class="p-input-icon-right">
+              <i class="far "
+                 [ngClass]="{'fa-eye': !showPassword, 'fa-eye-slash':showPassword}"
+                 (click)="showPassword = !showPassword">
+              </i>
+              <input id="password" type="password" class="w-100"
+                     pPassword [feedback]="false"
+                     formControlName="password"
+                     [showPassword]="showPassword"
+                     [ngClass]="{'p-invalid': (signUpForm.get('password').invalid && submitted)}">
+            </span>
+          </div>
+        </div>
+        <div class="p-field mt-3" *ngIf="signUpForm.get('password').valid">
+          <label for="confirmPassword">Confirm Password <span class="required-field d-inline-block align-middle"><i
+            class="fas fa-asterisk "></i></span></label>
+          <div class="p-inputgroup">
+            <span class="p-inputgroup-addon"><i class="pi pi-key"></i></span>
+            <span class="p-input-icon-right d-flex">
+              <i class="far flex-grow-0"
+                 [ngClass]="{'fa-eye': !showConfirmPassword, 'fa-eye-slash':showConfirmPassword}"
+                 (click)="showConfirmPassword = !showConfirmPassword">
+              </i>
+              <input id="confirmPassword" type="password" class="flex-grow-1"
+                     pPassword [feedback]="false"
+                     [showPassword]="showConfirmPassword"
+                     formControlName="confirmPassword"
+                     [ngClass]="{'p-invalid': (signUpForm.get('confirmPassword').invalid && submitted)}">
+            </span>
+          </div>
+        </div>
+      </form>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="p-grid p-nogutter d-flex justify-content-between">
+      <p-button label="Cancel" (onClick)="cancel()" icon="pi pi-times"></p-button>
+      <p-button label="Next" (onClick)="nextPage()" icon="pi pi-angle-right" iconPos="right"
+                [disabled]="signUpForm.invalid || !isConfirmPasswordValid || !isConfirmEmailValid"></p-button>
+    </div>
+  </ng-template>
+</p-card>
+

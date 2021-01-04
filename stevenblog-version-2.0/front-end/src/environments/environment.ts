@@ -5,6 +5,11 @@
 export const environment = {
   production: false,
   serverUrl: 'http://localhost:8080/api/',
+  maxLengthForUsername: 30,
+  minLengthForUsername: 6,
+  maxLengthForPassword: 30,
+  minLengthForPassword: 8,
+  specialCharsForPassword: '!@#&*()-_=+[]{};:,.',
 };
 
 /*

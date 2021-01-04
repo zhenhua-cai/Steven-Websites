@@ -26,6 +26,11 @@ import {ArticlePublishConfirmationComponent} from './article-editor/publish/arti
 import {PublishGuard} from './article-editor/publish.guard';
 import {ErrorComponent} from './error/error.component';
 import {AccessDeniedComponent} from './error/access-denied/access-denied.component';
+import {SignUpComponent} from './sign-up/sign-up.component';
+import {AccountInfoComponent} from './sign-up/account-info/account-info.component';
+import {SignUpConfirmationComponent} from './sign-up/sign-up-confirmation/sign-up-confirmation.component';
+import {AccountInfoGuard} from './sign-up/account-info/account-info.guard';
+import {SignUpConfirmationGuard} from './sign-up/sign-up-confirmation/sign-up-confirmation.guard';
 
 
 const routes: Routes = [
@@ -51,6 +56,16 @@ const routes: Routes = [
     {
       path: 'login', component: BlogComponent, children: [
         {path: '', component: LoginComponent}
+      ]
+    },
+    {
+      path: 'sign-up', component: BlogComponent, children: [
+        {
+          path: '', component: SignUpComponent, children: [
+            {path: 'account-info', component: AccountInfoComponent, canDeactivate: [AccountInfoGuard]},
+            {path: 'confirmation', component: SignUpConfirmationComponent, canDeactivate: [SignUpConfirmationGuard]}
+          ]
+        }
       ]
     },
     {

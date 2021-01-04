@@ -39,7 +39,8 @@
               "node_modules/mdbootstrap/js/mdb.min.js",
               "node_modules/typed.js/lib/typed.min.js",
               "node_modules/jquery-ui-dist/jquery-ui.min.js",
-              "src/assets/js/highlight.min.js"
+              "src/assets/js/highlight.min.js",
+              "src/assets/js/pwstrength-bootstrap.min.js"
             ]
           },
           "configurations": {

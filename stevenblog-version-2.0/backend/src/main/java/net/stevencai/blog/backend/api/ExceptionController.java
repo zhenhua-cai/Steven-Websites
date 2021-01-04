@@ -3,6 +3,7 @@ package net.stevencai.blog.backend.api;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import net.stevencai.blog.backend.exception.ArticleNotFoundException;
+import net.stevencai.blog.backend.exception.SignUpValidationFailedException;
 import net.stevencai.blog.backend.exception.TooManyAuthAttemptsException;
 import net.stevencai.blog.backend.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
@@ -60,6 +61,15 @@ public class ExceptionController extends ResponseEntityExceptionHandler {
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setError(HttpStatus.UNAUTHORIZED.toString());
         response.setMessage("Invalid JWT");
+        return response;
+    }
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    @ExceptionHandler({SignUpValidationFailedException.class})
+    public ErrorResponse signUpValidationFailed() {
+        ErrorResponse response = new ErrorResponse();
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setError(HttpStatus.UNAUTHORIZED.toString());
+        response.setMessage("Sign up validation failed");
         return response;
     }
     @ResponseStatus(HttpStatus.BAD_REQUEST)

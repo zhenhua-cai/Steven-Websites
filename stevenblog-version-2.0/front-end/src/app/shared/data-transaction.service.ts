@@ -4,7 +4,7 @@ import {Observable, throwError} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {catchError} from 'rxjs/operators';
 import {Article} from './Article';
-import {AttemptLoginUser} from './ApplicationUser.model';
+import {AttemptLoginUser, SignUpUser} from './ApplicationUser.model';
 import {AppService} from '../app.service';
 import {Router} from '@angular/router';
 
@@ -57,6 +57,7 @@ export class DataTransactionService {
       })
     );
   }
+
   // fetch my articles/drafts methods
   fetchMyArticlesByTitle(title: string, page: number, size: number): Observable<ArticlesPageResponse> {
     let url = `/api/account/articles/search?page=${page}&size=${size}`;
@@ -91,6 +92,7 @@ export class DataTransactionService {
     }
     return this.sendGetArticlesPagesResponseRequest(url);
   }
+
   // end of fetch my articles/drafts methods
 
   private sendGetArticlesPagesResponseRequest(url: string): Observable<ArticlesPageResponse> {
@@ -182,6 +184,11 @@ export class DataTransactionService {
     return this.gainAccessTokenByRefreshToken(refreshToken);
   }
 
+  signUp(signUpUser: SignUpUser): Observable<SignUpResponse> {
+    const url = `api/auth/signup`;
+    return this.http.post<SignUpResponse>(url, signUpUser);
+  }
+
   private handleErrorResponse(errRes): Observable<any> {
     const error = errRes.error;
     let summary = null;
@@ -215,6 +222,16 @@ export class DataTransactionService {
     this.appService.showErrorToast('Authentication Failed', 'Please login.');
     this.router.navigate(['/login']).then();
   }
+
+  isUsernameValid(username: string): Observable<ActionStatusResponse> {
+    const url = `/api/auth/check?username=${username}`;
+    return this.http.get<ActionStatusResponse>(url);
+  }
+
+  isEmailValid(email: string): Observable<ActionStatusResponse> {
+    const url = `/api/auth/check?email=${email}`;
+    return this.http.get<ActionStatusResponse>(url);
+  }
 }
 
 export interface ArticlesPageResponse {
@@ -239,5 +256,8 @@ export interface AuthResponse {
   accessToken: string;
   refreshToken: string;
   roles: [];
+}
+
+export interface SignUpResponse {
 }
 

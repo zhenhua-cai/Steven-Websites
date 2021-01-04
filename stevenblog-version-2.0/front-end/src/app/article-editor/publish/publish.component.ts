@@ -4,7 +4,7 @@ import {Article} from '../../shared/Article';
 import {PublishService} from '../publish.service';
 import {Subscription} from 'rxjs';
 import {ArticleEditorService} from '../article-editor.service';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {ArticlesService} from '../../articles-list/articles.service';
 import {AppService} from '../../app.service';
 
@@ -25,13 +25,14 @@ export class PublishComponent implements OnInit, OnDestroy {
               private articleEditorService: ArticleEditorService,
               private router: Router,
               private appService: AppService,
-              private articlesService: ArticlesService) {
+              private articlesService: ArticlesService,
+              private activatedRoute: ActivatedRoute) {
   }
 
   ngOnInit(): void {
     this.publishSteps = [
       {label: 'Article Title', routerLink: 'account/publish/title'},
-      {label: 'Confirmation', routerLink: 'account/publish/confirmation'}
+      {label: 'Confirmation', routerLink: 'account/publish/sign-up-confirmation'}
     ];
     this.articlePublishCompleteSubscription = this.publishService.articlePublishCompleteEvent.subscribe(
       (complete) => {
@@ -52,6 +53,7 @@ export class PublishComponent implements OnInit, OnDestroy {
         }
       }
     );
+    this.router.navigate(['title'], {relativeTo: this.activatedRoute});
   }
 
   /**

@@ -21,6 +21,7 @@ import {ArticleEditorModule} from './article-editor/article-editor.module';
 import {ToastModule} from 'primeng/toast';
 import {BlockUIModule} from 'primeng/blockui';
 import {ErrorModule} from './error/error.module';
+import {SignUpModule} from './sign-up/sign-up.module';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import {ErrorModule} from './error/error.module';
     ArticleEditorModule,
     ToastModule,
     BlockUIModule,
-    ErrorModule
+    ErrorModule,
+    SignUpModule
   ],
   providers: [
     [
