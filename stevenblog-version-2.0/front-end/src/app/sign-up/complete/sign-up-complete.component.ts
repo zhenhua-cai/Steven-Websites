@@ -23,7 +23,7 @@ export class SignUpCompleteComponent implements OnInit {
         this.timeCountDown--;
         if (this.timeCountDown === 0) {
           clearInterval(resendEmailTimeInterval);
-          this.router.navigate(['/']);
+          this.router.navigate(['/login']);
         }
       }, 1000);
   }

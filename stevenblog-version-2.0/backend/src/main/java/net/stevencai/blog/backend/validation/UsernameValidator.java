@@ -6,7 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class UsernameValidator implements ConstraintValidator<ValidUsername, String> {
-    private static final String USER_PATTERN="^[a-zA-Z0-9_]+$";
+    private static final String USER_PATTERN="^[a-zA-Z0-9]+[a-zA-Z0-9_]*$";
     private String illegalCharsMessage;
     public void initialize(ValidUsername constraint) {
         illegalCharsMessage = constraint.illegalCharsMessage();

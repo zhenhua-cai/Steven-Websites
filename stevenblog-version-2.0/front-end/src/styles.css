@@ -4,6 +4,10 @@ body {
   height: 100%;
 }
 
+.w-fit-content {
+  width: fit-content;
+}
+
 .media {
   display: block !important;
   align-items: center !important;
@@ -95,56 +99,64 @@ code {
     font-size: 45px;
   }
 }
+
 @media screen and (max-width: 800px) {
   .verification-code-digit {
     text-align: center;
     height: 60px;
     width: 60px;
   }
+
   .verification-digit-box {
-    margin:10px;
+    margin: 10px;
   }
 
   input.verification-code-digit {
     font-size: 40px;
   }
 }
+
 @media screen and (max-width: 600px) {
   .verification-code-digit {
     text-align: center;
     height: 60px;
     width: 60px;
   }
+
   .verification-digit-box {
-    margin:10px;
+    margin: 10px;
   }
 
   input.verification-code-digit {
     font-size: 35px;
   }
 }
+
 @media screen and (max-width: 500px) {
   .verification-code-digit {
     text-align: center;
-    height:50px;
+    height: 50px;
     width: 50px;
   }
+
   .verification-digit-box {
-    margin:10px;
+    margin: 10px;
   }
 
   input.verification-code-digit {
     font-size: 30px;
   }
 }
+
 @media screen and (max-width: 420px) {
   .verification-code-digit {
     text-align: center;
-    height:40px;
+    height: 40px;
     width: 40px;
   }
+
   .verification-digit-box {
-    margin-left:8px;
+    margin-left: 8px;
     margin-right: 8px;
   }
 
@@ -152,30 +164,34 @@ code {
     font-size: 20px;
   }
 }
+
 @media screen and (max-width: 340px) {
   .verification-code-digit {
     text-align: center;
-    height:35px;
+    height: 35px;
     width: 35px;
   }
+
   .verification-digit-box {
-    margin-left:5px;
-    margin-right:5px;
+    margin-left: 5px;
+    margin-right: 5px;
   }
 
   input.verification-code-digit {
     font-size: 20px;
   }
 }
+
 @media screen and (max-width: 270px) {
   .verification-code-digit {
     text-align: center;
-    height:30px;
+    height: 30px;
     width: 30px;
   }
+
   .verification-digit-box {
-    margin-left:3px;
-    margin-right:3px;
+    margin-left: 3px;
+    margin-right: 3px;
   }
 
   input.verification-code-digit {

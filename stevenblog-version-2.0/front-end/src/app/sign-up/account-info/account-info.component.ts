@@ -288,6 +288,10 @@ export class AccountInfoComponent implements OnInit, OnDestroy, AfterViewInit {
       hasError = true;
       usernameErrors.push(`Username should have at most ${this.maxLengthForUsername} characters`);
     }
+    if (control.value.length > 0 && control.value.startsWith('_')) {
+      hasError = true;
+      usernameErrors.push(`Username cannot starts with _`);
+    }
     const regex = RegExp(/^[a-zA-Z0-9_]+$/);
     if (control.value.length > 0 && !regex.test(control.value)) {
       hasError = true;
