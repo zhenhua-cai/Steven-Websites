@@ -67,7 +67,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         }
         if (username != null && !this.accountService.isAuthenticated()) {
             UserDetails userDetails = accountService.findUserByUsername(username);
-            if (userDetails.isAccountNonLocked()) {
+            if (!userDetails.isAccountNonLocked()) {
                 throw new LockedException("Account was Locked due to suspicious behaviour");
             }
             if (jwtService.usernameMatch(jwtToken, userDetails)) {
