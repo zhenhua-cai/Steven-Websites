@@ -1,23 +1,17 @@
-<div class="container row  shadow-lg bg-white rounded h-100 p-3" >
+<div class="container row  shadow-lg bg-white rounded h-100 p-3 ml-auto mr-auto">
   <div class="col-10 ml-auto mr-auto h-100 d-flex flex-column flex-fill" *ngIf="articles.length > 0">
     <div class="w-75 ml-auto mr-auto h-100 flex-grow-1">
-      <div class="flex-grow-1" >
-        <ng-container >
-          <div *ngFor="let article of articles; let i = index">
-            <app-articles-list-item [article]="article"></app-articles-list-item>
-          </div>
-        </ng-container>
+      <div *ngFor="let article of articles; let i = index">
+        <app-articles-list-item [article]="article"></app-articles-list-item>
       </div>
     </div>
-    <div class="flex-grow-0" >
+    <div class="flex-grow-0">
       <p-paginator [rows]="pageSize" [totalRecords]="totalArticles" (onPageChange)="paginate($event)"></p-paginator>
     </div>
   </div>
-  <div  class="col-10 ml-auto mr-auto h-100" *ngIf="articles.length === 0">
-    <div >
-      <div class="text-center empty-list">
-        <span class="font-weight-bold">No Articles Found</span>
-      </div>
+  <div class="col-10 ml-auto mr-auto h-100 p-5" *ngIf="articles.length === 0">
+    <div class="text-center empty-list p-5">
+      <span class="font-weight-bold">No Articles Found</span>
     </div>
   </div>
 </div>

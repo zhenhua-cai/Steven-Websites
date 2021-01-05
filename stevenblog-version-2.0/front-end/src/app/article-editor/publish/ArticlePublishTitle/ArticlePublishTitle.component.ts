@@ -53,7 +53,7 @@ export class ArticlePublishTitleComponent implements OnInit, OnDestroy {
       return;
     }
     this.publishService.updatePublishArticle(this.article);
-    this.router.navigate(['/account/publish/sign-up-confirmation']);
+    this.router.navigate(['/account/publish/confirmation']);
     return;
 
   }
