@@ -1,10 +1,6 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {NgForm} from '@angular/forms';
+import {Component, OnInit} from '@angular/core';
 import {AuthService} from '../shared/auth.service';
 import {AttemptLoginUser} from '../shared/ApplicationUser.model';
-import {Subscription} from 'rxjs';
-import {Router} from '@angular/router';
-import {MessageService} from 'primeng/api';
 
 @Component({
   selector: 'app-login',

@@ -2,16 +2,17 @@
   <div class="card">
     <p-steps [model]="signUpSteps" [readonly]="true"></p-steps>
   </div>
-  <div class="my-3 shadow-lg bg-white rounded ml-auto mr-auto sing-up-info-container" >
+  <div class="my-3 shadow-lg bg-white rounded ml-auto mr-auto sing-up-info-container">
     <router-outlet></router-outlet>
   </div>
 </div>
-<div  *ngIf="inStartPage">
+<div *ngIf="inStartPage">
   <div class="text-center my-5 ">
     <button pButton type="button" (click)="starts()"
             class="p-button-raised p-button-rounded p-button-outlined" label="Start SignUp"></button>
   </div>
 </div>
+
 <!-- quit sign-up-confirmation -->
 <p-confirmDialog key="quitSignUp" #cd
                  header="Leave?"

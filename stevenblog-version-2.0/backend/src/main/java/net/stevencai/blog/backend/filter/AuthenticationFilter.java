@@ -7,9 +7,11 @@ import net.stevencai.blog.backend.service.AccountService;
 import net.stevencai.blog.backend.service.JwtService;
 import net.stevencai.blog.backend.service.UtilService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -65,6 +67,9 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         }
         if (username != null && !this.accountService.isAuthenticated()) {
             UserDetails userDetails = accountService.findUserByUsername(username);
+            if (userDetails.isAccountNonLocked()) {
+                throw new LockedException("Account was Locked due to suspicious behaviour");
+            }
             if (jwtService.usernameMatch(jwtToken, userDetails)) {
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken
                         = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
@@ -74,5 +79,4 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         }
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
-
 }

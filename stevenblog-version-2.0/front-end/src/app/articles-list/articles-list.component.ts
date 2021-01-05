@@ -27,9 +27,11 @@ export class ArticlesListComponent implements OnInit, OnDestroy {
     this.activateRoute.data.subscribe(
       (data) => {
         this.resolveArticlesResponse(data.articlesResponse);
+      }, ignore => {
       }
     );
   }
+
   ngOnDestroy(): void {
   }
 
@@ -41,7 +43,9 @@ export class ArticlesListComponent implements OnInit, OnDestroy {
     this.currentPage = event.page;
     this.articleService.fetchArticles(this.currentPage, this.pageSize).subscribe(
       (articlesResponse) => {
-          this.resolveArticlesResponse(articlesResponse);
+        this.resolveArticlesResponse(articlesResponse);
+      }, ignore => {
+
       });
     window.scrollTo(0, 0);
   }

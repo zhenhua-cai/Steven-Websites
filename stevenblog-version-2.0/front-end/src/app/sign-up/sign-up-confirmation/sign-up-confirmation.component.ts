@@ -39,6 +39,7 @@ export class SignUpConfirmationComponent implements OnInit, OnDestroy {
   }
 
   signUp(): void {
+    this.signUpService.moveNext();
     this.signUpService.signUp();
   }
 }

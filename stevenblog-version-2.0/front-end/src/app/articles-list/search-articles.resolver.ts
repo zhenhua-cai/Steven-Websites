@@ -4,9 +4,10 @@ import {
   RouterStateSnapshot,
   ActivatedRouteSnapshot
 } from '@angular/router';
-import {Observable, of} from 'rxjs';
+import {Observable, of, throwError} from 'rxjs';
 import {ArticlesPageResponse} from '../shared/data-transaction.service';
 import {ArticlesService} from './articles.service';
+import {catchError} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'

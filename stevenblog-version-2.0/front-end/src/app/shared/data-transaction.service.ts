@@ -51,11 +51,7 @@ export class DataTransactionService {
 
   login(loginUser: AttemptLoginUser): Observable<AuthResponse> {
     const url = `/api/auth/login`;
-    return this.http.post<AuthResponse>(url, loginUser).pipe(
-      catchError(errRes => {
-        return this.handleErrorResponse(errRes);
-      })
-    );
+    return this.http.post<AuthResponse>(url, loginUser);
   }
 
   // fetch my articles/drafts methods
@@ -145,15 +141,15 @@ export class DataTransactionService {
 
   deleteArticleDraftById(articleId: string): Observable<ActionStatusResponse> {
     const url = `/api/drafts/delete/${articleId}`;
-    return this.aendDeleteActionStatusResponseRequest(url);
+    return this.sendDeleteActionStatusResponseRequest(url);
   }
 
   deleteArticleById(articleId: string): Observable<ActionStatusResponse> {
     const url = `/api/articles/delete/${articleId}`;
-    return this.aendDeleteActionStatusResponseRequest(url);
+    return this.sendDeleteActionStatusResponseRequest(url);
   }
 
-  private aendDeleteActionStatusResponseRequest(url: string): Observable<ActionStatusResponse> {
+  private sendDeleteActionStatusResponseRequest(url: string): Observable<ActionStatusResponse> {
     return this.http.delete<ActionStatusResponse>(url).pipe(
       catchError(errRes => {
         return this.handleErrorResponse(errRes);
@@ -186,7 +182,11 @@ export class DataTransactionService {
 
   signUp(signUpUser: SignUpUser): Observable<SignUpResponse> {
     const url = `api/auth/signup`;
-    return this.http.post<SignUpResponse>(url, signUpUser);
+    return this.http.post<SignUpResponse>(url, signUpUser).pipe(
+      catchError((error) => {
+        return this.handleErrorResponse(error);
+      })
+    );
   }
 
   private handleErrorResponse(errRes): Observable<any> {
@@ -197,7 +197,8 @@ export class DataTransactionService {
     }
     if (errRes.status === 403) {
       summary = 'Access Denied';
-      this.router.navigate(['/error/access-denied']);
+    } else if (errRes.status === 423) {
+      summary = 'Account Locked';
     } else if (errRes.status === 500) {
       summary = 'Unknown error';
     } else {
@@ -225,12 +226,34 @@ export class DataTransactionService {
 
   isUsernameValid(username: string): Observable<ActionStatusResponse> {
     const url = `/api/auth/check?username=${username}`;
-    return this.http.get<ActionStatusResponse>(url);
+    return this.http.get<ActionStatusResponse>(url).pipe(
+      catchError(errRes => {
+        return this.handleErrorResponse(errRes);
+      })
+    );
   }
 
   isEmailValid(email: string): Observable<ActionStatusResponse> {
     const url = `/api/auth/check?email=${email}`;
-    return this.http.get<ActionStatusResponse>(url);
+    return this.http.get<ActionStatusResponse>(url).pipe(
+      catchError(errRes => {
+        return this.handleErrorResponse(errRes);
+      })
+    );
+  }
+
+  resendVerificationEmail(email: string): Observable<ActionStatusResponse> {
+    const url = `/api/auth/resendActivationEmail`;
+    return this.http.post<ActionStatusResponse>(url, email);
+  }
+
+  checkVerificationCode(code: string, username: string): Observable<ActionStatusResponse> {
+    const url = `/api/auth/activateAccount`;
+    return this.http.post<ActionStatusResponse>(url, {code, username}).pipe(
+      catchError(errRes => {
+        return this.handleErrorResponse(errRes);
+      })
+    );
   }
 }
 
@@ -259,5 +282,7 @@ export interface AuthResponse {
 }
 
 export interface SignUpResponse {
+  success: boolean;
+  msg: string;
 }
 

@@ -5,9 +5,11 @@ import net.stevencai.blog.backend.entity.User;
 
 public interface AccountService {
     User saveUser(User user);
+
     User findUserByEmail(String email);
 
     User findUserByUsername(String username);
+
     boolean isAuthenticated();
 
     User createNewUser(SignUpUser signUpUser);
@@ -15,4 +17,10 @@ public interface AccountService {
     boolean isUsernameExist(String username);
 
     boolean isEmailExist(String email);
+
+    void lockAccount(String username);
+
+    void unlockAccount(String username);
+
+    void enableAccount(String username);
 }

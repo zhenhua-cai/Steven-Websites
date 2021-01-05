@@ -23,6 +23,9 @@ import java.util.Map;
 public class EmailServiceImpl implements EmailService {
     private JavaMailSender mailSender;
     private AccountService accountService;
+    private UtilService utilService;
+    private VerificationTokenService verificationTokenService;
+
     private final Logger logger = LoggerFactory.getLogger(EmailServiceImpl.class);
 
     @Value("${auth.min.duration.after.fail}")
@@ -32,6 +35,16 @@ public class EmailServiceImpl implements EmailService {
     private String host;
 
     private SpringTemplateEngine thymeleaf;
+
+    @Autowired
+    public void setVerificationTokenService(VerificationTokenService verificationTokenService) {
+        this.verificationTokenService = verificationTokenService;
+    }
+
+    @Autowired
+    public void setUtilService(UtilService utilService) {
+        this.utilService = utilService;
+    }
 
     @Autowired
     public void setThymeleaf(SpringTemplateEngine thymeleaf) {
@@ -64,6 +77,17 @@ public class EmailServiceImpl implements EmailService {
         sendEmail("UserAccountAlert", attributes, user.getEmail(), "Account Login Alert");
     }
 
+    @Override
+    @Async
+    public void sendUserEmailVerificationCode(User user) {
+        Map<String, Object> attributes = new HashMap<>();
+        attributes.put("username", user.getUsername());
+        String verificationCode = this.utilService.generateVerificationCode(6);
+        this.verificationTokenService.saveNewToken(user.getUsername(), verificationCode);
+        attributes.put("code", verificationCode);
+        sendEmail("activateAccount", attributes, user.getEmail(), "Activate Account");
+    }
+
     private void sendEmail(String templateName, Map<String, Object> attributes, String sendTo, String subject) throws SendingEmailFailException {
         Context context = new Context();
         for (Map.Entry<String, Object> entry : attributes.entrySet()) {
@@ -79,6 +103,7 @@ public class EmailServiceImpl implements EmailService {
             mailSender.send(message);
         } catch (MessagingException e) {
             logger.error("Fail to send email to " + sendTo, e);
+            //TODO: save email address and resend later
         }
     }
 

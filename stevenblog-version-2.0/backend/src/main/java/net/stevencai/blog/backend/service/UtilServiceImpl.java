@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.time.LocalDateTime;
+import java.util.Random;
 import java.util.UUID;
 
 @Service
@@ -89,6 +90,16 @@ public class UtilServiceImpl implements UtilService {
             return request.getRemoteAddr();
         }
         return ip;
+    }
+
+    @Override
+    public String generateVerificationCode(int numOfDigits) {
+        Random random = new Random();
+        StringBuilder str = new StringBuilder();
+        for (int i = 0; i < numOfDigits; i++) {
+            str.append(random.nextInt(10));
+        }
+        return str.toString();
     }
 
     private void generateJwtSecret() {

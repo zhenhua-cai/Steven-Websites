@@ -2,7 +2,6 @@ package net.stevencai.blog.backend.repository;
 
 import net.stevencai.blog.backend.entity.AuthAttempts;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -11,17 +10,8 @@ import java.time.LocalDateTime;
 @Repository
 public class AuthAttemptsRepositoryImpl implements AuthAttemptsRepository {
 
-    private final int MAX_ATTEMPTS;
-    private final int ATTEMPTS_MIN_DURATION;
 
     private RedisTemplate<String, Object> redis;
-
-    @Autowired
-    public AuthAttemptsRepositoryImpl(@Value("${auth.max.attempts}") int MAX_ATTEMPTS,
-                                      @Value("${auth.min.duration.after.fail}") int ATTEMPTS_MIN_DURATION) {
-        this.MAX_ATTEMPTS = MAX_ATTEMPTS;
-        this.ATTEMPTS_MIN_DURATION = ATTEMPTS_MIN_DURATION;
-    }
 
     @Autowired
     public void setRedis(RedisTemplate<String, Object> redis) {
@@ -39,32 +29,23 @@ public class AuthAttemptsRepositoryImpl implements AuthAttemptsRepository {
         redis.delete(ip);
     }
 
-    /**
-     * check if user still be able to attempt login.
-     * if user has remaining attempts: MAX_ATTEMPTS - attempts;
-     * or last attempts was 2 hours ago.
-     *
-     * @param ip user login ip address.
-     * @return true if ok. false otherwise.
-     */
     @Override
-    public boolean okForNextAttempts(String ip) {
+    public LocalDateTime getLastAttempt(String ip) {
         final AuthAttempts authAttempts = getAuthAttemptsObj(ip);
         if (authAttempts == null) {
-            return true;
+            return null;
         }
-        boolean hasRemainingAttempts = authAttempts.getAttempts() < MAX_ATTEMPTS;
-        if (hasRemainingAttempts) {
-            return true;
-        }
-        boolean ableToAttempt = authAttempts.getLastAttempt()
-                .plusHours(ATTEMPTS_MIN_DURATION)
-                .isBefore(LocalDateTime.now());
-        //if user is able to attempt after ATTEMPTS_MIN_DURATION, then unblock ip, and clear attempts.
-        if (ableToAttempt) {
-            clearAttempts(ip);
-        }
-        return ableToAttempt;
+        return authAttempts.getLastAttempt();
+    }
+
+    @Override
+    public void setAuthAttempts(String ip, AuthAttempts authAttempts) {
+        this.setAuthAttemptsObj(ip, authAttempts);
+    }
+
+    @Override
+    public AuthAttempts getAuthAttempts(String ip) {
+        return getAuthAttemptsObj(ip);
     }
 
     private AuthAttempts getAuthAttemptsObj(String ip) {
@@ -75,15 +56,15 @@ public class AuthAttemptsRepositoryImpl implements AuthAttemptsRepository {
         redis.opsForValue().set(ip, authAttempts);
     }
 
-    public boolean needsToNotifyOwnerAfterIncrease(String ip) {
+    @Override
+    public int increaseAuthAttempts(String ip) {
         AuthAttempts authAttempts = getAuthAttemptsObj(ip);
         if (authAttempts == null) {
             authAttempts = new AuthAttempts();
         }
         authAttempts.setAttempts(authAttempts.getAttempts() + 1);
-
         setAuthAttemptsObj(ip, authAttempts);
-
-        return authAttempts.getAttempts() >= MAX_ATTEMPTS;
+        return authAttempts.getAttempts();
     }
+
 }

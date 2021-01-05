@@ -67,14 +67,118 @@ div.ck.ck-content {
   pointer-events: none;
   opacity: 0.4;
 }
+
 code {
   padding: 5px;
   background-color: lightgray;
   border-radius: 5px;
 }
-.required-field{
-  color:red;
-  font-size:50%;
-  padding-bottom:2px;
+
+.required-field {
+  color: red;
+  font-size: 50%;
+  padding-bottom: 2px;
 }
 
+@media screen and (min-width: 801px) {
+  .verification-code-digit {
+    text-align: center;
+    height: 70px;
+    width: 70px;
+  }
+
+  .verification-digit-box {
+    margin: 10px;
+  }
+
+  input.verification-code-digit {
+    font-size: 45px;
+  }
+}
+@media screen and (max-width: 800px) {
+  .verification-code-digit {
+    text-align: center;
+    height: 60px;
+    width: 60px;
+  }
+  .verification-digit-box {
+    margin:10px;
+  }
+
+  input.verification-code-digit {
+    font-size: 40px;
+  }
+}
+@media screen and (max-width: 600px) {
+  .verification-code-digit {
+    text-align: center;
+    height: 60px;
+    width: 60px;
+  }
+  .verification-digit-box {
+    margin:10px;
+  }
+
+  input.verification-code-digit {
+    font-size: 35px;
+  }
+}
+@media screen and (max-width: 500px) {
+  .verification-code-digit {
+    text-align: center;
+    height:50px;
+    width: 50px;
+  }
+  .verification-digit-box {
+    margin:10px;
+  }
+
+  input.verification-code-digit {
+    font-size: 30px;
+  }
+}
+@media screen and (max-width: 420px) {
+  .verification-code-digit {
+    text-align: center;
+    height:40px;
+    width: 40px;
+  }
+  .verification-digit-box {
+    margin-left:8px;
+    margin-right: 8px;
+  }
+
+  input.verification-code-digit {
+    font-size: 20px;
+  }
+}
+@media screen and (max-width: 340px) {
+  .verification-code-digit {
+    text-align: center;
+    height:35px;
+    width: 35px;
+  }
+  .verification-digit-box {
+    margin-left:5px;
+    margin-right:5px;
+  }
+
+  input.verification-code-digit {
+    font-size: 20px;
+  }
+}
+@media screen and (max-width: 270px) {
+  .verification-code-digit {
+    text-align: center;
+    height:30px;
+    width: 30px;
+  }
+  .verification-digit-box {
+    margin-left:3px;
+    margin-right:3px;
+  }
+
+  input.verification-code-digit {
+    font-size: 20px;
+  }
+}

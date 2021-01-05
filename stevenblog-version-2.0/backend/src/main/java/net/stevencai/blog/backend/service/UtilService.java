@@ -18,4 +18,6 @@ public interface UtilService {
     }
 
     String getClientIp(HttpServletRequest request);
+
+    String generateVerificationCode(int numOfDigits);
 }

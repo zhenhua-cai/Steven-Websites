@@ -81,7 +81,7 @@ public class ArticlesServiceImpl implements ArticlesService, ArticleDraftService
     }
 
     @Override
-    @CachePut(value="articleCache", key="#result.id")
+    @CachePut(value = "articleCache", key = "#result.id")
     public ArticleResource saveArticle(ArticleResource articleResource) {
         articleResource.setLastModified(LocalDateTime.now());
         Article article = getArticle(articleResource);
@@ -230,7 +230,7 @@ public class ArticlesServiceImpl implements ArticlesService, ArticleDraftService
     }
 
     @Override
-    @Cacheable("articleCache")
+    @Cacheable(value = "articleCache", unless = "#result == null")
     public ArticleResource loadArticleToEdit(String id) {
         Optional<ArticleDraft> articleDraft = draftRepository.findById(id);
         return articleDraft.map(this::getArticleResource).orElseGet(() -> findArticleById(id));

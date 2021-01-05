@@ -16,7 +16,7 @@ import javax.validation.constraints.Size;
 })
 public class SignUpUser {
     @NotNull
-    @Size(min=8, max=30, message="username must be between 6 and 30 characters")
+    @Size(min=6, max=30, message="username must be between 6 and 30 characters")
     @ValidUsername
     private String username;
 
@@ -28,7 +28,7 @@ public class SignUpUser {
     private String confirmEmail;
 
     @NotNull
-    @ValidPassword(min=5,max = 30)
+    @ValidPassword(min=8,max = 30)
     private String password;
 
     @NotNull

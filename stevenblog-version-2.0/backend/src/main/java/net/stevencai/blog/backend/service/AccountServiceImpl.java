@@ -4,8 +4,9 @@ import net.stevencai.blog.backend.clientResource.SignUpUser;
 import net.stevencai.blog.backend.entity.User;
 import net.stevencai.blog.backend.exception.EmailAlreadyExistException;
 import net.stevencai.blog.backend.exception.UsernameAlreadyExistException;
-import net.stevencai.blog.backend.repository.AccountRepository;
+import net.stevencai.blog.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AccountServiceImpl implements AccountService {
-    private AccountRepository accountRepository;
+    private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -25,26 +26,25 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Autowired
-    public void setAccountRepository(AccountRepository accountRepository) {
-        this.accountRepository = accountRepository;
+    public void setAccountRepository(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
     @CachePut(value = "userCache", key = "#result.username")
     public User saveUser(User user) {
-        return accountRepository.save(user);
+        return userRepository.save(user);
     }
 
     @Override
-    @Cacheable("userWithEmailCache")
     public User findUserByEmail(String email) {
-        return accountRepository.findUserByEmail(email);
+        return userRepository.findUserByEmail(email);
     }
 
     @Override
-    @Cacheable("userCache")
+    @Cacheable(value = "userCache", unless = "#result == null")
     public User findUserByUsername(String username) {
-        return accountRepository.findUserByUsername(username);
+        return userRepository.findUserByUsername(username);
     }
 
     @Override
@@ -72,13 +72,30 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Cacheable("usernameExistsCache")
     public boolean isUsernameExist(String username) {
-        return accountRepository.findUserByUsername(username) != null;
+        return userRepository.findUserByUsername(username) != null;
     }
 
     @Override
-    @Cacheable("emailExistsCache")
     public boolean isEmailExist(String email) {
-        return accountRepository.findUserByEmail(email) != null;
+        return userRepository.findUserByEmail(email) != null;
+    }
+
+    @Override
+    @CacheEvict(value = "userCache", key = "#username")
+    public void lockAccount(String username) {
+        this.userRepository.lockAccount(username);
+    }
+
+    @Override
+    @CacheEvict(value = "userCache", key = "#username")
+    public void unlockAccount(String username) {
+        this.userRepository.unlockAccount(username);
+    }
+
+    @Override
+    @CacheEvict(value = "userCache", key = "#username")
+    public void enableAccount(String username) {
+        this.userRepository.enableAccount(username);
     }
 
     private User buildUser(SignUpUser signUpUser) {
@@ -86,6 +103,7 @@ public class AccountServiceImpl implements AccountService {
         user.setUsername(signUpUser.getUsername());
         user.setPassword(encryptPassword(signUpUser.getPassword()));
         user.setEmail(signUpUser.getEmail());
+        user.setEnabled(false);
         return user;
     }
 

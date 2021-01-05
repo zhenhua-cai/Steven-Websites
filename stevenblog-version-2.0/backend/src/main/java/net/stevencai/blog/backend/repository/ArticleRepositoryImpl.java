@@ -12,7 +12,7 @@ import javax.transaction.Transactional;
 
 @Repository
 @Transactional
-public class ArticleRepositoryImpl extends PostSaveExtension implements ArticleSaveExtension {
+public class ArticleRepositoryImpl extends PostSaveExtension implements ArticleRepositoryExtension {
 
     private EntityManagerFactory entityManagerFactory;
 

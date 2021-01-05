@@ -14,7 +14,7 @@ import javax.transaction.Transactional;
 
 @Repository
 @Transactional
-public class DraftRepositoryImpl extends PostSaveExtension implements ArticleDraftSaveExtension {
+public class DraftRepositoryImpl extends PostSaveExtension implements ArticleDraftRepositoryExtension {
 
     private EntityManagerFactory entityManagerFactory;
 

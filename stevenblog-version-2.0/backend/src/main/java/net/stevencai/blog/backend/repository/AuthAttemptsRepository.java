@@ -4,11 +4,18 @@ import net.stevencai.blog.backend.entity.AuthAttempts;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
+
 public interface AuthAttemptsRepository {
     int getAttempts(String ip);
+
     void clearAttempts(String ip);
 
-    boolean okForNextAttempts(String ip);
+    int increaseAuthAttempts(String ip);
 
-    boolean needsToNotifyOwnerAfterIncrease(String ip);
+    LocalDateTime getLastAttempt(String ip);
+
+    void setAuthAttempts(String ip, AuthAttempts authAttempts);
+
+    AuthAttempts getAuthAttempts(String ip);
 }

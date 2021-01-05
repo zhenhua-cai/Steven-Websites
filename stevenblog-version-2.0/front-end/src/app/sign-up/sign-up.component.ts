@@ -54,7 +54,9 @@ export class SignUpComponent implements OnInit, OnDestroy {
       });
     this.signUpSteps = [
       {label: 'Account Information', routerLink: '/sign-up/account-info'},
-      {label: 'Confirmation', routerLink: '/sign-up/confirmation'}
+      {label: 'Confirmation', routerLink: '/sign-up/confirmation'},
+      {label: 'Verify Email', routerLink: '/sign-up/verifyEmail'},
+      {label: 'Complete', routerLink: '/sign-up/complete'},
     ];
     if (this.inStartPage) {
       this.router.navigate(['/sign-up']);

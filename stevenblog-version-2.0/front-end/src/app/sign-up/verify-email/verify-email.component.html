@@ -1,0 +1,35 @@
+<div class="mt-1 py-5 bg-white mr-auto ml-auto text-center">
+  <div class="px-5">
+    <p>Hi <span class="font-weight-bold font-x-large">{{signUpUser.username}}</span>, an activation email with
+      verification code has been
+      send to your email.</p>
+  </div>
+  <hr>
+  <div class="px-3">
+    <h3> Please enter your verification code.</h3>
+  </div>
+
+  <div class=" pt-3 ml-auto mr-auto">
+    <p-inputNumber
+      *ngFor="let item of [].constructor(numberOfDigits); let i = index"
+      maxlength="1" size="1" inputStyleClass="verification-code-digit"
+      [inputId]="'digit-'+i"
+      [(ngModel)]="verificationDigits[i]"
+      (keyup)="keyUp($event)" (keydown)="onKeyDown($event)" (paste)="onPaste($event)"
+      class="verification-digit-box"></p-inputNumber>
+  </div>
+  <div class="text-center mt-5">
+    <button pButton type="button"
+            [label]="resendEmailLabel()"
+            [ngClass]="{'p-button-outlined':!mouseOverButton}"
+            (mouseover)="mouseOverButton = true;"
+            (mouseout)="mouseOverButton = false"
+            [disabled]="resendEmailTimeCountDown > 0 && !this.isCodeEntered"
+            (click)="onButtonClicked()"
+            class="p-button-raised p-button-rounded ">
+
+    </button>
+  </div>
+</div>
+
+

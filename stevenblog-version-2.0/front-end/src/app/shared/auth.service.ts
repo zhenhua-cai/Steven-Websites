@@ -4,6 +4,7 @@ import {AttemptLoginUser, AuthedUser} from './ApplicationUser.model';
 import {BehaviorSubject} from 'rxjs';
 import {Router} from '@angular/router';
 import {AppService} from '../app.service';
+import {SignUpService} from '../sign-up/sign-up.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,8 @@ export class AuthService {
 
   constructor(private dataTransaction: DataTransactionService,
               private router: Router,
-              private appService: AppService) {
+              private appService: AppService,
+              private signUpService: SignUpService) {
   }
 
   /**
@@ -32,8 +34,7 @@ export class AuthService {
     if (this.authedUser) {
       this.isLoggedIn = true;
       this.userAuthedEvent.next(true);
-    }
-    else{
+    } else {
       this.clearAuthInfo();
     }
   }
@@ -49,9 +50,13 @@ export class AuthService {
         this.userAuthedEvent.next(true);
         this.appService.isLoggingIn = false;
         this.router.navigate(['/']);
-      }, ignore => {
+      }, error => {
         this.appService.unblockScreen();
         this.appService.isLoggingIn = false;
+        this.appService.showErrorToast('Login Failed', error.error.message);
+        if (error.error.message.startsWith('Activation')) {
+          this.signUpService.activateAccount(user.username);
+        }
       }
     );
   }

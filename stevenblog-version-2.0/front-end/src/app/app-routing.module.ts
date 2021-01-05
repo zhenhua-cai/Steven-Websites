@@ -31,6 +31,8 @@ import {AccountInfoComponent} from './sign-up/account-info/account-info.componen
 import {SignUpConfirmationComponent} from './sign-up/sign-up-confirmation/sign-up-confirmation.component';
 import {AccountInfoGuard} from './sign-up/account-info/account-info.guard';
 import {SignUpConfirmationGuard} from './sign-up/sign-up-confirmation/sign-up-confirmation.guard';
+import {VerifyEmailComponent} from './sign-up/verify-email/verify-email.component';
+import {SignUpCompleteComponent} from './sign-up/complete/sign-up-complete.component';
 
 
 const routes: Routes = [
@@ -63,7 +65,9 @@ const routes: Routes = [
         {
           path: '', component: SignUpComponent, children: [
             {path: 'account-info', component: AccountInfoComponent, canDeactivate: [AccountInfoGuard]},
-            {path: 'confirmation', component: SignUpConfirmationComponent, canDeactivate: [SignUpConfirmationGuard]}
+            {path: 'confirmation', component: SignUpConfirmationComponent, canDeactivate: [SignUpConfirmationGuard]},
+            {path: 'verifyEmail', component: VerifyEmailComponent},
+            {path: 'complete', component: SignUpCompleteComponent}
           ]
         }
       ]
