@@ -10,12 +10,13 @@ create table users(
 	email varchar(128) unique not null,
 	firstName varchar(50) default null,
     lastName varchar(50) default null,
+    createDateTime datetime not null,
     enabled tinyint(1) not null,
     `locked` tinyint(1) not null
 )engine=InnoDB auto_increment=1 default charset=latin1;
 
-insert into users(username, email, password, enabled, locked) 
-values("stevencai","steven.cai1990@hotmail.com","$2a$10$1Y9D9WGMSIOInmW2eCpEgenk89VJNClvQBARyzF3ZBX6z/6bh7Hy6",1,0);
+insert into users(username, email, password, enabled, locked, createDateTime) 
+values("stevencai","steven.cai1990@hotmail.com","$2a$10$1Y9D9WGMSIOInmW2eCpEgenk89VJNClvQBARyzF3ZBX6z/6bh7Hy6",1,0, now());
 
 drop table if exists roles;
 create table roles(
@@ -71,6 +72,7 @@ create table article(
     `path` varchar(256) not null,
     createDateTime datetime not null,
     lastModifiedDateTime datetime not null,
+    private tinyint(1) default 0,
     userId int not null,
     constraint `user_post_idfk` foreign key(`userId`) references users(id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

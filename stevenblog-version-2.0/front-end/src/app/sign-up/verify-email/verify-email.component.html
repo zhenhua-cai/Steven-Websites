@@ -14,7 +14,8 @@
   <div class=" pt-3 ml-auto mr-auto">
     <p-inputNumber
       *ngFor="let item of [].constructor(numberOfDigits); let i = index"
-      maxlength="1" size="1" inputStyleClass="verification-code-digit"
+      maxlength="1" size="1" inputStyleClass="verification-code-digit" (keydown.delete)="this.isCodeEntered=false"
+      (keydown.backspace)="isCodeEntered=false"
       [inputId]="'digit-'+i"
       [(ngModel)]="verificationDigits[i]"
       (keyup)="keyUp($event)" (keydown)="onKeyDown($event)" (paste)="onPaste($event)"

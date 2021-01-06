@@ -28,6 +28,8 @@ public class ArticleResource implements Serializable {
 
     private LocalDateTime createDate;
 
+    private boolean isPrivate;
+
     public ArticleResource() {
     }
 

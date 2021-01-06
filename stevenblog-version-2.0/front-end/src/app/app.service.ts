@@ -101,7 +101,7 @@ export class AppService {
     this.storeRefreshToken(refreshTokenStr);
   }
 
-  storeUserInfo(user: AttemptLoginUser, roles: string[]): AuthedUser {
+  storeUserInfo(user: AttemptLoginUser, roles: number[]): AuthedUser {
     const authedUser = new AuthedUser();
     authedUser.roles = roles;
     localStorage.setItem('user', JSON.stringify(authedUser));
@@ -125,4 +125,5 @@ export class AppService {
     }
     return JSON.parse(userStr);
   }
+
 }

@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.Objects;
 
 @Entity
 @Data
-@Table(name="users")
+@Table(name = "users")
 public class User implements UserDetails, Serializable {
 
     @Id
@@ -36,17 +37,20 @@ public class User implements UserDetails, Serializable {
     @Column
     private String lastName;
 
-    @Column(name="locked")
+    @Column(name = "locked")
     private boolean isAccountLocked;
 
     @Column
     private boolean enabled;
 
-    @ManyToMany(fetch=FetchType.EAGER)
+    @Column
+    private LocalDateTime createDateTime;
+
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-            name="authorities",
+            name = "authorities",
             joinColumns = @JoinColumn(name = "userId"),
-            inverseJoinColumns = @JoinColumn(name="roleId")
+            inverseJoinColumns = @JoinColumn(name = "roleId")
     )
     private List<Role> authorities;
 
@@ -90,9 +94,9 @@ public class User implements UserDetails, Serializable {
     }
 
 
-    public void addRole(Role role){
+    public void addRole(Role role) {
         assert role != null;
-        if(authorities == null){
+        if (authorities == null) {
             authorities = new ArrayList<>();
         }
         authorities.add(role);

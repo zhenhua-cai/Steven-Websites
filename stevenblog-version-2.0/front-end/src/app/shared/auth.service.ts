@@ -39,6 +39,20 @@ export class AuthService {
     }
   }
 
+  userHasRole(role: number): boolean {
+    if (!this.isLoggedIn) {
+      return false;
+    }
+    return this.authedUser.roles.includes(role);
+  }
+
+  getUserRoles(): number[] {
+    if (!this.isLoggedIn) {
+      return [];
+    }
+    return this.authedUser.roles;
+  }
+
   login(user: AttemptLoginUser): void {
     this.appService.blockScreen();
     this.appService.isLoggingIn = true;

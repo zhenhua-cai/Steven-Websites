@@ -15,12 +15,14 @@ export class VerifyEmailComponent implements OnInit, OnDestroy {
   signUpUser: SignUpUser;
   signUpUserSubscription: Subscription;
   numberOfDigits = 6;
-  verificationDigits: string[] = null;
+  verificationDigits: number[] = null;
   resendEmailTimeCountDown = 60;
   mouseOverButton = false;
   isCopyPasteCode = false;
   isCodeEntered = false;
   failedVerifyBefore = false;
+  resendEmailTimeInterval;
+  failedTime = 0;
 
   constructor(private signUpService: SignUpService,
               private appService: AppService,
@@ -64,11 +66,16 @@ export class VerifyEmailComponent implements OnInit, OnDestroy {
 
   startsResendEmailTimeCountDown(): void {
     this.resendEmailTimeCountDown = 60;
-    const resendEmailTimeInterval = setInterval(
+    this.continueTimeCountDown();
+  }
+
+  continueTimeCountDown(): void {
+    this.resendEmailTimeInterval = setInterval(
       () => {
         this.resendEmailTimeCountDown--;
         if (this.resendEmailTimeCountDown === 0) {
-          clearInterval(resendEmailTimeInterval);
+          clearInterval(this.resendEmailTimeInterval);
+          this.resendEmailTimeInterval = null;
         }
       }, 1000);
   }
@@ -88,10 +95,15 @@ export class VerifyEmailComponent implements OnInit, OnDestroy {
       this.checkVerificationCode();
       return;
     }
+    this.resendEmail();
+  }
+
+  private resendEmail(): void {
     const verificationType = this.signUpUser.username == null ? 0 : 1;
     const userInfo = this.signUpUser.username == null ? this.signUpUser.email : this.signUpUser.username;
     this.signUpService.resendVerificationEmail(userInfo, verificationType).subscribe(
       (response) => {
+        this.failedTime = 0;
         this.delayToShowEmailToast('Email Sent', 'Please your check your email');
         this.startsResendEmailTimeCountDown();
       }, error => {
@@ -120,8 +132,9 @@ export class VerifyEmailComponent implements OnInit, OnDestroy {
       return;
     }
     if ($event.key >= '0' && $event.key <= '9') {
+      this.isCodeEntered = true;
       const id = +($event.target as HTMLElement).id.slice(-1);
-      this.verificationDigits[id] = $event.key[0];
+      this.verificationDigits[id] = +$event.key[0];
       if (id === this.numberOfDigits - 1) {
         this.isCodeEntered = true;
         if (!this.failedVerifyBefore) {
@@ -135,6 +148,9 @@ export class VerifyEmailComponent implements OnInit, OnDestroy {
   }
 
   private checkVerificationCode(): void {
+    if (!this.preValidateCode()) {
+      return;
+    }
     this.appService.blockScreen();
     setTimeout(
       () => {
@@ -152,6 +168,15 @@ export class VerifyEmailComponent implements OnInit, OnDestroy {
             } else {
               this.failedVerifyBefore = true;
               this.appService.showErrorToast('Verification Failed', 'Please enter a valid code');
+              this.failedTime++;
+              this.isCodeEntered = false;
+              if (this.failedTime === 3) {
+                setTimeout(
+                  () => {
+                    this.appService.showWarningToast('Failed too many time', 'Please request a new code.');
+                  }, 200
+                );
+              }
             }
           }, error => {
             this.failedVerifyBefore = true;
@@ -176,9 +201,21 @@ export class VerifyEmailComponent implements OnInit, OnDestroy {
       return;
     }
     for (let i = 0; i < this.numberOfDigits; i++) {
-      this.verificationDigits[i] = data[i];
+      this.verificationDigits[i] = +data[i];
     }
     this.isCodeEntered = true;
     this.checkVerificationCode();
+  }
+
+  private preValidateCode(): boolean {
+    for (let i = 0; i < this.numberOfDigits; i++) {
+      if (this.verificationDigits[i] == null) {
+        return false;
+      }
+      if (this.verificationDigits[i] < 0 || this.verificationDigits[i] > 9) {
+        return false;
+      }
+    }
+    return true;
   }
 }

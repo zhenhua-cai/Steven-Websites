@@ -36,8 +36,8 @@
         </li>
         <li class="nav-item">
           <a class="nav-link">
-                      <app-navbar-search>
-          </app-navbar-search>
+            <app-navbar-search>
+            </app-navbar-search>
           </a>
         </li>
       </ul>
@@ -68,8 +68,10 @@
             <i class="fas fa-user"></i><span class="caret"></span></a>
           <div class="dropdown-menu dropdown dropdown-primary dropdown-menu-right" role="menu"
                [ngClass]="{'transparent-drop-down':isLandingPage}">
-            <a class="dropdown-item waves-light" mdbWavesEffect routerLink="/account/profile" (click)="clearSearchTitleIfExists()">Profile</a>
-            <a class="dropdown-item waves-light" mdbWavesEffect routerLink="/account/articles" (click)="clearSearchTitleIfExists()">My Articles</a>
+            <a class="dropdown-item waves-light" mdbWavesEffect routerLink="/account/profile"
+               (click)="clearSearchTitleIfExists()">Profile</a>
+            <a class="dropdown-item waves-light" mdbWavesEffect *ngIf="isWriter"
+               routerLink="/account/articles" (click)="clearSearchTitleIfExists()">My Articles</a>
             <div class="divider dropdown-divider"></div>
             <a class="dropdown-item"
                (click)="logout()"

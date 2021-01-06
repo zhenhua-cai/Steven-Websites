@@ -29,6 +29,9 @@ public class Article implements Post, Serializable {
     @Column
     private String path;
 
+    @Column(name = "private")
+    private boolean isPrivate;
+
     @ManyToOne
     @JoinColumn(name = "userId")
     private User user;
@@ -49,6 +52,7 @@ public class Article implements Post, Serializable {
                    String summary,
                    LocalDateTime createDateTime,
                    LocalDateTime lastModifiedDateTime,
+                   boolean isPrivate,
                    String path, User user) {
         this.id = id;
         this.title = title;
@@ -56,6 +60,7 @@ public class Article implements Post, Serializable {
         this.lastModifiedDateTime = lastModifiedDateTime;
         this.path = path;
         this.user = user;
+        this.isPrivate = isPrivate;
         this.summary = summary;
     }
 

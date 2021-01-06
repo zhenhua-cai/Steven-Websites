@@ -16,6 +16,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   loggedIn = false;
   userSubscription: Subscription;
   numOfMsg = 0;
+  isWriter = false;
 
   constructor(private authService: AuthService,
               private router: Router,
@@ -28,6 +29,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
         this.loggedIn = isLoggedIn;
       }
     );
+    this.isWriter = this.authService.userHasRole(3);
   }
 
   ngOnDestroy(): void {

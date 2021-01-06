@@ -16,6 +16,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 public class AccountServiceImpl implements AccountService {
     private UserRepository userRepository;
@@ -59,6 +61,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    @CacheEvict(value = "userCache", key = "#result.username")
     public User createNewUser(SignUpUser signUpUser) {
         if (isEmailExist(signUpUser.getEmail())) {
             throw new EmailAlreadyExistException("Email is in use");
@@ -67,6 +70,7 @@ public class AccountServiceImpl implements AccountService {
             throw new UsernameAlreadyExistException("Username was already taken");
         }
         User user = buildUser(signUpUser);
+        user.setCreateDateTime(LocalDateTime.now());
         return saveUser(user);
     }
 

@@ -1,10 +1,7 @@
 package net.stevencai.blog.backend.api;
 
 import lombok.Data;
-import net.stevencai.blog.backend.clientResource.AccountEmailVerifyObj;
-import net.stevencai.blog.backend.clientResource.ApplicationUser;
-import net.stevencai.blog.backend.clientResource.ResetPasswordObj;
-import net.stevencai.blog.backend.clientResource.SignUpUser;
+import net.stevencai.blog.backend.clientResource.*;
 import net.stevencai.blog.backend.entity.User;
 import net.stevencai.blog.backend.entity.VerificationToken;
 import net.stevencai.blog.backend.exception.*;
@@ -135,7 +132,10 @@ public class AuthApi {
         String refreshToken = jwtService.generateRefreshToken(applicationUser.getUsername());
         // uncomment this after Ipv6 problem solved.
 //        this.jwtService.associateAccessToken(accessToken, this.utilService.getClientIp(request));
-        return new AuthResponse(refreshToken, accessToken);
+        User user = this.accountService.findUserByUsername(applicationUser.getUsername());
+        AuthResponse authResponse = new AuthResponse(refreshToken, accessToken);
+        authResponse.setRoles(user.getAuthorities());
+        return authResponse;
     }
 
     @PostMapping("/signup")

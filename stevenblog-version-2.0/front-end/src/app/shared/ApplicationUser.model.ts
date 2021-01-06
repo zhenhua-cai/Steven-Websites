@@ -5,7 +5,7 @@ export class AttemptLoginUser {
 
 export class AuthedUser {
   username: string;
-  roles: string[];
+  roles: number[];
 }
 
 export class SignUpUser {
