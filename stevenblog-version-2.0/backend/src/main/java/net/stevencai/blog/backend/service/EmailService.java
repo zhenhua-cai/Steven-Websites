@@ -9,4 +9,10 @@ public interface EmailService {
 
     @Async
     void sendUserEmailVerificationCode(User user);
+
+    @Async
+    void sendUserUsernameEmail(User user);
+
+    @Async
+    void sendUserResetPasswordEmail(User user);
 }

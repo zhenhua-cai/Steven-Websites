@@ -242,14 +242,41 @@ export class DataTransactionService {
     );
   }
 
-  resendVerificationEmail(email: string): Observable<ActionStatusResponse> {
+  resendVerificationEmail(userInfo: string, verificationType: number): Observable<ActionStatusResponse> {
     const url = `/api/auth/resendActivationEmail`;
-    return this.http.post<ActionStatusResponse>(url, email);
+    return this.http.post<ActionStatusResponse>(url, {email: userInfo, verificationType});
   }
 
-  checkVerificationCode(code: string, username: string): Observable<ActionStatusResponse> {
+  checkVerificationCode(code: string, verifiedBy: string, useUsername: boolean): Observable<ActionStatusResponse> {
     const url = `/api/auth/activateAccount`;
-    return this.http.post<ActionStatusResponse>(url, {code, username}).pipe(
+    return this.http.post<ActionStatusResponse>(url, {code, verifiedBy, useUsername}).pipe(
+      catchError(errRes => {
+        return this.handleErrorResponse(errRes);
+      })
+    );
+  }
+
+  forgotUsername(email: string): Observable<ActionStatusResponse> {
+    const url = `/api/auth/forgotUsername`;
+    return this.http.post<ActionStatusResponse>(url, {email}).pipe(
+      catchError(errRes => {
+        return this.handleErrorResponse(errRes);
+      })
+    );
+  }
+
+  forgotPassword(email: string): Observable<ActionStatusResponse> {
+    const url = `/api/auth/forgotPassword`;
+    return this.http.post<ActionStatusResponse>(url, {email}).pipe(
+      catchError(errRes => {
+        return this.handleErrorResponse(errRes);
+      })
+    );
+  }
+
+  resetPassword(password: string, confirmPassword: string, userEmail: string): Observable<ActionStatusResponse> {
+    const url = `/api/auth/resetPassword`;
+    return this.http.post<ActionStatusResponse>(url, {password, confirmPassword, email: userEmail}).pipe(
       catchError(errRes => {
         return this.handleErrorResponse(errRes);
       })

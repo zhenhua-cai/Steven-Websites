@@ -33,6 +33,8 @@ import {AccountInfoGuard} from './sign-up/account-info/account-info.guard';
 import {SignUpConfirmationGuard} from './sign-up/sign-up-confirmation/sign-up-confirmation.guard';
 import {VerifyEmailComponent} from './sign-up/verify-email/verify-email.component';
 import {SignUpCompleteComponent} from './sign-up/complete/sign-up-complete.component';
+import {ResetPasswordComponent} from './reset-password/reset-password.component';
+import {ResetPasswordFormsComponent} from './reset-password/reset/reset-password-forms.component';
 
 
 const routes: Routes = [
@@ -116,6 +118,16 @@ const routes: Routes = [
       path: 'error', component: BlogComponent, children: [
         {path: '', component: ErrorComponent},
         {path: 'access-denied', component: AccessDeniedComponent}
+      ]
+    },
+    {
+      path: 'reset-password', component: BlogComponent, children: [
+        {
+          path: '', component: ResetPasswordComponent, children: [
+            {path: 'verify', component: VerifyEmailComponent},
+            {path: 'reset', component: ResetPasswordFormsComponent}
+          ]
+        },
       ]
     }
   ]

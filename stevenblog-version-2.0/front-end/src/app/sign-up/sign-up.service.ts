@@ -63,11 +63,16 @@ export class SignUpService {
   }
 
   activateAccount(username: string): void {
+    this.preVerifyAccount(username, null);
+    this.router.navigate(['/sign-up/verifyEmail']);
+  }
+
+  preVerifyAccount(username: string, email: string): void {
     this.backToSignUpStartPageEvent.next(false);
     this.signUpUser = new SignUpUser();
     this.signUpUser.username = username;
+    this.signUpUser.email = email;
     this.startsSignUpWithUser(this.signUpUser);
-    this.router.navigate(['/sign-up/verifyEmail']);
   }
 
   signUp(): void {
@@ -106,12 +111,12 @@ export class SignUpService {
 
   }
 
-  resendVerificationEmail(email: string): Observable<ActionStatusResponse> {
-    return this.dataTransactionService.resendVerificationEmail(email);
+  resendVerificationEmail(userInfo: string, verificationType: number): Observable<ActionStatusResponse> {
+    return this.dataTransactionService.resendVerificationEmail(userInfo, verificationType);
   }
 
-  checkVerificationCode(code: string, username: string): Observable<ActionStatusResponse> {
-    return this.dataTransactionService.checkVerificationCode(code, username);
+  checkVerificationCode(code: string, verifiedBy: string, useUsername: boolean): Observable<ActionStatusResponse> {
+    return this.dataTransactionService.checkVerificationCode(code, verifiedBy, useUsername);
   }
 
   SignUpComplete(): void {
@@ -119,4 +124,6 @@ export class SignUpService {
     this.signUpUser = null;
     this.router.navigate(['/sign-up/complete']);
   }
+
+
 }

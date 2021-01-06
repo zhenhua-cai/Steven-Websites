@@ -22,7 +22,7 @@ export class AccountInfoComponent implements OnInit, OnDestroy, AfterViewInit {
   errorList: Map<string, string[]> = new Map<string, string[]>();
   toolTipForPassword: string;
   toolTipForUsername: string;
-  specialsCharsForPassword;
+  specialsCharsForPassword: string;
   minLengthForUsername: number;
   maxLengthForUsername: number;
   minLengthForPassword: number;
@@ -115,7 +115,7 @@ export class AccountInfoComponent implements OnInit, OnDestroy, AfterViewInit {
     this.passwordStrengthBar.hide();
   }
 
-  private constructPasswordToolTip(specialChars: string[]): string {
+  private constructPasswordToolTip(specialChars: string): string {
     if (!specialChars) {
       return '';
     }

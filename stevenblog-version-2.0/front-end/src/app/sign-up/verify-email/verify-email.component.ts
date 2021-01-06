@@ -3,6 +3,8 @@ import {SignUpUser} from '../../shared/ApplicationUser.model';
 import {Subscription} from 'rxjs';
 import {SignUpService} from '../sign-up.service';
 import {AppService} from '../../app.service';
+import {AccountService} from '../../account/account.service';
+import {ResetPasswordService} from '../../reset-password/reset-password.service';
 
 @Component({
   selector: 'app-verify-email',
@@ -20,7 +22,10 @@ export class VerifyEmailComponent implements OnInit, OnDestroy {
   isCodeEntered = false;
   failedVerifyBefore = false;
 
-  constructor(private signUpService: SignUpService, private appService: AppService) {
+  constructor(private signUpService: SignUpService,
+              private appService: AppService,
+              private accountService: AccountService,
+              private resetPasswordService: ResetPasswordService) {
     this.verificationDigits = [].constructor(this.numberOfDigits);
   }
 
@@ -30,6 +35,24 @@ export class VerifyEmailComponent implements OnInit, OnDestroy {
         this.signUpUser = user;
       });
     this.startsResendEmailTimeCountDown();
+  }
+
+  /**
+   * prevent from closing browser/tab, refresh page
+   * @param $event event
+   */
+  @HostListener('window:beforeunload', ['$event']) preventDefaultClosingPage($event): void {
+    $event.preventDefault();
+    $event.returnValue = 'Your data will be lost!';
+  }
+
+  @HostListener('window:popstate', ['$event'])
+  preventDefaultBackward($event): void {
+    $event.preventDefault();
+    $event.returnValue = 'Your data will be lost!';
+    if (this.accountService.resetPassword) {
+      this.resetPasswordService.gotoStartsResetEvent.next(true);
+    }
   }
 
   ngOnDestroy(): void {
@@ -65,7 +88,9 @@ export class VerifyEmailComponent implements OnInit, OnDestroy {
       this.checkVerificationCode();
       return;
     }
-    this.signUpService.resendVerificationEmail(this.signUpUser.email).subscribe(
+    const verificationType = this.signUpUser.username == null ? 0 : 1;
+    const userInfo = this.signUpUser.username == null ? this.signUpUser.email : this.signUpUser.username;
+    this.signUpService.resendVerificationEmail(userInfo, verificationType).subscribe(
       (response) => {
         this.delayToShowEmailToast('Email Sent', 'Please your check your email');
         this.startsResendEmailTimeCountDown();
@@ -114,11 +139,16 @@ export class VerifyEmailComponent implements OnInit, OnDestroy {
     setTimeout(
       () => {
         const code = this.verificationDigits.join('');
-        this.signUpService.checkVerificationCode(code, this.signUpUser.username).subscribe(
+        const verifiedBy = this.signUpUser.username == null ? this.signUpUser.email : this.signUpUser.username;
+        this.signUpService.checkVerificationCode(code, verifiedBy, !this.accountService.resetPassword).subscribe(
           (response) => {
             this.appService.unblockScreen();
             if (response.status) {
-              this.signUpService.SignUpComplete();
+              if (this.accountService.resetPassword) {
+                this.accountService.resetEmailVerified();
+              } else {
+                this.signUpService.SignUpComplete();
+              }
             } else {
               this.failedVerifyBefore = true;
               this.appService.showErrorToast('Verification Failed', 'Please enter a valid code');

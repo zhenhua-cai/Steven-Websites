@@ -22,10 +22,12 @@ import {ToastModule} from 'primeng/toast';
 import {BlockUIModule} from 'primeng/blockui';
 import {ErrorModule} from './error/error.module';
 import {SignUpModule} from './sign-up/sign-up.module';
+import {ResetPasswordModule} from './reset-password/reset-password.module';
 
 @NgModule({
   declarations: [
     AppComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -47,7 +49,8 @@ import {SignUpModule} from './sign-up/sign-up.module';
     ToastModule,
     BlockUIModule,
     ErrorModule,
-    SignUpModule
+    SignUpModule,
+    ResetPasswordModule
   ],
   providers: [
     [

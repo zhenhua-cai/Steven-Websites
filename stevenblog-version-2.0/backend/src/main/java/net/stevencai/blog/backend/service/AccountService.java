@@ -23,4 +23,6 @@ public interface AccountService {
     void unlockAccount(String username);
 
     void enableAccount(String username);
+
+    User updatePassword(String email, String password);
 }

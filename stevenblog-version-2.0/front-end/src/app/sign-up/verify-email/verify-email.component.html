@@ -1,6 +1,8 @@
 <div class="mt-1 py-5 bg-white mr-auto ml-auto text-center">
   <div class="px-5">
-    <p>Hi <span class="font-weight-bold font-x-large">{{signUpUser.username}}</span>, an activation email with
+    <p>Hi<span>{{signUpUser.username == null ? '' : ' '}}</span>
+      <span class="font-weight-bold font-x-large">{{signUpUser.username != null ? signUpUser.username : ''}}</span>,
+      an activation email with
       verification code has been
       send to your email.</p>
   </div>

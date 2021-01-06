@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class AccountEmailVerifyObj {
-    private String username;
+    private String verifiedBy;
     private String code;
+    private boolean useUsername;
 }

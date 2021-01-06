@@ -3,6 +3,7 @@ package net.stevencai.blog.backend.api;
 import lombok.Data;
 import net.stevencai.blog.backend.clientResource.AccountEmailVerifyObj;
 import net.stevencai.blog.backend.clientResource.ApplicationUser;
+import net.stevencai.blog.backend.clientResource.ResetPasswordObj;
 import net.stevencai.blog.backend.clientResource.SignUpUser;
 import net.stevencai.blog.backend.entity.User;
 import net.stevencai.blog.backend.entity.VerificationToken;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -183,9 +185,16 @@ public class AuthApi {
     }
 
     @PostMapping("resendActivationEmail")
-    public ActionStatusResponse resendActivationEmail(@RequestBody String email) {
-        User user = this.accountService.findUserByEmail(email);
-        return this.resendActivationEmail(user);
+    public ActionStatusResponse resendActivationEmail(@RequestBody ResendVerificationRequest verificationRequest) {
+        User user;
+        if (verificationRequest.verificationType == 0) {
+            user = this.accountService.findUserByEmail(verificationRequest.userInfo);
+            return this.resendActivationEmail(user);
+        } else if (verificationRequest.verificationType == 1) {
+            user = this.accountService.findUserByUsername(verificationRequest.userInfo);
+            return this.resendResetPasswordEmail(user);
+        }
+        return new ActionStatusResponse(false);
     }
 
     @PostMapping("activateAccount")
@@ -194,7 +203,12 @@ public class AuthApi {
         if (!authService.isIpNonBlocked(ip)) {
             throw new IpBlockedException();
         }
-        User user = this.accountService.findUserByUsername(obj.getUsername());
+        User user;
+        if (obj.isUseUsername()) {
+            user = this.accountService.findUserByUsername(obj.getVerifiedBy());
+        } else {
+            user = this.accountService.findUserByEmail(obj.getVerifiedBy());
+        }
         if (user == null) {
             return new ActionStatusResponse(false);
         }
@@ -226,9 +240,57 @@ public class AuthApi {
         return new ActionStatusResponse(false);
     }
 
+    @PostMapping("forgotUsername")
+    public ActionStatusResponse forgotUsername(@RequestBody Email email, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return new ActionStatusResponse(false);
+        }
+        User user = this.accountService.findUserByEmail(email.email);
+        if (user == null) {
+            return new ActionStatusResponse(false);
+        }
+        this.emailService.sendUserUsernameEmail(user);
+        return new ActionStatusResponse(true);
+    }
+
+    @PostMapping("forgotPassword")
+    public ActionStatusResponse forgotPassword(@RequestBody Email email, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return new ActionStatusResponse(false);
+        }
+        User user = this.accountService.findUserByEmail(email.email);
+        if (user == null) {
+            return new ActionStatusResponse(false);
+        }
+        this.emailService.sendUserResetPasswordEmail(user);
+        return new ActionStatusResponse(true);
+    }
+
+    @PostMapping("resetPassword")
+    public ActionStatusResponse resetPassword(@RequestBody ResetPasswordObj resetPasswordObj, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return new ActionStatusResponse(false);
+        }
+        this.accountService.updatePassword(resetPasswordObj.getEmail(), resetPasswordObj.getPassword());
+        return new ActionStatusResponse(true);
+    }
+
+    @Data
+    private static class Email {
+        @NotNull
+        @javax.validation.constraints.Email
+        private String email;
+    }
+
     @Data
     private static class RefreshToken {
         private String refreshToken;
+    }
+
+    @Data
+    private static class ResendVerificationRequest {
+        private String userInfo;
+        private int verificationType;
     }
 
     private ActionStatusResponse resendActivationEmail(User user) {
@@ -236,4 +298,8 @@ public class AuthApi {
         return new ActionStatusResponse(true);
     }
 
+    private ActionStatusResponse resendResetPasswordEmail(User user) {
+        this.emailService.sendUserResetPasswordEmail(user);
+        return new ActionStatusResponse(true);
+    }
 }

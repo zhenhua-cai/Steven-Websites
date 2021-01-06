@@ -80,12 +80,29 @@ public class EmailServiceImpl implements EmailService {
     @Override
     @Async
     public void sendUserEmailVerificationCode(User user) {
+        this.sendUserVerificationCode(user, "activateAccount", "Activate Account");
+    }
+
+    @Override
+    @Async
+    public void sendUserUsernameEmail(User user) {
+        Map<String, Object> attributes = new HashMap<>();
+        attributes.put("username", user.getUsername());
+        sendEmail("forgotUsername", attributes, user.getEmail(), "Retrieve Username");
+    }
+
+    @Override
+    public void sendUserResetPasswordEmail(User user) {
+        this.sendUserVerificationCode(user, "forgotPassword", "Reset Password");
+    }
+
+    private void sendUserVerificationCode(User user, String templateName, String subject) {
         Map<String, Object> attributes = new HashMap<>();
         attributes.put("username", user.getUsername());
         String verificationCode = this.utilService.generateVerificationCode(6);
         this.verificationTokenService.saveNewToken(user.getUsername(), verificationCode);
         attributes.put("code", verificationCode);
-        sendEmail("activateAccount", attributes, user.getEmail(), "Activate Account");
+        sendEmail(templateName, attributes, user.getEmail(), subject);
     }
 
     private void sendEmail(String templateName, Map<String, Object> attributes, String sendTo, String subject) throws SendingEmailFailException {

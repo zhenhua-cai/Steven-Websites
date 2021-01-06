@@ -3,6 +3,7 @@ package net.stevencai.blog.backend.service;
 import net.stevencai.blog.backend.clientResource.SignUpUser;
 import net.stevencai.blog.backend.entity.User;
 import net.stevencai.blog.backend.exception.EmailAlreadyExistException;
+import net.stevencai.blog.backend.exception.EmailNotFoundException;
 import net.stevencai.blog.backend.exception.UsernameAlreadyExistException;
 import net.stevencai.blog.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,6 +97,17 @@ public class AccountServiceImpl implements AccountService {
     @CacheEvict(value = "userCache", key = "#username")
     public void enableAccount(String username) {
         this.userRepository.enableAccount(username);
+    }
+
+    @Override
+    @CacheEvict(value = "userCache", key = "#result.username")
+    public User updatePassword(String email, String password) {
+        User user = this.userRepository.findUserByEmail(email);
+        if (email == null) {
+            throw new EmailNotFoundException();
+        }
+        user.setPassword(this.encryptPassword(password));
+        return this.userRepository.save(user);
     }
 
     private User buildUser(SignUpUser signUpUser) {
