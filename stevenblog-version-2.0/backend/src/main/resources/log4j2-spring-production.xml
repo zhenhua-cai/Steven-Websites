@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="WARN">
+    <appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout disableAnsi="false"
+                    pattern="%d{DEFAULT} [%t] %highlight{%-5level} %style{%c{1.}}{cyan} - %msg%n%throwable"/>
+        </Console>
+        <RollingFile name="fileAppender" fileName="/home/ubuntu/stevenblog/logs/steven-blog-log.log"
+                     filePattern="/home/ubuntu/stevenblog/logs/application-%d{MM-dd-yyyy}-%i.log">
+            <PatternLayout>
+                <pattern>%d{DEFAULT} [%t] %X{id} %X{username} %-5level %c{36} %l: %msg%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10 MB" />
+            </Policies>
+            <DefaultRolloverStrategy min="1" max="4" />
+        </RollingFile>
+    </appenders>
+    <loggers>
+        <root level="warn">
+            <appender-ref ref="Console" />
+            <appender-ref ref="fileAppender" />
+        </root>
+        <logger name="net.stevencai.blog.backend" level="error" />
+        <logger name="org.apache" level="info" />
+        <logger name="org.springframework" level="info" />
+    </loggers>
+</configuration>

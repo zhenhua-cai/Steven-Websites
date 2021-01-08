@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import {Observable, Subject} from 'rxjs';
-import {AuthService} from '../shared/auth.service';
 import {ActionStatusResponse, DataTransactionService} from '../shared/data-transaction.service';
 import {Router} from '@angular/router';
 import {SignUpService} from '../sign-up/sign-up.service';

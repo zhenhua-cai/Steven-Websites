@@ -4,8 +4,6 @@ import com.fasterxml.uuid.Generators;
 import net.stevencai.blog.backend.exception.InvalidArticlePathException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,23 +14,18 @@ import java.util.Random;
 import java.util.UUID;
 
 @Service
-@PropertySource({
-        "classpath:articles.properties",
-        "classpath:application.properties"
-})
 public class UtilServiceImpl implements UtilService {
-    private Environment env;
     private PasswordEncoder passwordEncoder;
 
     @Value("${jwt.raw.secret}")
     private String jwtRawSecret;
-
     private String jwtSecret;
 
-    @Autowired
-    public void setEnv(Environment env) {
-        this.env = env;
-    }
+    @Value("${app.articles.base.path}")
+    private String articlePath;
+
+    @Value("${app.drafts.base.path}")
+    private String draftPath;
 
     @Autowired
     public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
@@ -41,12 +34,12 @@ public class UtilServiceImpl implements UtilService {
 
     @Override
     public String getArticlesBasePath() {
-        return env.getProperty("app.articles.base.path");
+        return articlePath;
     }
 
     @Override
     public String getArticleDraftsBasePath() {
-        return env.getProperty("app.drafts.base.path");
+        return draftPath;
     }
 
     @Override
@@ -80,7 +73,7 @@ public class UtilServiceImpl implements UtilService {
     public String generateUUIDForArticle(String username) {
         UUID uuid = Generators.timeBasedGenerator().generate();
         byte[] userBytes = passwordEncoder.encode(username).getBytes();
-        return byteArrayToHexString(userBytes) + uuid.toString() + generateTimeBasedRandomString();
+        return byteArrayToHexString(userBytes) + uuid.toString();
     }
 
     @Override

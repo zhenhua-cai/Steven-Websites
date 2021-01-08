@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import {LandingPageHeaderComponent} from './landing-page-header/landing-page-header.component';
 import {LandingPageHeaderAnimationComponent} from './landing-page-header/landing-page-header-animation/landing-page-header-animation.component';
 import {LandingPageComponent} from './landing-page.component';

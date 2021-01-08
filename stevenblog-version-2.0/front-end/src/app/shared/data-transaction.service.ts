@@ -17,12 +17,12 @@ export class DataTransactionService {
   }
 
   fetchArticles(page: number, pageSize: number): Observable<ArticlesPageResponse> {
-    const url = `/api/articles/?page=${page}&size=${pageSize}`;
+    const url = environment.serverUrl + `/api/articles/?page=${page}&size=${pageSize}`;
     return this.sendGetArticlesPagesResponseRequest(url);
   }
 
   fetchArticleById(articleId: string): Observable<ArticleResponse> {
-    const url = environment.serverUrl + `articles/${articleId}`;
+    const url = environment.serverUrl + `/api/articles/${articleId}`;
     return this.sendGetArticleResponseRequest(url);
   }
 
@@ -35,28 +35,28 @@ export class DataTransactionService {
   }
 
   fetchArticleToEditById(articleId: string): Observable<ArticleResponse> {
-    const url = environment.serverUrl + `articles/edit/${articleId}`;
+    const url = environment.serverUrl + `/api/articles/edit/${articleId}`;
     return this.sendGetArticleResponseRequest(url);
   }
 
   fetchArticleDraftById(id: string): Observable<ArticleResponse> {
-    const url = environment.serverUrl + `drafts/${id}`;
+    const url = environment.serverUrl + `/api/drafts/${id}`;
     return this.sendGetArticleResponseRequest(url);
   }
 
   fetchArticlesByTitle(searchValue: string, page: number, pageSize: number): Observable<ArticlesPageResponse> {
-    const url = `/api/articles/search?title=${searchValue}&page=${page}&size=${pageSize}`;
+    const url = environment.serverUrl + `/api/articles/search?title=${searchValue}&page=${page}&size=${pageSize}`;
     return this.sendGetArticlesPagesResponseRequest(url);
   }
 
   login(loginUser: AttemptLoginUser): Observable<AuthResponse> {
-    const url = `/api/auth/login`;
+    const url = environment.serverUrl + `/api/auth/login`;
     return this.http.post<AuthResponse>(url, loginUser);
   }
 
   // fetch my articles/drafts methods
   fetchMyArticlesByTitle(title: string, page: number, size: number): Observable<ArticlesPageResponse> {
-    let url = `/api/account/articles/search?page=${page}&size=${size}`;
+    let url = environment.serverUrl + `/api/account/articles/search?page=${page}&size=${size}`;
     if (title) {
       url += `&title=${title}`;
     }
@@ -64,7 +64,7 @@ export class DataTransactionService {
   }
 
   fetchMyDraftsByTitle(title: string, page: number, size: number): Observable<ArticlesPageResponse> {
-    let url = `/api/account/drafts/search?page=${page}&size=${size}`;
+    let url = environment.serverUrl + `/api/account/drafts/search?page=${page}&size=${size}`;
     if (title) {
       url += `&title=${title}`;
     }
@@ -73,7 +73,7 @@ export class DataTransactionService {
 
   fetchMyArticlesByTitleOrderBy(title: string, sortField: string,
                                 sortOrder: number, page: number, size: number): Observable<ArticlesPageResponse> {
-    let url = `/api/account/articles/search?sortBy=${sortField}&sortOrder=${sortOrder}&page=${page}&size=${size}`;
+    let url = environment.serverUrl + `/api/account/articles/search?sortBy=${sortField}&sortOrder=${sortOrder}&page=${page}&size=${size}`;
     if (title) {
       url += `&title=${title}`;
     }
@@ -82,7 +82,7 @@ export class DataTransactionService {
 
   fetchMyDraftsByTitleOrderBy(title: string, sortField: string,
                               sortOrder: number, page: number, size: number): Observable<ArticlesPageResponse> {
-    let url = `/api/account/drafts/search?sortBy=${sortField}&sortOrder=${sortOrder}&page=${page}&size=${size}`;
+    let url = environment.serverUrl + `/api/account/drafts/search?sortBy=${sortField}&sortOrder=${sortOrder}&page=${page}&size=${size}`;
     if (title) {
       url += `&title=${title}`;
     }
@@ -100,7 +100,7 @@ export class DataTransactionService {
   }
 
   fetchArticlesByAuthorAndTitle(author: string, title: string, page: number, size: number): Observable<ArticlesPageResponse> {
-    let url = `/api/articles/search?author=${author}&page=${page}&size=${size}`;
+    let url = environment.serverUrl + `/api/articles/search?author=${author}&page=${page}&size=${size}`;
     if (title) {
       url += `&title=${title}`;
     }
@@ -109,7 +109,7 @@ export class DataTransactionService {
 
   fetchArticlesByAuthorAndTitleOrderBy(author: string, title: string, sortField: string,
                                        sortOrder: number, page: number, size: number): Observable<ArticlesPageResponse> {
-    let url = `/api/articles/search?author=${author}&sortBy=${sortField}&sortOrder=${sortOrder}&page=${page}&size=${size}`;
+    let url = environment.serverUrl + `/api/articles/search?author=${author}&sortBy=${sortField}&sortOrder=${sortOrder}&page=${page}&size=${size}`;
     if (title) {
       url += `&title=${title}`;
     }
@@ -119,7 +119,7 @@ export class DataTransactionService {
 
   fetchDraftsByAuthorAndTitleOrderBy(author: string, title: string, sortField: string,
                                      sortOrder: number, page: number, size: number): Observable<ArticlesPageResponse> {
-    let url = `/api/drafts/search?author=${author}&sortBy=${sortField}&sortOrder=${sortOrder}&page=${page}&size=${size}`;
+    let url = environment.serverUrl + `/api/drafts/search?author=${author}&sortBy=${sortField}&sortOrder=${sortOrder}&page=${page}&size=${size}`;
     if (title) {
       url += `&title=${title}`;
     }
@@ -127,7 +127,7 @@ export class DataTransactionService {
   }
 
   fetchDraftsByAuthorAndTitle(author: string, title: string, page: number, size: number): Observable<ArticlesPageResponse> {
-    let url = `/api/drafts/search?author=${author}&page=${page}&size=${size}`;
+    let url = environment.serverUrl + `/api/drafts/search?author=${author}&page=${page}&size=${size}`;
     if (title) {
       url += `&title=${title}`;
     }
@@ -135,17 +135,17 @@ export class DataTransactionService {
   }
 
   saveArticleDraft(article: Article): Observable<ArticleResponse> {
-    const url = `/api/drafts/save`;
+    const url = environment.serverUrl + `/api/drafts/save`;
     return this.sendPostArticleResponseRequest(url, article);
   }
 
   deleteArticleDraftById(articleId: string): Observable<ActionStatusResponse> {
-    const url = `/api/drafts/delete/${articleId}`;
+    const url = environment.serverUrl + `/api/drafts/delete/${articleId}`;
     return this.sendDeleteActionStatusResponseRequest(url);
   }
 
   deleteArticleById(articleId: string): Observable<ActionStatusResponse> {
-    const url = `/api/articles/delete/${articleId}`;
+    const url = environment.serverUrl + `/api/articles/delete/${articleId}`;
     return this.sendDeleteActionStatusResponseRequest(url);
   }
 
@@ -158,7 +158,7 @@ export class DataTransactionService {
   }
 
   publishArticle(article: Article): Observable<ArticleResponse> {
-    const url = `/api/articles/publish`;
+    const url = environment.serverUrl + `/api/articles/publish`;
     return this.sendPostArticleResponseRequest(url, article);
   }
 
@@ -181,7 +181,7 @@ export class DataTransactionService {
   }
 
   signUp(signUpUser: SignUpUser): Observable<SignUpResponse> {
-    const url = `api/auth/signup`;
+    const url = environment.serverUrl + `/api/auth/signup`;
     return this.http.post<SignUpResponse>(url, signUpUser).pipe(
       catchError((error) => {
         return this.handleErrorResponse(error);
@@ -214,7 +214,7 @@ export class DataTransactionService {
       this.reLoginAfterAuthFail();
       return throwError('Auth Fail');
     }
-    const url = `/api/auth/accessToken`;
+    const url = environment.serverUrl + `/api/auth/accessToken`;
     return this.http.post<AuthResponse>(url, {refreshToken});
   }
 
@@ -225,7 +225,7 @@ export class DataTransactionService {
   }
 
   isUsernameValid(username: string): Observable<ActionStatusResponse> {
-    const url = `/api/auth/check?username=${username}`;
+    const url = environment.serverUrl + `/api/auth/check?username=${username}`;
     return this.http.get<ActionStatusResponse>(url).pipe(
       catchError(errRes => {
         return this.handleErrorResponse(errRes);
@@ -234,7 +234,7 @@ export class DataTransactionService {
   }
 
   isEmailValid(email: string): Observable<ActionStatusResponse> {
-    const url = `/api/auth/check?email=${email}`;
+    const url = environment.serverUrl + `/api/auth/check?email=${email}`;
     return this.http.get<ActionStatusResponse>(url).pipe(
       catchError(errRes => {
         return this.handleErrorResponse(errRes);
@@ -243,12 +243,12 @@ export class DataTransactionService {
   }
 
   resendVerificationEmail(userInfo: string, verificationType: number): Observable<ActionStatusResponse> {
-    const url = `/api/auth/resendActivationEmail`;
+    const url = environment.serverUrl + `/api/auth/resendActivationEmail`;
     return this.http.post<ActionStatusResponse>(url, {email: userInfo, verificationType});
   }
 
   checkVerificationCode(code: string, verifiedBy: string, useUsername: boolean): Observable<ActionStatusResponse> {
-    const url = `/api/auth/activateAccount`;
+    const url = environment.serverUrl + `/api/auth/activateAccount`;
     return this.http.post<ActionStatusResponse>(url, {code, verifiedBy, useUsername}).pipe(
       catchError(errRes => {
         return this.handleErrorResponse(errRes);
@@ -257,7 +257,7 @@ export class DataTransactionService {
   }
 
   forgotUsername(email: string): Observable<ActionStatusResponse> {
-    const url = `/api/auth/forgotUsername`;
+    const url = environment.serverUrl + `/api/auth/forgotUsername`;
     return this.http.post<ActionStatusResponse>(url, {email}).pipe(
       catchError(errRes => {
         return this.handleErrorResponse(errRes);
@@ -266,7 +266,7 @@ export class DataTransactionService {
   }
 
   forgotPassword(email: string): Observable<ActionStatusResponse> {
-    const url = `/api/auth/forgotPassword`;
+    const url = environment.serverUrl + `/api/auth/forgotPassword`;
     return this.http.post<ActionStatusResponse>(url, {email}).pipe(
       catchError(errRes => {
         return this.handleErrorResponse(errRes);
@@ -275,7 +275,7 @@ export class DataTransactionService {
   }
 
   resetPassword(password: string, confirmPassword: string, userEmail: string): Observable<ActionStatusResponse> {
-    const url = `/api/auth/resetPassword`;
+    const url = environment.serverUrl + `/api/auth/resetPassword`;
     return this.http.post<ActionStatusResponse>(url, {password, confirmPassword, email: userEmail}).pipe(
       catchError(errRes => {
         return this.handleErrorResponse(errRes);

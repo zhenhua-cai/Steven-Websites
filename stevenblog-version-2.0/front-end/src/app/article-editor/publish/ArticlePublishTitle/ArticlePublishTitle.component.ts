@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Article} from '../../../shared/Article';
 import {PublishService} from '../../publish.service';
 import {Subscription} from 'rxjs';

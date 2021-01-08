@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {SignUpUser} from '../shared/ApplicationUser.model';
 import {Router} from '@angular/router';
-import {ActionStatusResponse, DataTransactionService, SignUpResponse} from '../shared/data-transaction.service';
+import {ActionStatusResponse, DataTransactionService} from '../shared/data-transaction.service';
 import {AppService} from '../app.service';
 
 @Injectable({

@@ -2,8 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Article} from '../shared/Article';
 import {ArticlesService} from './articles.service';
 
-import {Subscription} from 'rxjs';
-import {ActivatedRoute, Params, Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {ArticlesPageResponse} from '../shared/data-transaction.service';
 
 @Component({

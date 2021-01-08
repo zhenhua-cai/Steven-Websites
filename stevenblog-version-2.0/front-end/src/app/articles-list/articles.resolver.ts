@@ -1,10 +1,10 @@
 import {Injectable} from '@angular/core';
 import {
-  Router, Resolve,
+  Resolve,
   RouterStateSnapshot,
   ActivatedRouteSnapshot
 } from '@angular/router';
-import {Observable, of} from 'rxjs';
+import {Observable} from 'rxjs';
 import {ArticlesService} from './articles.service';
 import {ArticlesPageResponse} from '../shared/data-transaction.service';
 

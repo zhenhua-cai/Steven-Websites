@@ -1,4 +1,4 @@
-import {Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {NgModel} from '@angular/forms';
 import {AccountService} from '../account/account.service';
 import {AppService} from '../app.service';

@@ -1,9 +1,8 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MenuItem} from 'primeng/api';
-import {ActivatedRoute, Router} from '@angular/router';
+import {Router} from '@angular/router';
 import {AccountService} from './account.service';
 import {Subscription} from 'rxjs';
-import {ArticleEditorService} from '../article-editor/article-editor.service';
 import {AuthService} from '../shared/auth.service';
 
 @Component({

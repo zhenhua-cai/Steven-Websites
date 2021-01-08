@@ -15,7 +15,6 @@ import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/articles")
-@CrossOrigin("http://localhost:4200")
 public class ArticlesApi extends PostApi {
     private ArticlesService articlesService;
 

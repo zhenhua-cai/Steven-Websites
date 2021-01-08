@@ -3,11 +3,10 @@ import {
   HttpRequest,
   HttpHandler,
   HttpEvent,
-  HttpInterceptor, HttpEventType
+  HttpInterceptor
 } from '@angular/common/http';
-import {Observable, Subject, throwError} from 'rxjs';
+import {Observable} from 'rxjs';
 import {AppService} from '../app.service';
-import {catchError, map, switchMap, tap} from 'rxjs/operators';
 
 
 @Injectable()

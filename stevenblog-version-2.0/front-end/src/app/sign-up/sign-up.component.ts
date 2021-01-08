@@ -1,4 +1,4 @@
-import {Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {ConfirmationService, MenuItem} from 'primeng/api';
 import {ActivatedRoute, Router} from '@angular/router';
 import {SignUpUser} from '../shared/ApplicationUser.model';

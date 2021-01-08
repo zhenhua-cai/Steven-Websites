@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  serverUrl: 'http://localhost:8080/api/',
+  serverUrl: 'http://localhost:8080',
   maxLengthForUsername: 30,
   minLengthForUsername: 6,
   maxLengthForPassword: 30,

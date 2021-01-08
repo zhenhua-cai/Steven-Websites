@@ -28,7 +28,7 @@ public class DraftRepositoryImpl extends PostSaveExtension implements ArticleDra
     public ArticleDraft saveArticleDraft(ArticleDraft articleDraft) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
-        savePost(articleDraft, entityManager.unwrap(Session.class));
+        savePost(articleDraft, entityManager.unwrap(Session.class),"article_draft");
         entityManager.getTransaction().commit();
         return articleDraft;
     }

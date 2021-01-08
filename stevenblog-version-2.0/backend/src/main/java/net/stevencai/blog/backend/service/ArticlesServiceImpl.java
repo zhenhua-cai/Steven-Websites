@@ -707,7 +707,7 @@ public class ArticlesServiceImpl implements ArticlesService, ArticleDraftService
     }
 
     private String createFileName(ArticleResource articleResource, String path) {
-        return path + "/" + articleResource.getId() + ".article";
+        return path + File.separator + articleResource.getId() + ".article";
     }
 
     private void removeArticleFromDisk(Post article) {

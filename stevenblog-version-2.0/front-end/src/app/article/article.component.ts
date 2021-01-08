@@ -5,7 +5,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {Location} from '@angular/common';
 import {Observable, Subscription} from 'rxjs';
 import {ArticleEditorService} from '../article-editor/article-editor.service';
-import {ActionStatusResponse, AuthResponse} from '../shared/data-transaction.service';
+import {ActionStatusResponse} from '../shared/data-transaction.service';
 import {AppService} from '../app.service';
 
 declare var hljs: any;
@@ -62,8 +62,7 @@ export class ArticleComponent implements OnInit, OnDestroy, AfterViewInit {
     let articleResponseData;
     if (this.isDraftArticle) {
       articleResponseData = this.articlesService.searchArticleDraftById(this.activatedRoute.snapshot.params.id);
-    }
-    else if(this.isInOwnerMode){
+    } else if (this.isInOwnerMode) {
       articleResponseData = this.articlesService.searchArticleToEditById(this.activatedRoute.snapshot.params.id);
     }
     articleResponseData.subscribe(

@@ -22,7 +22,6 @@ import javax.validation.constraints.NotNull;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin("http://localhost:4200")
 public class AuthApi {
 
     private AuthenticationManager authenticationManager;

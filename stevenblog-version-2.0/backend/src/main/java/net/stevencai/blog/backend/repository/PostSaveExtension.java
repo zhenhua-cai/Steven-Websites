@@ -8,11 +8,12 @@ import org.hibernate.query.Query;
 
 public class PostSaveExtension {
 
-    public void savePost(Post post, Session session) {
+    public void savePost(Post post, Session session, String tableName) {
 
-        String queryStr = "insert into " + post.getClass().getSimpleName() + " (id, title, summary, path, createDateTime, lastModifiedDateTime, userId) " +
+        String queryStr = "insert into " + tableName + " (id, title, summary, path, createDateTime, lastModifiedDateTime, userId) " +
                 "values (:id, :title,:summary, :path, :createDateTime, :lastModifiedDateTime, :userid) " +
                 "ON DUPLICATE  KEY UPDATE  lastModifiedDateTime=VALUES(lastModifiedDateTime), title=VALUES(title)";
+        System.out.println(queryStr);
         Query<ArticleDraft> query = session.createNativeQuery(queryStr, ArticleDraft.class);
         query.setParameter("id", post.getId());
         query.setParameter("title", post.getTitle());

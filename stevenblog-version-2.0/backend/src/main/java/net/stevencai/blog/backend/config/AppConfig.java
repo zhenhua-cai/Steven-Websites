@@ -15,6 +15,9 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.time.Duration;
 import java.util.Properties;
@@ -23,7 +26,7 @@ import java.util.Properties;
 @PropertySource("classpath:email.properties")
 @EnableAsync
 @EnableCaching
-public class AppConfig {
+public class AppConfig{
     private Environment env;
 
     @Autowired

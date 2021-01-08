@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-@Table(name="articleDraft")
+@Table(name="article_draft")
 public class ArticleDraft implements Post, Serializable {
     @Id
     private String id;

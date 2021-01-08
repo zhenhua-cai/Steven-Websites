@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
-import {CanActivate, CanActivateChild, CanDeactivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router} from '@angular/router';
-import {Observable, Subscription} from 'rxjs';
-import {AuthService} from '../shared/auth.service';
+import {CanActivate, CanDeactivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router} from '@angular/router';
+import {Observable} from 'rxjs';
 import {ArticleEditorService} from './article-editor.service';
 import {ArticleEditorComponent} from './article-editor.component';
 

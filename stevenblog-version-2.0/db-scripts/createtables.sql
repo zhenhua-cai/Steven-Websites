@@ -41,8 +41,8 @@ CREATE TABLE `authorities` (
 insert into authorities values(1,1);
 insert into authorities values(1,3);
 
-drop table if exists verificationToken;
-create table verificationToken(
+drop table if exists verification_token;
+create table verification_token(
 	id int primary key not null auto_increment,
     token varchar(256) unique not null,
     userId int not null,
@@ -52,14 +52,14 @@ create table verificationToken(
     constraint `verificationToken_idfk_1` foreign key(`userId`) references users(id)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-drop table if exists articleCategories;
-create table articleCategories(
+drop table if exists article_categories;
+create table article_categories(
 	id int primary key not null auto_increment,
     category varchar(20) not null
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-drop table if exists articleKeywords;
-create table articleKeywords(
+drop table if exists article_keywords;
+create table article_keywords(
 	id int primary key not null auto_increment,
     keyword varchar(30) unique not null
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -77,8 +77,8 @@ create table article(
     constraint `user_post_idfk` foreign key(`userId`) references users(id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-drop table if exists articleDraft;
-create table articleDraft(
+drop table if exists article_draft;
+create table article_draft(
 	id varchar(256) primary key not null,
     title varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci default null,
     summary varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci default null,

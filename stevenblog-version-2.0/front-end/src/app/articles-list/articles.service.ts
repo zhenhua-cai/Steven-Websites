@@ -16,15 +16,12 @@ import {AuthService} from '../shared/auth.service';
   providedIn: 'root'
 })
 export class ArticlesService {
-  private MAX_REQUEST_ATTEMPTS_AFTER_401 = 1;
   articles: Article[] = [];
   articlesChangeEvent = new Subject<Article[]>();
   articleUpdateEvent = new Subject<Article>();
   searchTitleEvent = new BehaviorSubject<string>(null);
   publishedArticleEvent = new BehaviorSubject<boolean>(null);
   articlesPageResponseUpdateEvent = new Subject<ArticlesPageResponse>();
-  retryAfter401Error = 0;
-
   constructor(private dataTransaction: DataTransactionService,
               private appService: AppService,
               private authService: AuthService) {
@@ -84,24 +81,6 @@ export class ArticlesService {
   fetchMyDraftsByTitleOrderBy(title: string, sortField: string,
                               sortOrder: number, page: number, size: number): Observable<ArticlesPageResponse> {
     return this.dataTransaction.fetchMyDraftsByTitleOrderBy(title, sortField, sortOrder, page, size);
-  }
-
-  fetchArticlesByAuthorAndTitle(author: string, title: string, page: number, size: number): Observable<ArticlesPageResponse> {
-    return this.dataTransaction.fetchArticlesByAuthorAndTitle(author, title, page, size);
-  }
-
-  fetchArticlesByAuthorAndTitleOrderBy(author: string, title: string, sortField: string,
-                                       sortOrder: number, page: number, size: number): Observable<ArticlesPageResponse> {
-    return this.dataTransaction.fetchArticlesByAuthorAndTitleOrderBy(author, title, sortField, sortOrder, page, size);
-  }
-
-  fetchDraftsByAuthorAndTitleOrderBy(author: string, title: string, sortField: string,
-                                     sortOrder: number, page: number, size: number): Observable<ArticlesPageResponse> {
-    return this.dataTransaction.fetchDraftsByAuthorAndTitleOrderBy(author, title, sortField, sortOrder, page, size);
-  }
-
-  fetchDraftsByAuthorAndTitle(author: string, title: string, page: number, size: number): Observable<ArticlesPageResponse> {
-    return this.dataTransaction.fetchDraftsByAuthorAndTitle(author, title, page, size);
   }
 
   saveArticleDraft(article: Article): Observable<ArticleResponse> {

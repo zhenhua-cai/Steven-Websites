@@ -1,13 +1,12 @@
 import {Injectable} from '@angular/core';
 import {
-  Router, Resolve,
+  Resolve,
   RouterStateSnapshot,
   ActivatedRouteSnapshot
 } from '@angular/router';
-import {Observable, of, throwError} from 'rxjs';
+import {Observable} from 'rxjs';
 import {ArticlesPageResponse} from '../shared/data-transaction.service';
 import {ArticlesService} from './articles.service';
-import {catchError} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'

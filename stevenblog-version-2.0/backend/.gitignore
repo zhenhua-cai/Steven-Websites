@@ -2,6 +2,7 @@ HELP.md
 target/
 stevenblog/
 src/main/resources/email.properties
+src/main/resources/static/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/

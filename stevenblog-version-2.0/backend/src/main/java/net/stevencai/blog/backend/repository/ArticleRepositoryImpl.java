@@ -26,7 +26,7 @@ public class ArticleRepositoryImpl extends PostSaveExtension implements ArticleR
     public Article saveArticle(Article article) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
-        savePost(article, entityManager.unwrap(Session.class));
+        savePost(article, entityManager.unwrap(Session.class), "article");
         entityManager.getTransaction().commit();
         return article;
     }

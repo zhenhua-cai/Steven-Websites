@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, CanDeactivate} from '@angular/router';
+import {ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, CanDeactivate} from '@angular/router';
 import {Observable} from 'rxjs';
 import {AccountInfoComponent} from './account-info.component';
 import {SignUpService} from '../sign-up.service';

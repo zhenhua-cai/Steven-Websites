@@ -18,7 +18,6 @@ import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/drafts")
-@CrossOrigin("http://localhost:4200")
 public class DraftsApi extends PostApi {
     private ArticleDraftService draftService;
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
