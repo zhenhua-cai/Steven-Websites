@@ -340,7 +340,7 @@ export class AccountInfoComponent implements OnInit, OnDestroy, AfterViewInit {
         this.isCheckingUsernameDuplicate = false;
         this.usernameAlreadyTaken = !actionResponse.status;
       },
-      error => {
+      ignore => {
         this.showUnknownErrorToast();
       }
     );
@@ -357,7 +357,7 @@ export class AccountInfoComponent implements OnInit, OnDestroy, AfterViewInit {
       (actionResponse) => {
         this.emailAlreadyTaken = !actionResponse.status;
       },
-      error => {
+      ignore => {
         this.showUnknownErrorToast();
       }
     );
@@ -418,11 +418,11 @@ export class AccountInfoComponent implements OnInit, OnDestroy, AfterViewInit {
                 return;
               }
               callBack();
-            }, error => {
+            }, ignore => {
               this.showUnknownErrorToast();
             }
           );
-      }, error => {
+      }, ignore => {
         this.showUnknownErrorToast();
       }
     );

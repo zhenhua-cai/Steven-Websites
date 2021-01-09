@@ -104,9 +104,11 @@ export class VerifyEmailComponent implements OnInit, OnDestroy {
     this.signUpService.resendVerificationEmail(userInfo, verificationType).subscribe(
       (response) => {
         this.failedTime = 0;
-        this.delayToShowEmailToast('Email Sent', 'Please your check your email');
         this.startsResendEmailTimeCountDown();
-      }, error => {
+        if (response.status) {
+          this.delayToShowEmailToast('Email Sent', 'Please your check your email');
+        }
+      }, ignore => {
         this.delayToShowEmailToast('Error', 'Failed to send email');
       }
     );
@@ -178,7 +180,7 @@ export class VerifyEmailComponent implements OnInit, OnDestroy {
                 );
               }
             }
-          }, error => {
+          }, ignore => {
             this.failedVerifyBefore = true;
             this.appService.unblockScreen();
           }

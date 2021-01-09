@@ -99,41 +99,6 @@ export class DataTransactionService {
     );
   }
 
-  fetchArticlesByAuthorAndTitle(author: string, title: string, page: number, size: number): Observable<ArticlesPageResponse> {
-    let url = environment.serverUrl + `/api/articles/search?author=${author}&page=${page}&size=${size}`;
-    if (title) {
-      url += `&title=${title}`;
-    }
-    return this.sendGetArticlesPagesResponseRequest(url);
-  }
-
-  fetchArticlesByAuthorAndTitleOrderBy(author: string, title: string, sortField: string,
-                                       sortOrder: number, page: number, size: number): Observable<ArticlesPageResponse> {
-    let url = environment.serverUrl + `/api/articles/search?author=${author}&sortBy=${sortField}&sortOrder=${sortOrder}&page=${page}&size=${size}`;
-    if (title) {
-      url += `&title=${title}`;
-    }
-    return this.sendGetArticlesPagesResponseRequest(url);
-  }
-
-
-  fetchDraftsByAuthorAndTitleOrderBy(author: string, title: string, sortField: string,
-                                     sortOrder: number, page: number, size: number): Observable<ArticlesPageResponse> {
-    let url = environment.serverUrl + `/api/drafts/search?author=${author}&sortBy=${sortField}&sortOrder=${sortOrder}&page=${page}&size=${size}`;
-    if (title) {
-      url += `&title=${title}`;
-    }
-    return this.sendGetArticlesPagesResponseRequest(url);
-  }
-
-  fetchDraftsByAuthorAndTitle(author: string, title: string, page: number, size: number): Observable<ArticlesPageResponse> {
-    let url = environment.serverUrl + `/api/drafts/search?author=${author}&page=${page}&size=${size}`;
-    if (title) {
-      url += `&title=${title}`;
-    }
-    return this.sendGetArticlesPagesResponseRequest(url);
-  }
-
   saveArticleDraft(article: Article): Observable<ArticleResponse> {
     const url = environment.serverUrl + `/api/drafts/save`;
     return this.sendPostArticleResponseRequest(url, article);
