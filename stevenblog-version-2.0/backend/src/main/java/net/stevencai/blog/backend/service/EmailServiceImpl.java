@@ -16,6 +16,7 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -71,7 +72,7 @@ public class EmailServiceImpl implements EmailService {
         Map<String, Object> attributes = new HashMap<>();
         attributes.put("username", user.getUsername());
         attributes.put("ipAddress", ip);
-        attributes.put("loginTime", LocalDateTime.now());
+        attributes.put("loginTime", LocalDateTime.now(ZoneOffset.UTC));
         attributes.put("blockHours", blockHours);
         attributes.put("resetLinnk", generateLink("account/resetPassword"));
         sendEmail("UserAccountAlert", attributes, user.getEmail(), "Account Login Alert");

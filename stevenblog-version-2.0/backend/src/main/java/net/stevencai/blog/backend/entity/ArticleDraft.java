@@ -5,10 +5,11 @@ import lombok.Data;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 @Entity
 @Data
-@Table(name="article_draft")
+@Table(name = "article_draft")
 public class ArticleDraft implements Post, Serializable {
     @Id
     private String id;
@@ -29,26 +30,28 @@ public class ArticleDraft implements Post, Serializable {
     private String path;
 
     @ManyToOne
-    @JoinColumn(name="userId")
+    @JoinColumn(name = "userId")
     private User user;
 
-    public ArticleDraft(){
-        createDateTime = LocalDateTime.now();
+    public ArticleDraft() {
+        createDateTime = LocalDateTime.now(ZoneOffset.UTC);
         lastModifiedDateTime = createDateTime;
     }
 
-    public ArticleDraft(String path){
-        createDateTime = LocalDateTime.now();
+    public ArticleDraft(String path) {
+        createDateTime = LocalDateTime.now(ZoneOffset.UTC);
         lastModifiedDateTime = createDateTime;
+        this.path = path;
     }
-    public ArticleDraft(String path, User user){
-        createDateTime = LocalDateTime.now();
+
+    public ArticleDraft(String path, User user) {
+        createDateTime = LocalDateTime.now(ZoneOffset.UTC);
         lastModifiedDateTime = createDateTime;
         this.path = path;
         this.user = user;
     }
 
-    public ArticleDraft(Article article){
+    public ArticleDraft(Article article) {
         this.id = article.getId();
         this.user = article.getUser();
         this.createDateTime = article.getCreateDateTime();
@@ -68,11 +71,11 @@ public class ArticleDraft implements Post, Serializable {
         this.summary = summary;
     }
 
-    public void modified(){
-        lastModifiedDateTime = LocalDateTime.now();
+    public void modified() {
+        lastModifiedDateTime = LocalDateTime.now(ZoneOffset.UTC);
     }
 
-    public boolean isModified(){
+    public boolean isModified() {
         return lastModifiedDateTime.isEqual(createDateTime);
     }
 

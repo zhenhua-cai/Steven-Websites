@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -52,7 +53,7 @@ public class AuthServiceImpl implements AuthService {
         }
         LocalDateTime lastAttempt = authAttemptsRepository.getLastAttempt(ip);
         boolean ableToAttempt = lastAttempt.plusHours(ATTEMPTS_MIN_DURATION)
-                .isBefore(LocalDateTime.now());
+                .isBefore(LocalDateTime.now(ZoneOffset.UTC));
         if (ableToAttempt) {
             this.clearAuthAttempts(ip);
         }

@@ -29,6 +29,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Optional;
 
 @Service
@@ -83,7 +84,7 @@ public class ArticlesServiceImpl implements ArticlesService, ArticleDraftService
     @Override
     @CachePut(value = "articleCache", key = "#result.id")
     public ArticleResource saveArticle(ArticleResource articleResource) {
-        articleResource.setLastModified(LocalDateTime.now());
+        articleResource.setLastModified(LocalDateTime.now(ZoneOffset.UTC));
         Article article = getArticle(articleResource);
         saveArticleToDisk(article.getPath(), articleResource);
         saveArticle(article);
@@ -222,7 +223,7 @@ public class ArticlesServiceImpl implements ArticlesService, ArticleDraftService
     public ArticleResource publishArticle(ArticleResource articleResource) {
         if (articleResource.getId() == null) {
             articleResource.setId(utilService.generateUUIDForArticle(articleResource.getUsername()));
-            articleResource.setCreateDate(LocalDateTime.now());
+            articleResource.setCreateDate(LocalDateTime.now(ZoneOffset.UTC));
         }
         this.saveArticle(articleResource);
         draftRepository.deleteByIdIfExists(articleResource.getId());
@@ -384,9 +385,9 @@ public class ArticlesServiceImpl implements ArticlesService, ArticleDraftService
     public ArticleResource saveArticleDraft(ArticleResource articleResource) {
         if (articleResource.getId() == null) {
             articleResource.setId(utilService.generateUUIDForArticle(articleResource.getUsername()));
-            articleResource.setCreateDate(LocalDateTime.now());
+            articleResource.setCreateDate(LocalDateTime.now(ZoneOffset.UTC));
         }
-        articleResource.setLastModified(LocalDateTime.now());
+        articleResource.setLastModified(LocalDateTime.now(ZoneOffset.UTC));
         ArticleDraft articleDraft = getArticleDraft(articleResource);
         saveArticleToDisk(articleDraft.getPath(), articleResource);
         draftRepository.saveArticleDraft(articleDraft);

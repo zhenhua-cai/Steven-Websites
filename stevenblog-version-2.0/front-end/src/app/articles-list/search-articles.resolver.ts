@@ -17,6 +17,6 @@ export class SearchArticlesResolver implements Resolve<ArticlesPageResponse> {
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<ArticlesPageResponse> {
-    return this.articlesService.searchArticleByTitle(route.params.title, 0, 10);
+    return this.articlesService.searchArticleByTitle(route.params.ArticlePublishTitle, 0, 10);
   }
 }

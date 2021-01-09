@@ -6,6 +6,7 @@ import net.stevencai.blog.backend.clientResource.ArticleResource;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 @Entity
 @Table(name = "article")
@@ -37,14 +38,15 @@ public class Article implements Post, Serializable {
     private User user;
 
     public Article() {
-        createDateTime = LocalDateTime.now();
+        createDateTime = LocalDateTime.now(ZoneOffset.UTC);
         lastModifiedDateTime = createDateTime;
     }
 
     public Article(String id, String path) {
         this.id = id;
-        createDateTime = LocalDateTime.now();
+        createDateTime = LocalDateTime.now(ZoneOffset.UTC);
         lastModifiedDateTime = createDateTime;
+        this.path = path;
     }
 
     public Article(String id,
@@ -65,7 +67,7 @@ public class Article implements Post, Serializable {
     }
 
     public void modified() {
-        lastModifiedDateTime = LocalDateTime.now();
+        lastModifiedDateTime = LocalDateTime.now(ZoneOffset.UTC);
     }
 
     public boolean isModified() {

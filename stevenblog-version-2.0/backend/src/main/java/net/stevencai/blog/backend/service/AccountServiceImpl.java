@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -70,7 +71,7 @@ public class AccountServiceImpl implements AccountService {
             throw new UsernameAlreadyExistException("Username was already taken");
         }
         User user = buildUser(signUpUser);
-        user.setCreateDateTime(LocalDateTime.now());
+        user.setCreateDateTime(LocalDateTime.now(ZoneOffset.UTC));
         return saveUser(user);
     }
 

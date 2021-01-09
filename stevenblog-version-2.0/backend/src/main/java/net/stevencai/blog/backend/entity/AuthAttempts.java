@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 @Data
 public class AuthAttempts implements Serializable {
@@ -13,6 +14,6 @@ public class AuthAttempts implements Serializable {
 
     public void setAttempts(int attempts) {
         this.attempts = attempts;
-        this.lastAttempt = LocalDateTime.now();
+        this.lastAttempt = LocalDateTime.now(ZoneOffset.UTC);
     }
 }
