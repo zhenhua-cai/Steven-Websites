@@ -311,5 +311,7 @@ export class MyArticlesComponent implements OnInit, OnDestroy {
     }
     this.appService.showSuccessToast(summary, details);
   }
-
+  getClientDateTime(date: string): Date {
+    return this.appService.getClientDateTime(new Date(date));
+  }
 }

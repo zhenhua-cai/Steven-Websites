@@ -56,8 +56,8 @@
           <td style="display: none">{{article.id}}</td>
           <td class="text-center"
               [ngClass]="{'alert-danger':article.title==null}">{{article.title == null ? 'Title Is Missing' : article.title}}</td>
-          <td class="text-center">{{article.createDate | date: 'medium'}}</td>
-          <td class="text-center">{{article.lastModified | date: 'medium'}}</td>
+          <td class="text-center">{{ getClientDateTime(article.createDate) | date: 'medium'}}</td>
+          <td class="text-center">{{getClientDateTime(article.lastModified) | date: 'medium'}}</td>
         </tr>
       </ng-template>
     </p-table>

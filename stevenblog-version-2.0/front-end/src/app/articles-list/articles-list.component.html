@@ -1,6 +1,6 @@
 <div class="container row  shadow-lg bg-white rounded h-100 p-3 ml-auto mr-auto">
-  <div class="col-10 ml-auto mr-auto h-100 d-flex flex-column flex-fill" *ngIf="articles.length > 0">
-    <div class="w-75 ml-auto mr-auto h-100 flex-grow-1">
+  <div class="col-12 ml-auto mr-auto h-100 d-flex flex-column flex-fill" *ngIf="articles.length > 0">
+    <div class="ml-auto mr-auto h-100 flex-grow-1">
       <div *ngFor="let article of articles; let i = index">
         <app-articles-list-item [article]="article"></app-articles-list-item>
       </div>

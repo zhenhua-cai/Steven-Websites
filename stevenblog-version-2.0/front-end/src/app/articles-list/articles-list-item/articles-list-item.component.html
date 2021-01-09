@@ -9,7 +9,7 @@
       <small>Posted by </small>
       <small>{{article.username}}</small><br>
       <small>Last Modified On </small>
-      <small>{{article.lastModified|date: 'medium'}}</small>
+      <small>{{getClientDateTime()|date: 'medium'}}</small>
     </span>
     <small class="text-break text-wrap d-block article-summary">
       {{article.summary ? article.summary : ''}}

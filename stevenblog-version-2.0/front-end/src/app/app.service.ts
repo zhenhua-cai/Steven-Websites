@@ -12,7 +12,13 @@ export class AppService {
   isLoggingIn = false;
   refreshedToken = false;
 
+
   constructor(private messageService: MessageService) {
+
+  }
+
+  getClientDateTime(date: Date): Date {
+    return new Date(date.valueOf() - date.getTimezoneOffset() * 1000 * 60);
   }
 
   showWarningToast(summary: string, detail: string): void {
