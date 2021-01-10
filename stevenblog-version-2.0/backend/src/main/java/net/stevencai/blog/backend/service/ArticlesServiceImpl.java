@@ -1,10 +1,7 @@
 package net.stevencai.blog.backend.service;
 
 import net.stevencai.blog.backend.clientResource.ArticleResource;
-import net.stevencai.blog.backend.entity.Article;
-import net.stevencai.blog.backend.entity.ArticleDraft;
-import net.stevencai.blog.backend.entity.Post;
-import net.stevencai.blog.backend.entity.User;
+import net.stevencai.blog.backend.entity.*;
 import net.stevencai.blog.backend.exception.ArticleNotAbleToWriteToDiskException;
 import net.stevencai.blog.backend.exception.ArticleNotFoundException;
 import net.stevencai.blog.backend.repository.ArticleRepository;
@@ -17,7 +14,6 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -444,29 +440,29 @@ public class ArticlesServiceImpl implements ArticlesService, ArticleDraftService
                                                               String sortBy, Integer sortOrder,
                                                               int page, int size) {
         Page<Article> pageable;
-        switch (sortBy.toLowerCase()) {
-            case "title":
+        switch (Post.valueOf(sortBy)) {
+            case TITLE:
                 if (sortOrder == null || sortOrder == -1) {
                     pageable = searchArticlesByAuthorOrTitleOrderByTitleDesc(author, title, page, size);
                 } else {
                     pageable = searchArticlesByAuthorOrTitleOrderByTitleAsc(author, title, page, size);
                 }
                 break;
-            case "createdate":
+            case CREATE_DATE:
                 if (sortOrder == null || sortOrder == -1) {
                     pageable = searchArticlesByAuthorOrTitleOrderByCreateDateTimeDesc(author, title, page, size);
                 } else {
                     pageable = searchArticlesByAuthorOrTitleOrderByCreateDateTimeAsc(author, title, page, size);
                 }
                 break;
-            case "privatemode":
+            case PRIVATE_MODE:
                 if (sortOrder == null || sortOrder == -1) {
                     pageable = searchArticlesByAuthorOrTitleOrderByPrivateModeDesc(author, title, page, size);
                 } else {
                     pageable = searchArticlesByAuthorOrTitleOrderByOrderByPrivateModeAsc(author, title, page, size);
                 }
                 break;
-            case "lastmodified":
+            case LAST_MODIFIED:
             default:
                 if (sortOrder == null || sortOrder == -1) {
                     pageable = searchArticlesByAuthorOrTitleOrderByLastModifiedDateTimeDesc(author, title, page, size);
@@ -483,22 +479,22 @@ public class ArticlesServiceImpl implements ArticlesService, ArticleDraftService
                                                                         String sortBy, Integer sortOrder,
                                                                         int page, int size) {
         Page<ArticleDraft> pageable;
-        switch (sortBy.toLowerCase()) {
-            case "title":
+        switch (Post.valueOf(sortBy)) {
+            case TITLE:
                 if (sortOrder == null || sortOrder == -1) {
                     pageable = searchArticleDraftsByAuthorOrTitleOrderByTitleDesc(author, title, page, size);
                 } else {
                     pageable = searchArticleDraftsByAuthorOrTitleOrderByTitleAsc(author, title, page, size);
                 }
                 break;
-            case "createdate":
+            case CREATE_DATE:
                 if (sortOrder == null || sortOrder == -1) {
                     pageable = searchArticleDraftsByAuthorOrTitleOrderByCreateDateTimeDesc(author, title, page, size);
                 } else {
                     pageable = searchArticleDraftsByAuthorOrTitleOrderByCreateDateTimeAsc(author, title, page, size);
                 }
                 break;
-            case "lastmodified":
+            case LAST_MODIFIED:
             default:
                 if (sortOrder == null || sortOrder == -1) {
                     pageable = searchArticleDraftsByAuthorOrTitleOrderByLastModifiedDateTimeDesc(author, title, page, size);
