@@ -22,6 +22,7 @@ export class ArticlesService {
   searchTitleEvent = new BehaviorSubject<string>(null);
   publishedArticleEvent = new BehaviorSubject<boolean>(null);
   articlesPageResponseUpdateEvent = new Subject<ArticlesPageResponse>();
+
   constructor(private dataTransaction: DataTransactionService,
               private appService: AppService,
               private authService: AuthService) {
@@ -122,5 +123,13 @@ export class ArticlesService {
     } else {
       this.appService.unblockScreen();
     }
+  }
+
+  updateArticleTitleOrAccessMode(article: Article): Observable<ActionStatusResponse> {
+    return this.dataTransaction.updateArticleTitleOrAccessMode(article);
+  }
+
+  updateArticleDraftTitle(article: Article): Observable<ActionStatusResponse> {
+    return this.dataTransaction.updateArticleDraftTitle(article);
   }
 }

@@ -14,19 +14,20 @@
              [rows]="pageSize"
              [showCurrentPageReport]="true"
              [totalRecords]="totalArticles"
+             editMode="row"
              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} articles"
              [rowsPerPageOptions]="[5,10,20,50]"
              styleClass="p-datatable-striped p-datatable-gridlines"
     >
       <ng-template pTemplate="caption">
         <div class="d-flex justify-content-between">
-                <span>
-                      <button pButton type="button" label="New"
-                              icon="far fa-edit"
-                              class="p-button-outlined p-button-raised p-button-rounded p-button-sm"
-                              (click)="createNewArticle($event)">
-                </button>
-              </span>
+          <span>
+            <button pButton type="button" label="New"
+                    icon="far fa-edit"
+                    class="p-button-outlined p-button-raised p-button-rounded p-button-sm"
+                    (click)="createNewArticle($event)">
+            </button>
+          </span>
           <span class="p-input-icon-right p-ml-auto">
                     <i class="pi pi-search" (click)="searchArticles($event)"></i>
                     <input pInputText type="text"
@@ -49,21 +50,42 @@
           <th pSortableColumn="lastModified" class="text-center">Last Modified
             <p-sortIcon field="lastModified"></p-sortIcon>
           </th>
-          <th pSortableColumn="isPrivate" class="text-center">Public
-            <p-sortIcon field="isPrivate"></p-sortIcon>
+          <th pSortableColumn="privateMode" class="text-center" *ngIf="!isDraftRoute">Public
+            <p-sortIcon field="privateMode"></p-sortIcon>
           </th>
         </tr>
       </ng-template>
-      <ng-template pTemplate="body" let-article>
-        <tr [pSelectableRow]="article" [pContextMenuRow]="article">
+      <ng-template pTemplate="body" let-article let-editing="editing" let-ri="rowIndex">
+        <tr [pSelectableRow]="article" [pContextMenuRow]="article" [pEditableRow]="article">
           <td style="display: none">{{article.id}}</td>
-          <td class="text-center"
-              [ngClass]="{'alert-danger':article.title==null}">{{article.title == null ? 'Title Is Missing' : article.title}}</td>
+          <td class="text-center" pEditableColumn [pEditableColumnDisabled]="!editing"
+              [ngClass]="{'alert-danger':article.title==null}">
+            <p-cellEditor>
+              <ng-template pTemplate="input">
+                <input pInputText type="text" [(ngModel)]="article.title" class="w-100">
+              </ng-template>
+              <ng-template pTemplate="output">
+                {{article.title == null ? 'Title Is Missing' : article.title}}
+              </ng-template>
+            </p-cellEditor>
+          </td>
           <td class="text-center">{{ getClientDateTime(article.createDate) | date: 'medium'}}</td>
           <td class="text-center">{{getClientDateTime(article.lastModified) | date: 'medium'}}</td>
-          <td class="text-center">
-            <i class="pi "
-               [ngClass]="{'pi-times isPrivate':article.privateMode,'pi-check isPublic':!article.privateMode}"></i>
+          <td class="text-center" pEditableColumn [pEditableColumnDisabled]="!editing" *ngIf="!isDraftRoute">
+            <p-cellEditor>
+              <ng-template pTemplate="input">
+                <p-dropdown [options]="accessModes" [(ngModel)]="article.privateMode" [style]="{'width':'100%'}"></p-dropdown>
+              </ng-template>
+              <ng-template pTemplate="output">
+                <i class="pi "
+                   [ngClass]="{'pi-times isPrivate':article.privateMode,'pi-check isPublic':!article.privateMode}"></i>
+              </ng-template>
+            </p-cellEditor>
+          </td>
+          <td class="text-center editColumn">
+            <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil" (click)="onRowEditInit(article)" class="p-button-rounded p-button-text"></button>
+            <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check" (click)="onRowEditSave(article, ri)" class="p-button-rounded p-button-text p-button-success p-mr-2"></button>
+            <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times" (click)="onRowEditCancel(article, ri)" class="p-button-rounded p-button-text p-button-danger"></button>
           </td>
         </tr>
       </ng-template>

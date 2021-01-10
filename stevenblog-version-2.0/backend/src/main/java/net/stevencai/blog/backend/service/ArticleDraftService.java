@@ -64,4 +64,5 @@ public interface ArticleDraftService {
 
     Page<ArticleDraft> searchArticleDraftsByAuthorOrTitleOrderBy(String author, String title, String sortBy, Integer sortOrder, int page, int size);
 
+    void updateArticleDraftTitle(ArticleResource articleResource);
 }

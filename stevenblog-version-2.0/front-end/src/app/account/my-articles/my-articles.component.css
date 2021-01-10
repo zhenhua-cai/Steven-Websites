@@ -10,17 +10,23 @@
 .pi-search:hover {
   cursor: pointer;
 }
-.isPrivate{
+
+.isPrivate {
   color: red;
 }
-.isPublic{
+
+.isPublic {
   color: #16c79a;
 }
 
+.editColumn {
+  width: 10% !important;
+}
+
 @media only screen and (max-width: 450px) {
-  input[type=text]{
+  input[type=text] {
     margin-left: 10px;
-    width:100%;
+    width: 100%;
   }
 }
 

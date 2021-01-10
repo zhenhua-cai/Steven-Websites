@@ -12,7 +12,8 @@ import {ContextMenuModule} from 'primeng/contextmenu';
 import {ToastModule} from 'primeng/toast';
 import {FormsModule} from '@angular/forms';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
-
+import {RippleModule} from 'primeng/ripple';
+import {DropdownModule} from 'primeng/dropdown';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,9 @@ import {ConfirmDialogModule} from 'primeng/confirmdialog';
     ContextMenuModule,
     ToastModule,
     FormsModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    RippleModule,
+    DropdownModule
   ]
 })
 export class AccountModule {

@@ -8,7 +8,7 @@ import org.springframework.data.domain.Page;
 public interface ArticlesService {
     ArticleResource findArticleById(String id);
 
-    Page<Article> findArticles(int page, int size);
+    Page<Article> findPublicArticles(int page, int size);
 
     Article saveArticle(Article article);
 
@@ -72,4 +72,7 @@ public interface ArticlesService {
 
     Page<Article> searchArticlesByAuthorOrTitleOrderBy(String author, String title, String sortBy, Integer sortOrder, int page, int size);
 
+    Page<Article> findPublicArticlesByTitle(String title, int page, int size);
+
+    void updateArticleTitleAndAccessMode(ArticleResource articleResource);
 }

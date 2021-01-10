@@ -6,7 +6,6 @@ import net.stevencai.blog.backend.entity.Article;
 import net.stevencai.blog.backend.response.ActionStatusResponse;
 import net.stevencai.blog.backend.response.ArticleResponse;
 import net.stevencai.blog.backend.service.ArticlesService;
-import net.stevencai.blog.backend.service.UtilService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
@@ -25,27 +24,41 @@ public class ArticlesApi extends PostApi {
 
     @GetMapping
     public ArticlesListResponse getArticles(@RequestParam("page") int page, @RequestParam("size") int size) {
-        Page<Article> pageable = articlesService.findArticles(page, size);
+        Page<Article> pageable = articlesService.findPublicArticles(page, size);
         return constructArticleResourceResponse(pageable);
     }
 
-    @GetMapping("/search")
-    public ArticlesListResponse searchArticlesByAuthorOrTitle(
-            @RequestParam(value = "title", required = false) String title,
-            @RequestParam(value = "author", required = false) String author,
-            @RequestParam(value = "sortBy", required = false) String sortBy,
-            @RequestParam(value = "sortOrder", required = false) Integer sortOrder,
+    @GetMapping("/search/{title}")
+    public ArticlesListResponse searchArticlesByTitle(
+            @PathVariable String title,
             @RequestParam("page") int page,
             @RequestParam("size") int size) {
-        Page<Article> pageable;
-        if (UtilService.isNullOrEmpty(sortBy)) {
-            pageable = this.articlesService.searchArticlesByAuthorOrTitleOrderByLastModifiedDateTimeDesc(author, title, page, size);
-        } else {
-            pageable = this.articlesService.searchArticlesByAuthorOrTitleOrderBy(title, author, sortBy, sortOrder, page, size);
-        }
+        Page<Article> pageable = this.articlesService.findPublicArticlesByTitle(title, page, size);
         return constructArticleResourceResponse(pageable);
     }
 
+    @PostMapping("/update")
+    public ActionStatusResponse updateArticleTitleOrAccessMode(@RequestBody ArticleResource articleResource) {
+        this.articlesService.updateArticleTitleAndAccessMode(articleResource);
+        return new ActionStatusResponse(true);
+    }
+
+    //    @GetMapping("/search")
+//    public ArticlesListResponse searchArticlesByAuthorOrTitle(
+//            @RequestParam(value = "title", required = false) String title,
+//            @RequestParam(value = "author", required = false) String author,
+//            @RequestParam(value = "sortBy", required = false) String sortBy,
+//            @RequestParam(value = "sortOrder", required = false) Integer sortOrder,
+//            @RequestParam("page") int page,
+//            @RequestParam("size") int size) {
+//        Page<Article> pageable;
+//        if (UtilService.isNullOrEmpty(sortBy)) {
+//            pageable = this.articlesService.searchArticlesByAuthorOrTitleOrderByLastModifiedDateTimeDesc(author, title, page, size);
+//        } else {
+//            pageable = this.articlesService.searchArticlesByAuthorOrTitleOrderBy(title, author, sortBy, sortOrder, page, size);
+//        }
+//        return constructArticleResourceResponse(pageable);
+//    }
     @GetMapping("/{id}")
     public ArticleResponse getArticle(@PathVariable("id") String id) {
         return new ArticleResponse(articlesService.findArticleById(id));

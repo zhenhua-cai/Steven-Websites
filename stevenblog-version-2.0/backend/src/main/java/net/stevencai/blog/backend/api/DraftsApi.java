@@ -63,7 +63,11 @@ public class DraftsApi extends PostApi {
         }
         return new ArticleResponse(draftService.saveArticleDraft(articleResource));
     }
-
+    @PostMapping("/update")
+    public ActionStatusResponse updateArticleDraftTitle(@RequestBody ArticleResource articleResource) {
+        this.draftService.updateArticleDraftTitle(articleResource);
+        return new ActionStatusResponse(true);
+    }
     @DeleteMapping("delete/{id}")
     public ActionStatusResponse deleteArticleDraft(@PathVariable("id") String id) {
         if (id == null) {

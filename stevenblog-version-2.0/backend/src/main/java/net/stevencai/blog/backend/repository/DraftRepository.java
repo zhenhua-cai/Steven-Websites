@@ -5,6 +5,10 @@ import net.stevencai.blog.backend.entity.ArticleDraft;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface DraftRepository extends JpaRepository<ArticleDraft, String>, ArticleDraftRepositoryExtension {
     Page<ArticleDraft> findAllByUserUsernameAndTitleContainingOrderByLastModifiedDateTimeDesc(String username, String title, Pageable pageable);
@@ -55,4 +59,8 @@ public interface DraftRepository extends JpaRepository<ArticleDraft, String>, Ar
 
     Page<ArticleDraft> findAllByUserUsernameAndTitleContainingOrderByCreateDateTimeDesc(String author, String title, Pageable pageable);
 
+    @Modifying
+    @Transactional
+    @Query("update ArticleDraft a set a.title=:title where a.id=:id")
+    void updateArticleDraftTitle(@Param("id") String id, @Param("title") String title);
 }

@@ -4,7 +4,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {Article} from '../../shared/Article';
 import {ActionStatusResponse, ArticlesPageResponse} from '../../shared/data-transaction.service';
 import {ArticlesService} from '../../articles-list/articles.service';
-import {LazyLoadEvent, MenuItem} from 'primeng/api';
+import {LazyLoadEvent, MenuItem, SelectItem} from 'primeng/api';
 import {Observable} from 'rxjs';
 import {ArticleEditorService} from '../../article-editor/article-editor.service';
 import {AppService} from '../../app.service';
@@ -27,6 +27,9 @@ export class MyArticlesComponent implements OnInit, OnDestroy {
   searchValue: string;
   searchOrderBy: string = null;
   searchOrder = -1;
+  editing = false;
+  accessModes: SelectItem[];
+  clonedArticle: Article = null;
 
   constructor(private articleService: ArticlesService,
               private accountService: AccountService,
@@ -44,9 +47,10 @@ export class MyArticlesComponent implements OnInit, OnDestroy {
     this.accountService.accountRouteChange(this.router.url);
     this.items = [
       {label: 'View', icon: 'pi pi-fw pi-search', command: () => this.viewArticle(this.selectedArticle)},
-      {label: 'Edit', icon: 'far pi-fw fa-edit', command: () => this.onEditArticle()},
+      {label: 'Edit Content', icon: 'far pi-fw fa-edit', command: () => this.onEditArticle()},
       {label: 'Delete', icon: 'far pi-fw fa-trash-alt', command: () => this.onDeleteArticle()}
     ];
+    this.accessModes = [{label: 'Public', value: false}, {label: 'Private', value: true}];
     this.isDraftRoute = this.router.url !== '/account/articles';
     this.articleEditorService.disableEditor();
   }
@@ -311,7 +315,51 @@ export class MyArticlesComponent implements OnInit, OnDestroy {
     }
     this.appService.showSuccessToast(summary, details);
   }
+
   getClientDateTime(date: string): Date {
     return this.appService.getClientDateTime(new Date(date));
+  }
+
+  onRowEditInit(article: Article): void {
+    this.clonedArticle = {...article};
+    this.editing = true;
+  }
+
+  onRowEditSave(article: Article, index: number): void {
+    if (article.title.length < 10 || article.title.length > 150) {
+      this.appService.showErrorToast('Update Failed', 'Article Title\'s length should between 10 and 150 characters');
+      this.restoreOldArticle(index);
+      return;
+    }
+    let updateResponse;
+    if (this.isDraftRoute) {
+      updateResponse = this.articleService.updateArticleDraftTitle(article);
+    } else {
+      updateResponse = this.articleService.updateArticleTitleOrAccessMode(article);
+    }
+    updateResponse.subscribe(
+      (response) => {
+        if (response.status) {
+          this.appService.showSuccessToast('Success', 'Article is updated');
+          this.editing = false;
+          this.clonedArticle = null;
+        } else {
+          this.appService.showErrorToast('Failed', 'Unable to update article due to unknown error');
+          this.restoreOldArticle(index);
+        }
+      }, ignore => {
+        this.restoreOldArticle(index);
+      }
+    );
+  }
+
+  onRowEditCancel(article: Article, index: number): void {
+    this.restoreOldArticle(index);
+  }
+
+  private restoreOldArticle(index: number): void {
+    this.articles[index] = this.clonedArticle;
+    this.editing = false;
+    this.clonedArticle = null;
   }
 }

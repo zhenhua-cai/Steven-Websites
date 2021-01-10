@@ -247,6 +247,24 @@ export class DataTransactionService {
       })
     );
   }
+
+  updateArticleTitleOrAccessMode(article: Article): Observable<ActionStatusResponse> {
+    const url = environment.serverUrl + `/api/articles/update`;
+    return this.http.post<ArticleResponse>(url, article).pipe(
+      catchError(errRes => {
+        return this.handleErrorResponse(errRes);
+      })
+    );
+  }
+
+  updateArticleDraftTitle(article: Article): Observable<ActionStatusResponse> {
+    const url = environment.serverUrl + `/api/drafts/update`;
+    return this.http.post<ArticleResponse>(url, article).pipe(
+      catchError(errRes => {
+        return this.handleErrorResponse(errRes);
+      })
+    );
+  }
 }
 
 export interface ArticlesPageResponse {

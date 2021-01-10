@@ -48,7 +48,7 @@ public class AccountApi {
         if (UtilService.isNullOrEmpty(sortBy)) {
             pageable = this.articlesService.searchArticlesByAuthorOrTitleOrderByLastModifiedDateTimeDesc(principal.getName(), title, page, size);
         } else {
-            pageable = this.articlesService.searchArticlesByAuthorOrTitleOrderBy(title, principal.getName(), sortBy, sortOrder, page, size);
+            pageable = this.articlesService.searchArticlesByAuthorOrTitleOrderBy( principal.getName(),title, sortBy, sortOrder, page, size);
         }
         return this.postApi.constructArticleResourceResponse(pageable);
     }

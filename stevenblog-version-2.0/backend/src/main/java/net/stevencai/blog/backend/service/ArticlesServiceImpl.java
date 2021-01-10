@@ -17,6 +17,7 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -71,8 +72,18 @@ public class ArticlesServiceImpl implements ArticlesService, ArticleDraftService
     }
 
     @Override
-    public Page<Article> findArticles(int page, int size) {
-        return articleRepository.findAllByOrderByLastModifiedDateTimeDesc(PageRequest.of(page, size));
+    public Page<Article> findPublicArticles(int page, int size) {
+        return articleRepository.findAllByPrivateModeOrderByLastModifiedDateTimeDesc(false, PageRequest.of(page, size));
+    }
+
+    @Override
+    public Page<Article> findPublicArticlesByTitle(String title, int page, int size) {
+        return articleRepository.findAllByPrivateModeAndTitleContainingOrderByLastModifiedDateTimeDesc(false, title, PageRequest.of(page, size));
+    }
+
+    @Override
+    public void updateArticleTitleAndAccessMode(ArticleResource articleResource) {
+        this.articleRepository.updateArticleTitleAndPrivateMode(articleResource.getId(), articleResource.getTitle(), articleResource.isPrivateMode());
     }
 
     @Override
@@ -95,6 +106,14 @@ public class ArticlesServiceImpl implements ArticlesService, ArticleDraftService
     public Page<Article> findArticlesByAuthorAndTitleOrderByTitle(String author, String title, int page, int size) {
         return articleRepository.findAllByUserUsernameAndTitleContainingOrderByTitleDesc(author, title, PageRequest.of(page, size));
 
+    }
+
+    private Page<Article> findArticlesByAuthorOrderByPrivateModeDesc(String author, int page, int size) {
+        return this.articleRepository.findArticlesByUserUsernameOrderByPrivateModeDesc(author, PageRequest.of(page, size));
+    }
+
+    private Page<Article> findArticlesByAuthorAndTitleOrderByPrivateMode(String author, String title, int page, int size) {
+        return articleRepository.findArticlesByUserUsernameAndTitleOrderByPrivateMode(author, title, PageRequest.of(page, size));
     }
 
     @Override
@@ -395,6 +414,11 @@ public class ArticlesServiceImpl implements ArticlesService, ArticleDraftService
     }
 
     @Override
+    public void updateArticleDraftTitle(ArticleResource articleResource) {
+        this.draftRepository.updateArticleDraftTitle(articleResource.getId(), articleResource.getTitle());
+    }
+
+    @Override
     @CacheEvict("articleDraftCache")
     public void deleteArticleDraftById(String id) {
         Optional<ArticleDraft> articleDraftOptional = draftRepository.findById(id);
@@ -428,14 +452,21 @@ public class ArticlesServiceImpl implements ArticlesService, ArticleDraftService
                     pageable = searchArticlesByAuthorOrTitleOrderByTitleAsc(author, title, page, size);
                 }
                 break;
-            case "createdatetime":
+            case "createdate":
                 if (sortOrder == null || sortOrder == -1) {
                     pageable = searchArticlesByAuthorOrTitleOrderByCreateDateTimeDesc(author, title, page, size);
                 } else {
                     pageable = searchArticlesByAuthorOrTitleOrderByCreateDateTimeAsc(author, title, page, size);
                 }
                 break;
-            case "lastmodifieddatetime":
+            case "privatemode":
+                if (sortOrder == null || sortOrder == -1) {
+                    pageable = searchArticlesByAuthorOrTitleOrderByPrivateModeDesc(author, title, page, size);
+                } else {
+                    pageable = searchArticlesByAuthorOrTitleOrderByOrderByPrivateModeAsc(author, title, page, size);
+                }
+                break;
+            case "lastmodified":
             default:
                 if (sortOrder == null || sortOrder == -1) {
                     pageable = searchArticlesByAuthorOrTitleOrderByLastModifiedDateTimeDesc(author, title, page, size);
@@ -460,14 +491,14 @@ public class ArticlesServiceImpl implements ArticlesService, ArticleDraftService
                     pageable = searchArticleDraftsByAuthorOrTitleOrderByTitleAsc(author, title, page, size);
                 }
                 break;
-            case "createdatetime":
+            case "createdate":
                 if (sortOrder == null || sortOrder == -1) {
                     pageable = searchArticleDraftsByAuthorOrTitleOrderByCreateDateTimeDesc(author, title, page, size);
                 } else {
                     pageable = searchArticleDraftsByAuthorOrTitleOrderByCreateDateTimeAsc(author, title, page, size);
                 }
                 break;
-            case "lastmodifieddatetime":
+            case "lastmodified":
             default:
                 if (sortOrder == null || sortOrder == -1) {
                     pageable = searchArticleDraftsByAuthorOrTitleOrderByLastModifiedDateTimeDesc(author, title, page, size);
@@ -501,6 +532,52 @@ public class ArticlesServiceImpl implements ArticlesService, ArticleDraftService
             return findArticlesByTitleOrderByLastModifiedDateTimeDesc(title, page, size);
         }
         return findArticlesOrderByLastModifiedDateTimeDesc(page, size);
+    }
+
+    private Page<Article> searchArticlesByAuthorOrTitleOrderByOrderByPrivateModeAsc(String author, String title, int page, int size) {
+        if (!UtilService.isNullOrEmpty(author) && !UtilService.isNullOrEmpty(title)) {
+            return findArticlesByAuthorAndTitleOrderByPrivateModeAsc(author, title, page, size);
+        } else if (!UtilService.isNullOrEmpty(author)) {
+            return findArticlesByAuthorOrderByPrivateModeAsc(author, page, size);
+        } else if (!UtilService.isNullOrEmpty(title)) {
+            return findArticlesByTitleOrderByPrivateModeAsc(title, page, size);
+        }
+        return findArticlesOrderByPrivateModeAsc(page, size);
+    }
+
+    private Page<Article> findArticlesOrderByPrivateModeAsc(int page, int size) {
+        return this.articleRepository.findArticlesByOrderByPrivateModeAsc(PageRequest.of(page, size));
+    }
+
+    private Page<Article> findArticlesByTitleOrderByPrivateModeAsc(String title, int page, int size) {
+        return this.articleRepository.findArticlesByTitleOrderByPrivateModeAsc(title, PageRequest.of(page, size));
+    }
+
+    private Page<Article> findArticlesByAuthorOrderByPrivateModeAsc(String author, int page, int size) {
+        return this.articleRepository.findArticlesByUserUsernameOrderByPrivateModeAsc(author, PageRequest.of(page, size));
+    }
+
+    private Page<Article> findArticlesByAuthorAndTitleOrderByPrivateModeAsc(String author, String title, int page, int size) {
+        return this.articleRepository.findArticlesByUserUsernameAndTitleOrderByPrivateModeAsc(author, title, PageRequest.of(page, size));
+    }
+
+    private Page<Article> findArticlesOrderByPrivateModeDesc(int page, int size) {
+        return this.articleRepository.findArticlesByOrderByPrivateModeDesc(PageRequest.of(page, size));
+    }
+
+    private Page<Article> findArticlesByTitleOrderByPrivateModeDesc(String title, int page, int size) {
+        return this.articleRepository.findArticlesByTitleOrderByPrivateModeDesc(title, PageRequest.of(page, size));
+    }
+
+    private Page<Article> searchArticlesByAuthorOrTitleOrderByPrivateModeDesc(String author, String title, int page, int size) {
+        if (!UtilService.isNullOrEmpty(author) && !UtilService.isNullOrEmpty(title)) {
+            return findArticlesByAuthorAndTitleOrderByPrivateMode(author, title, page, size);
+        } else if (!UtilService.isNullOrEmpty(author)) {
+            return findArticlesByAuthorOrderByPrivateModeDesc(author, page, size);
+        } else if (!UtilService.isNullOrEmpty(title)) {
+            return findArticlesByTitleOrderByPrivateModeDesc(title, page, size);
+        }
+        return findArticlesOrderByPrivateModeDesc(page, size);
     }
 
     private Page<Article> searchArticlesByAuthorOrTitleOrderByTitleDesc(String author, String title, int page, int size) {
