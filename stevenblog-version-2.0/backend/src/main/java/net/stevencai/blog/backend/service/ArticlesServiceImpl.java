@@ -645,7 +645,7 @@ public class ArticlesServiceImpl implements ArticlesService, ArticleDraftService
                 articleResource.getSummary(),
                 articleResource.getCreateDate(),
                 articleResource.getLastModified(),
-                articleResource.isPrivate(),
+                articleResource.isPrivateMode(),
                 createFileName(articleResource, parentPath), user);
     }
 

@@ -17,4 +17,6 @@ public interface Post extends Serializable {
     LocalDateTime getLastModifiedDateTime();
 
     User getUser();
+
+    boolean isPrivateMode();
 }

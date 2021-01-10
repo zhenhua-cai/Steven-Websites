@@ -1,7 +1,6 @@
 package net.stevencai.blog.backend.entity;
 
 import lombok.Data;
-import net.stevencai.blog.backend.clientResource.ArticleResource;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -31,7 +30,7 @@ public class Article implements Post, Serializable {
     private String path;
 
     @Column(name = "private")
-    private boolean isPrivate;
+    private boolean privateMode;
 
     @ManyToOne
     @JoinColumn(name = "userId")
@@ -54,7 +53,7 @@ public class Article implements Post, Serializable {
                    String summary,
                    LocalDateTime createDateTime,
                    LocalDateTime lastModifiedDateTime,
-                   boolean isPrivate,
+                   boolean privateMode,
                    String path, User user) {
         this.id = id;
         this.title = title;
@@ -62,7 +61,7 @@ public class Article implements Post, Serializable {
         this.lastModifiedDateTime = lastModifiedDateTime;
         this.path = path;
         this.user = user;
-        this.isPrivate = isPrivate;
+        this.privateMode = privateMode;
         this.summary = summary;
     }
 
@@ -73,5 +72,4 @@ public class Article implements Post, Serializable {
     public boolean isModified() {
         return lastModifiedDateTime.isEqual(createDateTime);
     }
-
 }

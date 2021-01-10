@@ -79,4 +79,8 @@ public class ArticleDraft implements Post, Serializable {
         return lastModifiedDateTime.isEqual(createDateTime);
     }
 
+    @Override
+    public boolean isPrivateMode() {
+        return false;
+    }
 }

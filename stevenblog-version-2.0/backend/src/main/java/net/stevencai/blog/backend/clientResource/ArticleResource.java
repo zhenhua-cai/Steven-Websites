@@ -2,12 +2,8 @@ package net.stevencai.blog.backend.clientResource;
 
 import lombok.Data;
 import net.stevencai.blog.backend.entity.Article;
-import net.stevencai.blog.backend.entity.ArticleDraft;
 import net.stevencai.blog.backend.entity.Post;
 
-import javax.persistence.Column;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -28,7 +24,7 @@ public class ArticleResource implements Serializable {
 
     private LocalDateTime createDate;
 
-    private boolean isPrivate;
+    private boolean privateMode;
 
     public ArticleResource() {
     }
@@ -40,6 +36,7 @@ public class ArticleResource implements Serializable {
         this.lastModified = article.getLastModifiedDateTime();
         this.title = article.getTitle();
         this.summary = article.getSummary();
+        this.privateMode = article.isPrivateMode();
     }
 
     public ArticleResource(Post article) {
@@ -49,5 +46,6 @@ public class ArticleResource implements Serializable {
         this.lastModified = article.getLastModifiedDateTime();
         this.title = article.getTitle();
         this.summary = article.getSummary();
+        this.privateMode = article.isPrivateMode();
     }
 }
