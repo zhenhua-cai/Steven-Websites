@@ -44,8 +44,8 @@ export class DataTransactionService {
     return this.sendGetArticleResponseRequest(url);
   }
 
-  fetchArticlesByTitle(searchValue: string, page: number, pageSize: number): Observable<ArticlesPageResponse> {
-    const url = environment.serverUrl + `/api/articles/search?title=${searchValue}&page=${page}&size=${pageSize}`;
+  fetchArticlesByTitle(searchTitle: string, page: number, pageSize: number): Observable<ArticlesPageResponse> {
+    const url = environment.serverUrl + `/api/articles/search/${searchTitle}?page=${page}&size=${pageSize}`;
     return this.sendGetArticlesPagesResponseRequest(url);
   }
 

@@ -10,6 +10,13 @@
 .pi-search:hover {
   cursor: pointer;
 }
+.isPrivate{
+  color: red;
+}
+.isPublic{
+  color: #16c79a;
+}
+
 @media only screen and (max-width: 450px) {
   input[type=text]{
     margin-left: 10px;

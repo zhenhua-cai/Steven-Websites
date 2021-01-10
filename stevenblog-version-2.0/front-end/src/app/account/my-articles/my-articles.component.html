@@ -49,6 +49,9 @@
           <th pSortableColumn="lastModified" class="text-center">Last Modified
             <p-sortIcon field="lastModified"></p-sortIcon>
           </th>
+          <th pSortableColumn="isPrivate" class="text-center">Public
+            <p-sortIcon field="isPrivate"></p-sortIcon>
+          </th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-article>
@@ -58,6 +61,10 @@
               [ngClass]="{'alert-danger':article.title==null}">{{article.title == null ? 'Title Is Missing' : article.title}}</td>
           <td class="text-center">{{ getClientDateTime(article.createDate) | date: 'medium'}}</td>
           <td class="text-center">{{getClientDateTime(article.lastModified) | date: 'medium'}}</td>
+          <td class="text-center">
+            <i class="pi "
+               [ngClass]="{'pi-times isPrivate':article.privateMode,'pi-check isPublic':!article.privateMode}"></i>
+          </td>
         </tr>
       </ng-template>
     </p-table>

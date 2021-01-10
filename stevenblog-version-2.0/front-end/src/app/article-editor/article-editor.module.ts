@@ -21,6 +21,7 @@ import {ArticlePublishTitleComponent} from './publish/ArticlePublishTitle/Articl
 import {ArticlePublishConfirmationComponent} from './publish/article-publish-confirmation/article-publish-confirmation.component';
 import {InputTextareaModule} from 'primeng/inputtextarea';
 import {CardModule} from 'primeng/card';
+
 @NgModule({
   declarations: [
     ArticleEditorComponent,
@@ -46,7 +47,7 @@ import {CardModule} from 'primeng/card';
     NavbarModule,
     StepsModule,
     InputTextareaModule,
-    CardModule
+    CardModule,
   ]
 })
 export class ArticleEditorModule {

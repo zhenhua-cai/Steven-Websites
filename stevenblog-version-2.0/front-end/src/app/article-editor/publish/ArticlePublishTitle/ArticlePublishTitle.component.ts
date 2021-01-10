@@ -39,7 +39,7 @@ export class ArticlePublishTitleComponent implements OnInit, OnDestroy {
   nextPage(): void {
     let hasError = false;
     this.submitted = true;
-
+    console.log(this.article);
     this.formatArticleTitleAndSummary();
     if (!this.isValidTitle()) {
       this.messageService.add({severity: 'error', detail: 'Article Title\'s length should between 10 and 150 characters'});
@@ -100,5 +100,10 @@ export class ArticlePublishTitleComponent implements OnInit, OnDestroy {
     this.articleEditorService.setEditingDraft(true);
     this.articleEditorService.isAbleToAccessEditor = true;
     this.router.navigate([`/account/edit/${this.article.id}`]);
+  }
+
+  onAccessModeChange($event: Event): void {
+    const value = +($event.target as HTMLInputElement).value;
+    this.article.privateMode = value === 1;
   }
 }

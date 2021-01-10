@@ -32,7 +32,7 @@ export class PublishComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.publishSteps = [
       {label: 'Article Title', routerLink: 'account/publish/title'},
-      {label: 'Confirmation', routerLink: 'account/publish/sign-up-confirmation'}
+      {label: 'Confirmation', routerLink: 'account/publish/confirmation'}
     ];
     this.articlePublishCompleteSubscription = this.publishService.articlePublishCompleteEvent.subscribe(
       (complete) => {

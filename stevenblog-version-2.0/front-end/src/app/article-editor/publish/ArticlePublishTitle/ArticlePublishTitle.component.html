@@ -16,15 +16,35 @@
     <ng-template pTemplate="content">
       <div class="p-fluid">
         <div class="p-field">
-          <label for="articleTitle">Article Title</label>
+          <label for="articleTitle" class="font-weight-bold">Article Title</label>
           <input #title="ngModel" id="articleTitle" type="text" required pInputText [(ngModel)]="article.title"
                  minlength="10" maxlength="150"
                  [ngClass]="{'p-invalid': (title.invalid && submitted) || (title.dirty && title.invalid)}">
           <small *ngIf="(title.invalid && submitted) || (title.dirty && title.invalid)" class="p-error">Article Title
             should have at least 10 characters.</small>
         </div>
+        <div class="p-field mt-3 ">
+          <label class="font-weight-bold">Visibility</label>
+          <div class="form-check">
+            <div>
+              <input class="form-check-input" type="radio" name="accessMode" id="isPublicArticle" value="0" checked (change)="onAccessModeChange($event)">
+              <span class="d-inline-block ml-2">
+                  <label  for="isPublicArticle" class="d-block font-weight-bold mb-0">Public</label>
+                  <small>Anyone on the internet can see this article.</small>
+              </span>
+            </div>
+            <div>
+              <input class="form-check-input" type="radio" name="accessMode" id="isPrivateArticle" value="1" (change)="onAccessModeChange($event)">
+              <span class="d-inline-block ml-2">
+                  <label for="isPrivateArticle" class="d-block font-weight-bold mb-0">Private</label>
+                  <small>Only you can see this article.</small>
+              </span>
+            </div>
+          </div>
+
+        </div>
         <div class="p-field mt-3">
-          <label for="articleSummary">Summary(Optional)</label>
+          <label for="articleSummary"><span class="font-weight-bold">Summary</span>(Optional)</label>
           <textarea pInputTextarea [(ngModel)]="article.summary" id="articleSummary" #summary='ngModel'
                     [rows]="5" [cols]="30" maxlength="256"
                     [ngClass]="{'p-invalid': (summary.invalid && submitted) || (summary.dirty && title.invalid)}"

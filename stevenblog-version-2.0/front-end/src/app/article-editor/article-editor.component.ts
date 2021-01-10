@@ -466,7 +466,10 @@ export class ArticleEditorComponent implements OnInit, OnDestroy {
    */
   private updateArticle(): boolean {
     if (this.article == null) {
-      this.article = new Article(null, null, this.content, null, null, null, null);
+      this.article = new Article(null, null,
+        this.content, null,
+        null, null,
+        null, false);
       return true;
     }
     this.article.content = this.content;

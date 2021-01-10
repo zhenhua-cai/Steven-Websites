@@ -42,7 +42,7 @@ export class ArticlePublishConfirmationComponent implements OnInit, OnDestroy {
     }
   }
 
-  prevPage(): void {
+  onChange(): void {
     this.router.navigate(['/account/publish/title']);
   }
 
