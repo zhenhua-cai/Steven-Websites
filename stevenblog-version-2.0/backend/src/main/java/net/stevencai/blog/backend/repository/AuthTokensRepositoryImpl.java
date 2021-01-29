@@ -92,7 +92,7 @@ public class AuthTokensRepositoryImpl implements AuthTokensRepository {
      */
     @Async
     @Override
-    @Scheduled(fixedRate = 24 * 60 * 60 * 1000)
+//    @Scheduled(fixedRate = 24 * 60 * 60 * 1000)
     public void cleanExpiredRefreshToken() {
         SetOperations<String, Object> setOperations = redis.opsForSet();
         Set<Object> owners = setOperations.members(REFRESH_TOKEN_OWNER_SET_NAME);

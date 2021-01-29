@@ -92,18 +92,19 @@ public class AuthApi {
         // check if refresh token was already replace with new one.
         // if so, that might implies that request was send from a token theft.
         // notify user immediately.
-        if (jwtService.isRefreshTokenBlocked(username, refreshTokenObj.refreshToken)) {
-            logger.error("Account has suspicious behavior: User attempted to login with deprecated token from " + ip);
-            this.accountService.lockAccount(username);
-            this.emailService.sendUserAuthAlert(username, ip);
-            throw new AccountSuspiciousBehaviorException("Attempted to login with banned refresh token.");
-        }
+//        if (jwtService.isRefreshTokenBlocked(username, refreshTokenObj.refreshToken)) {
+//            logger.error("Account has suspicious behavior: User attempted to login with deprecated token from " + ip);
+//            this.accountService.lockAccount(username);
+//            this.emailService.sendUserAuthAlert(username, ip);
+//            throw new AccountSuspiciousBehaviorException("Attempted to login with banned refresh token.");
+//        }
         String accessToken = jwtService.generateAccessToken(username);
         String refreshToken = jwtService.generateRefreshToken(username);
         // uncomment this until solve IPv6 problem.
-//        // associate access token with ip. if request ip not matches ip in access token. authentication fails.
-//        this.jwtService.associateAccessToken(accessToken, ip);
-        this.jwtService.blockDeprecatedRefreshToken(username, refreshToken);
+        // associate access token with ip. if request ip not matches ip in access token.
+        // authentication fails.
+        // this.jwtService.associateAccessToken(accessToken, ip);
+        // this.jwtService.blockDeprecatedRefreshToken(username, refreshToken);
         return new AuthResponse(refreshToken, accessToken);
     }
 
